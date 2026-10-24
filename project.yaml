@@ -25,3 +25,19 @@ framework:
 # here. `/settings --local <key>=<value>` writes there; `/settings <key>=<value>`
 # edits this file. See `.claude/docs/config-resolution.md` for the full
 # precedence order.
+
+# Harness capabilities (.claude/docs/agent-harness.md, effects-map.md § harness).
+# Shipped unset on purpose: an unset key reports NOT CONFIGURED, never a pass.
+# Fill each with the command or path your engine uses, from
+# docs/engine-reference/<engine>/, never from memory. Uncomment to set.
+#
+# harness:
+#   rng_seed:        # how a run gets its seed                        (H1)
+#   state_save:      # write the simulation state to a file           (H2)
+#   state_load:      # start a run from a state file                  (H2)
+#   command_replay:  # run a command script against a build           (H3)
+#   data_reload:     # reload tuning data without a rebuild           (H4)
+#   sim_test:        # simulation tests without the renderer          (H5)
+#   capture:         # capture a state to an image, layer toggles     (H7)
+#   image_diff:      # compare two images, print a similarity number  (H7)
+#   profile_text:    # export a profile as text                       (H8)

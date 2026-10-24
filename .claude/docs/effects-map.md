@@ -1869,6 +1869,45 @@ Users override per-project as needed via `/settings commands.<field>=<value>` or
 
 ---
 
+## harness
+
+**Controls:** The commands or paths that give an agent the abstract harness
+capabilities in `.claude/docs/agent-harness.md`: seeding a run, saving and
+loading state, replaying commands, reloading data, running simulation tests
+without the renderer, capturing, diffing images and exporting a text profile
+**Values:** strings (shell commands or paths), or the OS-aware map that `commands.*` takes
+**Default:** unset. **Nothing in the framework writes these keys yet.** Filling
+them per engine is a later step, sourced from `docs/engine-reference/<engine>/`
+and never guessed
+**Set by:** `/settings` (by hand, for now)
+**Read by:** `.claude/scripts/harness-check.sh`, which `/story-done`, `/code-review` and `/dev-story` run
+
+**Priority chain:** `harness.*` in `project.yaml` → **NOT CONFIGURED**. There is
+no engine default and no permissive fallback. Since nothing writes the keys,
+the unset branch is the normal behaviour on every project until they are filled
+(`.claude/rules/skill-authoring.md`, obligation 2).
+
+| Key | Capability | Principle |
+|---|---|---|
+| `harness.rng_seed` | How a seed is supplied to a run | H1 |
+| `harness.state_save` / `harness.state_load` | Write / start from a state file | H2 |
+| `harness.command_replay` | Run a command script against a build | H3 |
+| `harness.data_reload` | Reload tuning data without a rebuild | H4 |
+| `harness.sim_test` | Run simulation tests without the renderer | H5 |
+| `harness.capture` | Capture a state to an image, with layer toggles | H7 |
+| `harness.image_diff` | Compare two images and print a similarity number | H7 |
+| `harness.profile_text` | Export a profile as text | H8 |
+
+### Affected skills
+
+| Skill | How `harness` is used |
+|-------|------------------------|
+| **dev-story** | Phase 6 runs the story's Harness block with the capabilities that are set, and names each one it could not use as NOT CONFIGURED |
+| **story-done** | Phase 4 reports a `Harness:` line. An empty Harness block, or a needed capability that is unset, makes that line NOT ASSESSED, never PASS |
+| **code-review** | Phase 6 checks the H-rules and quotes `harness-check.sh` |
+
+---
+
 ## naming
 
 **Controls:** Code naming conventions for the project
@@ -2495,6 +2534,17 @@ commands:                    # simple string OR OS-aware map per command
   test: "godot --headless -s -d --remote-debug tcp://127.0.0.1:0 res://addons/gdUnit4/bin/GdUnitCmdTool.gd -a res://tests --ignoreHeadlessMode"
   run: "godot --path . --windowed --resolution 1280x720"
   smoke: "godot --headless --quit-after 5"
+
+harness:                     # agent-harness.md capabilities; unset = NOT CONFIGURED
+  rng_seed: null
+  state_save: null
+  state_load: null
+  command_replay: null
+  data_reload: null
+  sim_test: null
+  capture: null
+  image_diff: null
+  profile_text: null
 
 features:
   session_state: on          # off | on
