@@ -39,6 +39,7 @@
 #                    a subagent's write outside the exception: only a new file
 #                    under production/, docs/ or tests/
 #   artifact PATH... each path a return contract named: there or missing
+#   (check also applies the Unity folder layout to any path under Assets/)
 #   git              stdin: one shell command segment per line; each whose
 #                    command (after VAR=value words and sudo-like wrappers) is
 #                    git tag (not a listing), git merge (not --abort or
@@ -60,6 +61,8 @@
 #   FREEZE <path> <freeze file> <called on | ->
 #   AGENT_WRITE <path> <agent> <existing-file | outside>
 #   ARTIFACT <path> <present | missing>
+#   LAYOUT <path> <what breaks the layout> <the doc>   a path under Assets/ outside
+#                    .claude/docs/unity-folder-structure.md (path only)
 #   GIT_ACTION <action> <segment>         action: tag, merge, release, deploy-itch, deploy-steam
 #   SKIPPED <rule> <why>                  a part of a rule that could not run
 #
@@ -187,7 +190,7 @@ rule_overwrite() {
   _w=$(overwrite_why "$1")
   # Where /test-setup writes: the test roots, CI and the
   # QA evidence folder. Other paths never ask test-scaffold.sh.
-  case "$1" in tests/*|.github/*|production/qa/*|Assets/Tests/*) ;; *) _w="${_w:--}" ;; esac
+  case "$1" in tests/*|.github/*|production/qa/*|Assets/Scripts/Testing/*) ;; *) _w="${_w:--}" ;; esac
   [ "$_w" = "-" ] && return 0
   if [ -z "$_w" ]; then
     # The files /test-setup creates, as test-scaffold.sh lists them.
@@ -374,6 +377,40 @@ rule_agent() {
   return 0
 }
 
+# --------------------------------------------------------------------- layout
+# The Unity folder layout (.claude/docs/unity-folder-structure.md). Path only:
+# it does not read the content, check asmdefs, or compare a feature's roots.
+# Plugins/ is third-party and keeps its vendor's own Tests/ and Editor/ folders.
+LAYOUT_DOC=.claude/docs/unity-folder-structure.md
+layout_row() { printf 'LAYOUT\t%s\t%s\t%s\n' "$_lp" "$1" "$LAYOUT_DOC"; }
+rule_layout() {
+  case "$1" in Assets/*) ;; *) return 0 ;; esac
+  applied layout
+  _lp=$(tsv "$1"); _in=${1#Assets/}
+  # A new top-level folder: Content, Scripts, Plugins, Settings, Configs,
+  # Resources, or one Unity and its packages create themselves.
+  case "$_in" in
+    */*)
+      case "${_in%%/*}" in
+        Content|Scripts|Plugins|Settings|Configs|Resources) ;;
+        StreamingAssets|"Editor Default Resources"|Gizmos|AddressableAssetsData|"TextMesh Pro") ;;
+        *) layout_row "top-level folder Assets/${_in%%/*}/ is not Content, Scripts, Plugins, Settings, Configs or Resources" ;;
+      esac ;;
+  esac
+  case "$1" in
+    Assets/Scripts/*|Assets/Plugins/*) ;;
+    *.cs) layout_row "C# belongs under Assets/Scripts/ (or Assets/Plugins/ for 3rd-party code)" ;;
+  esac
+  case "$1" in
+    Assets/Scripts/Testing/*|Assets/Plugins/*) ;;
+    */Tests/*|*/Test/*|*Tests.cs) layout_row "test files belong under Assets/Scripts/Testing/EditMode|PlayMode/<Feature>/" ;;
+  esac
+  case "$1" in
+    Assets/Scripts/Editor/*|Assets/Plugins/*) ;;
+    */Editor/*) layout_row "editor files belong under Assets/Scripts/Editor/<Feature>/" ;;
+  esac
+}
+
 # ------------------------------------------------------------------------ git
 rule_git() {
   awk '
@@ -429,6 +466,7 @@ OUT=$(case "$CMD" in
     rule_prototype "$PATH_REL" "$NEW"
     rule_freeze "$PATH_REL"
     rule_agent "$PATH_REL"
+    rule_layout "$PATH_REL"
     printf 'APPLIED\t%s\n' "$APPLIED" ;;
   (overwrite) rule_overwrite "$PATH_REL"; printf 'APPLIED\t%s\n' "$APPLIED" ;;
   (config) rule_config "$PATH_REL" "$NEW"; printf 'APPLIED\t%s\n' "$APPLIED" ;;

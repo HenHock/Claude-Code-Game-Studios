@@ -41,3 +41,9 @@ framework:
 #   capture:         # capture a state to an image, layer toggles     (H7)
 #   image_diff:      # compare two images, print a similarity number  (H7)
 #   profile_text:    # export a profile as text                       (H8)
+
+# Unity asset loading (.claude/docs/unity-folder-structure.md, effects-map.md section unity.asset_loading).
+# Unset on purpose: /setup-engine asks. Assets/Resources/ exists only for `resources`.
+#
+# unity:
+#   asset_loading:   # addressables | resources | direct

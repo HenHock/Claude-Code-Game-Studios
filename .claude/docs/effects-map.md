@@ -1108,7 +1108,7 @@ The list is a YAML list of these strings. Skills check whether the current decis
 | **qa-plan** | Test plan tailored to framework's idioms (assertion style, fixture pattern, parameterized tests) |
 | **dev-story** | Test framework name passed to programmer subagent in implementation brief |
 | **regression-suite** | Test file naming and discovery patterns match framework conventions |
-| **test-setup** | Scaffolds the right test layout for the engine (`Assets/Tests/EditMode|PlayMode/` asmdefs for Unity) |
+| **test-setup** | Scaffolds the right test layout for the engine (`Assets/Scripts/Testing/EditMode|PlayMode/` asmdefs for Unity) |
 | **smoke-check** | Invokes framework-appropriate test runner |
 
 ---
@@ -1889,6 +1889,35 @@ the unset branch is the normal behaviour on every project until they are filled
 
 ---
 
+## unity.asset_loading
+
+**Controls:** The project's main asset-loading method, which decides whether
+`Assets/Resources/` exists in the Unity folder layout
+(`.claude/docs/unity-folder-structure.md`)
+**Values:** `addressables` | `resources` | `direct`
+**Default:** unset. **Nothing in the framework writes this key except
+`/setup-engine`, which asks.** Unset is NOT CONFIGURED, never `resources`
+**Set by:** `/setup-engine` (asks the question), or edited by hand in `project.yaml`
+**Read by:** `/setup-engine` (scaffolds `Assets/Resources/` only for `resources`). Nothing else reads it: mirroring and a stray `Resources/` folder are checked by code review and the write-guard path check only
+
+**Priority chain:** `unity.asset_loading` in `project.yaml` -> **NOT CONFIGURED**
+(ask, do not assume). No engine default and no permissive fallback
+(`.claude/rules/skill-authoring.md`, obligation 2).
+
+| Value | Layout effect |
+|---|---|
+| `addressables` | Content and `Configs/<Feature>/` are loaded through Addressables; no `Resources/` |
+| `resources` | `Assets/Resources/<Feature>/` exists |
+| `direct` | Direct scene and prefab references; no `Resources/` |
+
+### Affected skills
+
+| Skill | How `unity.asset_loading` is used |
+|-------|------------------------------------|
+| **setup-engine** | Asks the loading method; scaffolds `Assets/Resources/` only when the answer is `resources` |
+
+---
+
 ## naming
 
 **Controls:** Code naming conventions for the project
@@ -2533,6 +2562,9 @@ features:
 
 updates:
   check: true                # false: no new-release line at session start
+
+unity:
+  asset_loading: null       # addressables | resources | direct; unset = NOT CONFIGURED, asked at /setup-engine
 ```
 
 And a minimal sparse `project.local.yaml` example — a single developer who wants autonomous mode locally:

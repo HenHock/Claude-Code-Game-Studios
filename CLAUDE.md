@@ -19,6 +19,8 @@ Each agent owns a specific domain, enforcing separation of concerns and quality.
 
 @.claude/docs/directory-structure.md
 
+Unity folders are by feature, not by asset type; see `.claude/docs/unity-folder-structure.md`.
+
 ## Engine Version Reference
 
 <!-- ENGINE-REFERENCE-IMPORT: the line below is the Unity reference. Skills that

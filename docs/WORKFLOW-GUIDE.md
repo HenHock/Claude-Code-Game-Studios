@@ -1395,7 +1395,7 @@ Tier 3 (Specialists):  gameplay-programmer, engine-programmer,
 
 ### Automated Hooks (Safety Net)
 
-The system has 16 hooks that run automatically:
+The system has 17 hooks that run automatically:
 
 | Hook | Trigger | What It Does |
 |------|---------|-------------|
@@ -1415,6 +1415,7 @@ The system has 16 hooks that run automatically:
 | `validate-agent-artifact.sh` | Agent stop | Warns when a subagent stops without writing the file its brief named |
 | `session-stop.sh` | **Every response ends** | Session logging and the subagent spawn tally, in the background. Despite the name it fires once per response, not once per session. |
 | `inject-harness.sh` | Agent spawned | Gives every subagent the harness rules (`.claude/docs/agent-harness.md`) |
+| `inject-unity-layout.sh` | Agent spawned | Gives every subagent the Unity folder layout (`.claude/docs/unity-folder-structure.md`) |
 
 ### Context Resilience
 

@@ -14,8 +14,8 @@ existing project on the older config files.
 removed; the template stays a generic project template. No Unity version is
 pinned: the version is chosen at first init with `/setup-engine`
 (`docs/engine-reference/unity/VERSION.md` keeps `Installed at pin time: NOT
-DETERMINED` until then). The folder layout is unchanged: code root `Assets/`,
-tests in `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/`.
+DETERMINED` until then). See "Unity folder layout" below for the `Assets/`
+layout.
 
 ### Removed
 - Ten agents (49 to 39): `godot-specialist`, `godot-gdscript-specialist`,
@@ -36,6 +36,23 @@ tests in `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/`.
   language is C# (Unity Test Framework with NUnit for tests).
 - `README.md`, `docs/WORKFLOW-GUIDE.md` and `.claude/docs/` describe the Unity
   agent set only; the model-tier counts are 3 Opus, 8 Sonnet, 28 inherit.
+
+### Unity folder layout
+Mandatory `Assets/` layout, by feature and not by asset type: one feature uses
+the same feature path under `Content/`, `Scripts/Core/`, `Scripts/Testing/`,
+`Scripts/Debugging/`, `Scripts/Editor/` and `Configs/`. The code root is now
+`Assets/Scripts/Core/`; tests are in `Assets/Scripts/Testing/EditMode/` and
+`Assets/Scripts/Testing/PlayMode/` (replacing `Assets/Tests/`).
+- `.claude/docs/unity-folder-structure.md`: the single source of truth (tree,
+  mirroring rule, asmdef table, Plugins rules, anti-patterns).
+- `.claude/rules/unity-folders.md` (`Assets/**`): do/don't for every file.
+- `.claude/hooks/inject-unity-layout.sh` (SubagentStart): every spawned agent
+  gets the short form.
+- `write-guard.sh check` (via `validate-write.sh`) warns, never blocks, on a
+  path under `Assets/` that breaks the layout.
+- New config key `unity.asset_loading` (`addressables | resources | direct`);
+  unset is NOT CONFIGURED and `/setup-engine` asks. `Assets/Resources/` exists
+  only for `resources`.
 
 ---
 

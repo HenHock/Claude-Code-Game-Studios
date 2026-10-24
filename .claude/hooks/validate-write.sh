@@ -139,6 +139,7 @@ _VW_MSG=$(printf '%s\n' "$_VW_OUT" | VW_MAX="$_VW_MAX" VW_GOT="$_VW_GOT" VW_TOOL
   $1 == "PROTOTYPE_IMPORT" { say($2 " line " $4 ($3 == "into-production" ? " reaches from prototypes/ into the code root: " : " reaches from the code root into prototypes/: ") $5) }
   $1 == "FREEZE" { say("The string freeze is ACTIVE (" $3 ", called " $4 "): record this change under Post-Freeze Changes there, or lift the freeze first.") }
   $1 == "AGENT_WRITE" { say("A subagent (" $3 ") writes " $2 ($4 == "outside" ? ", outside production/, docs/ and tests/" : ", which already exists") ": the subagent exception covers only a new file at the path its skill named.") }
+  $1 == "LAYOUT" { say($2 " breaks the Unity folder layout: " $3 ". See " $4 ".") }
   $1 == "SKIPPED" { say("Not checked (" $2 "): " $3 ".") }
   END {
     if (n > ENVIRON["VW_MAX"]) print "- and " (n - ENVIRON["VW_MAX"]) " more."
