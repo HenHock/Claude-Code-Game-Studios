@@ -85,9 +85,9 @@ Read the argument for the launch date or `dry-run` mode. Dry-run mode generates 
 > **Establish the denominator before every scan below, and report it.** Each line
 > reads either `scanned [N] files, [M] hits` or
 > `NOT ASSESSED — [code root unresolved | no source files | no asset folder | directory empty]`.
-> Never a bare tick. The code root is `src/`, `Assets/` or `Source/` by engine
+> Never a bare tick. The code root is `Assets/`
 > (resolve per `.claude/docs/code-root-resolution.md`); assets live in
-> `assets/`, `Assets/` or `Content/`.
+> `assets/` or `Assets/`.
 >
 > This applies to all four bullets below: each searches the same way, for
 > placeholder assets, TODOs, debug output and hardcoded test values, and each

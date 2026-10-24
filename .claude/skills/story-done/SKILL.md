@@ -150,8 +150,8 @@ By the story's type, at the Phase 1 gate level. Skip a check `qa.level` waives, 
 say so: `Test evidence: waived at qa.level minimal`.
 
 - **Logic:** the exact path in the story's Test Evidence section, else anywhere
-  under `tests/unit/[system]/`.
-- **Integration:** the same under `tests/integration/[system]/`, else a playtest
+  under `Assets/Tests/EditMode/[System]/`.
+- **Integration:** the same under `Assets/Tests/PlayMode/[System]/`, else a playtest
   record naming this story in `production/qa/playtests/` (`/playtest-report`
   writes them there).
 - **UI:** a UI story is satisfied by the retained screenshot of each screen touched,

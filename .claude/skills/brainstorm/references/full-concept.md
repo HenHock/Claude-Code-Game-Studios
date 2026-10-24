@@ -115,13 +115,11 @@ it is not for, and successful games that serve the same player.
 
 - **Platform.** Ask: "What platforms are you targeting?" `PC (Steam / Epic)` / `Mobile (iOS /
   Android)` / `Console` / `Web / Browser` / `Multiple platforms`. Record it for `/setup-engine`.
-  Note what the platform implies, without recommending an engine: `/setup-engine` makes that call
-  against the pinned engine reference.
-- **Engine.** Ask in every automation mode, `autonomous` included: "Do you already have an engine
-  you work in?" `Godot` / `Unity` / `Unreal Engine 5` / `No preference — help me decide`. Never
-  pick an engine for the user. A named engine is recorded as their preference without second
-  guessing. No preference: "Run `/setup-engine` after this session; it walks through the choice
-  with your concept and platform." Make no recommendation here.
+  Note what the platform implies for the Unity version and render pipeline: `/setup-engine` makes
+  that call against the pinned engine reference.
+- **Engine.** This framework is Unity-only, so there is no engine to ask about. Say: "Run
+  `/setup-engine` after this session; it pins the Unity version with your concept and platform."
+  Make no version recommendation here.
 - Art pipeline and how labour-heavy it is; content scope (levels, items, hours); the MVP (the
   smallest build that tests whether the core loop is fun); the biggest technical, design and market
   risks; scope tiers (full vision, and what ships if time runs out).
@@ -129,7 +127,7 @@ it is not for, and successful games that serve the same player.
 **Review mode** before TD-FEASIBILITY: `solo` or `lean` prints `TD-FEASIBILITY skipped — Solo
 mode.` (or `Lean mode`) and goes on to the scope tiers. `full`: after the technical risks, hand the
 feasibility review to the `technical-director` agent (gate TD-FEASIBILITY; brief: the core loop,
-platform, engine or "undecided", the technical risks). Show its report. HIGH RISK: offer to revisit
+platform, Unity version or "undecided", the technical risks). Show its report. HIGH RISK: offer to revisit
 scope. CONCERNS: note and go on. NOT ASSESSED: name the missing input and record feasibility as not
 assessed in the concept's risks, never as VIABLE.
 
@@ -167,7 +165,7 @@ Write the file, creating folders as needed. Never write `design/game-brief.md` a
 List every step, in order.
 
 **Design-first** (the concept is well defined):
-1. `/setup-engine`: configure the engine and its version-aware reference docs
+1. `/setup-engine`: pin the Unity version and its version-aware reference docs
 2. `/art-bible`: the visual identity, before any GDD. Required before the Technical Setup gate at
    `full`; at `standard` only when the game has visual-asset stories
 3. `/design-review design/gdd/game-concept.md`: check the concept is complete
@@ -187,7 +185,7 @@ List every step, in order.
 4. PIVOT: `/brainstorm` again with the learnings
 5. After design and architecture, `/vertical-slice` before committing to sprints
 
-Then a summary: the pitch, pillars, primary player type, engine preference, biggest risk and the
+Then a summary: the pitch, pillars, primary player type, platform, biggest risk and the
 file path. End with the line `Verdict: COMPLETE — game concept written.`
 
 If the conversation is getting long before Phase 7, say that anything not yet written to

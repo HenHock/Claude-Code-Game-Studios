@@ -5,27 +5,27 @@
 
 ## Phase 2: Present Plan
 
-Based on the engine detected and the existing state, present a plan:
+Based on the existing state, present a plan:
 
 ```
-## Test Setup Plan — [Engine]
+## Test Setup Plan — Unity
 
 I will create the following (skipping any that already exist):
 
 tests/
-  unit/           — Isolated unit tests for formulas, state, and logic   (Godot only)
-  integration/    — Cross-system tests and save/load round-trips         (Godot only)
   smoke/          — Critical path test list (15-minute manual gate)
   README.md       — Test framework documentation
 
-[Unity/Unreal: unit and integration tests go under the engine's test root
- instead — Unity Assets/Tests/EditMode|PlayMode/, Unreal
- Source/<Module>/Private/Tests/ — because neither compiles code in tests/]
+Assets/Tests/
+  EditMode/       — Isolated unit tests for formulas, state, and logic
+  PlayMode/       — Cross-system tests in a running scene, save/load round-trips
+  [Unity does not compile code in tests/, so unit and integration tests
+   live under Assets/Tests/]
 
 production/qa/
   evidence/       — Screenshot and manual test sign-off records
 
-[Engine-specific files — see per-engine details below]
+[Unity-specific files — see details below]
 
 .github/workflows/tests.yml  — CI: run tests on every push to main
 

@@ -9,7 +9,7 @@ model: sonnet
 
 # Guided Onboarding
 
-The entry point for a new user. It assumes no game idea, no engine and no experience: it reads
+The entry point for a new user. It assumes no game idea and no experience (the engine is Unity; this fork is Unity-only): it reads
 the project, asks where the user is starting from, shows what it assumes about the project, and
 names the one next step. It never runs that step itself.
 
@@ -20,12 +20,15 @@ of the other knobs rigor fronts (`modes.workflow`, `docs.density`, `qa.level`,
 `modes.story_granularity`, `team.size`): a written value pins that knob over the rigor expansion,
 and a mirror file outranks it.
 
+This framework is Unity-only (C#). Whenever the Unity version is not yet pinned, say so and
+remind the user to run `/setup-engine` to set it: it is not chosen until first init.
+
 Ask with the question tool. Without one, list the options numbered and end your turn to wait. The
 question is the last thing in the reply: no path, note or advice after it. A skipped or dismissed
 question is not an answer: ask again in plain text.
 
 The questions in Phases 2, 4 and 5 shape the project, so they are asked in every automation mode.
-The engine is not one of them: `/setup-engine` chooses it. Phase 6's last question follows a
+The engine is not one of them: it is Unity, and `/setup-engine` pins the Unity version. Phase 6's last question follows a
 `modes.automation` already in `project.yaml`, per `.claude/docs/automation-modes.md`; with none
 set, ask it.
 
@@ -36,7 +39,7 @@ the user's answer in Phase 2.
 
 | Row | Use |
 |---|---|
-| `engine`, `code_root`, `source_files` | Is an engine set, and how much code is there. `source_files` of `unknown` means the code root could not be found: say that, never "no code" |
+| `engine`, `code_root`, `source_files` | Is the Unity version pinned, and how much code is there. `source_files` of `unknown` means the code root could not be found: say that, never "no code" |
 | `concept` | `design/gdd/game-concept.md` or `design/game-brief.md` exists |
 | `gdd_files`, `adr` | Design documents and architecture decisions on disk (they set the stage in Phase 4) |
 | `prototype`, `sprint`, `milestone`, `story` | Other existing work |
@@ -45,13 +48,13 @@ the user's answer in Phase 2.
 
 Ignore `phase_inferred`: it guesses from file counts, and a project with code but no design
 documents is not in Production. If the helper fails, say so and read the same facts by hand
-(engine in `project.yaml`, the two concept files, the code root's files, `design/gdd/`).
+(the pinned Unity version in `project.yaml`, the two concept files, the code root's files, `design/gdd/`).
 
 The helper does not report rigor or automation. Read `project.yaml`, if it exists, and note
 whether `modes.rigor` and `modes.automation` are set: a set value is kept, and its question is
 not asked (Phases 4 and 5).
 
-**Returning user** (an engine is set and `concept` is present): ask nothing. Say the engine, the
+**Returning user** (the Unity version is pinned and `concept` is present): ask nothing. Say the Unity version, the
 concept or brief found, and the review mode: `modes.review_mode` if set, otherwise the one
 `modes.rigor` implies (`minimal` → `solo`, `standard` → `lean`, `full` → `full`). Suggest `/help` for the next step, add the
 template-remote note if it applies, and stop.
@@ -84,7 +87,7 @@ Name the immediate next step only. The full path waits for Phase 6, after the ri
   [concept]` writes it down) / `Jump straight in` (`/setup-engine` now, write the design after).
   The next step is their pick.
 - **D, existing work:** say what Phase 1 found ("N source files under `[code_root]`, N design
-  documents, engine [X / not set]"). Next step: `/setup-engine` when no engine is set and there is
+  documents, Unity version [X / not set]"). Next step: `/setup-engine` when no Unity version is pinned and there is
   no more than a concept; otherwise `/project-stage-detect`.
 
 Then say: "I'll lay out the full path in a moment."
@@ -97,7 +100,7 @@ Work out two values.
 
 | On disk | Stage |
 |---|---|
-| no engine, or nothing beyond a concept (`gdd_files` 0) | `Concept` |
+| no Unity version pinned, or nothing beyond a concept (`gdd_files` 0) | `Concept` |
 | `gdd_files` 1 or more, `adr` 0 | `Systems Design` |
 | `adr` 1 or more | `Technical Setup` |
 
@@ -164,7 +167,7 @@ The path starts with the step Phase 3 named. When that was `/brainstorm` (paths 
 other.
 
 **`minimal`: 4 steps to running code**
-1. `/setup-engine`: choose and configure the engine
+1. `/setup-engine`: pin and configure the Unity version
 2. `/brainstorm`: write the one-page `design/game-brief.md`
 3. `/create-stories`: turn the brief's MVP list into stories (no epics or sprint plan needed)
 4. `/dev-story`: the first line of game code
@@ -189,7 +192,7 @@ Pre-Production and `/design-review` after each GDD.
 Print only the steps that apply, and for the brief only the one source that applies. At `minimal`:
 1. `/project-stage-detect`: what stage the project is at and what is missing
 2. `/adopt`: whether the existing files are in the format the skills read
-3. `/setup-engine`: only when no engine is set; leave it out when `engine` names one
+3. `/setup-engine`: only when no Unity version is pinned; leave it out when `engine` names one
 4. The brief, only if `concept` is absent: `/reverse-document design [code_root]` when the code
    root holds 10 or more source files (it writes the brief from the game), and then do not mention
    `/brainstorm` at all; `/brainstorm` only when it holds fewer

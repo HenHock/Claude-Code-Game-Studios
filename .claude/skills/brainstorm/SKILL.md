@@ -69,7 +69,7 @@ one-liners). If `design/game-brief.md` exists, read it and refine it instead of 
    `design/game-brief.md`, creating folders as needed. Never write `design/gdd/game-concept.md`
    at this tier.
 4. **Next steps.** Read `engine.name` in `project.yaml`:
-   1. `/setup-engine`: configure the engine. List it **only** when `engine.name` is absent or
+   1. `/setup-engine`: pin the Unity version. List it **only** when `engine.name` is absent or
       empty: on the minimal path it usually ran before this skill.
    2. `/create-stories`: turn the MVP list into stories. At `minimal` there is no separate
       `/create-epics` or `/sprint-plan`; the build order is the plan.

@@ -73,18 +73,14 @@ Asset Standards section sets budgets, formats and the naming convention.
 
 ## Phase 2: Scan Asset Directories
 
-Assets live under the engine's asset root: `assets/` on Godot, `Assets/` on
-Unity, `Content/` on Unreal. Resolve the engine and its code root per
+Assets live under Unity's asset root, `Assets/`. Resolve the code root per
 `.claude/docs/code-root-resolution.md`; that code root is the one Phase 3's
 orphan and missing-asset searches read. If it is unresolved, stop:
-`NOT ASSESSED — engine unresolved`, naming `/setup-engine`.
+`NOT ASSESSED — code root unresolved`, naming `/setup-engine`.
 
 Scan the asset root using Glob:
 
-- **Godot** — `assets/art/**/*`, `assets/audio/**/*`, `assets/vfx/**/*`,
-  `assets/shaders/**/*`, `assets/data/**/*`
-- **Unity** — `Assets/**/*`, leaving out scripts (`*.cs`, `*.asmdef`) and `*.meta` files
-- **Unreal** — `Content/**/*.uasset` and `Content/**/*.umap`
+- `Assets/**/*`, leaving out scripts (`*.cs`, `*.asmdef`) and `*.meta` files
 
 The files matched are `Total assets scanned`. If there are none, the checks on
 scanned files — Naming, Size, Format, Orphaned — are
@@ -95,13 +91,9 @@ scanned files — Naming, Size, Format, Orphaned — are
 ## Phase 3: Run Compliance Checks
 
 **Naming conventions:**
-- Art: `[category]_[name]_[variant]_[size].[ext]`
-- Audio: `[category]_[context]_[name]_[variant].[ext]`
-- All files must be lowercase with underscores
-
-These are Godot's conventions. Unity and Unreal name assets in PascalCase, so on
-those engines check names only against a naming rule the art bible states; with
-none, Naming is `NOT ASSESSED — no naming rule for <engine>` (name `/art-bible`).
+Unity names assets in PascalCase, so check names only against a naming rule the
+art bible or the Asset Standards section states; with none, Naming is
+`NOT ASSESSED — no naming rule for Unity` (name `/art-bible`).
 
 **File standards:**
 - Textures: Power-of-two dimensions, correct format (PNG for UI, compressed for 3D), within size budget
@@ -111,15 +103,12 @@ none, Naming is `NOT ASSESSED — no naming rule for <engine>` (name `/art-bible
   `NOT ASSESSED — duration not measurable here`, naming the files it covers.
 - Data: Valid JSON/YAML, schema-compliant
 
-On Unreal an asset file (`.uasset`, `.umap`) does not keep its source file's
-format or dimensions, so Format is `NOT ASSESSED` there; its size is still measured.
-
 **Orphaned assets:** Search the code root for references to each asset file. Flag any with no references.
 
 **Missing assets:** Search the code root for asset references and verify the files exist.
 
 Both searches need code: if the code root holds no source files, Orphaned and
-Missing are `NOT ASSESSED — no code to search`. On Unity and Unreal most asset
+Missing are `NOT ASSESSED — no code to search`. On Unity most asset
 references live in scenes, prefabs and other assets rather than code, so an
 asset no code names may still be in use: Orphaned is `NOT ASSESSED` there.
 

@@ -1,6 +1,6 @@
 ---
 name: test-helpers
-description: "Generate engine-specific test helper libraries — assertion utilities, factory functions, mocks in the engine's test folder. Reduces boilerplate."
+description: "Generate Unity test helper libraries — assertion utilities, factory functions, mocks in the Unity test folder. Reduces boilerplate."
 argument-hint: "[system-name | all | scaffold]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/test-helpers/../../hooks/yaml-helper.sh" resolve_config *)
@@ -19,19 +19,17 @@ every file write follows `.claude/docs/automation-modes.md`
 
 Writing test cases is faster and more consistent when common setup, teardown,
 and assertion patterns are abstracted into helpers. This skill generates a
-`tests/helpers/` library tailored to the project's actual engine, language,
-and systems — so every developer writes less boilerplate and more assertions.
+`tests/helpers/` library tailored to the project's actual systems — so every developer writes less boilerplate and more assertions.
 
-**Output:** engine-specific helper files in the engine's **helper root** —
-the only place its test runner compiles them (`.claude/docs/directory-structure.md`):
+**Output:** Unity test helper files in the **helper root** — the only place the
+Unity Test Framework compiles them (`.claude/docs/directory-structure.md`):
 
-| Engine | Helper root |
-|---|---|
-| Godot | `tests/helpers/` |
-| Unity | `Assets/Tests/EditMode/Helpers/` — inside the `EditModeTests` assembly `/test-setup` creates. If PlayMode tests need the same helpers, ask before creating `Assets/Tests/Helpers/TestHelpers.asmdef` and referencing it from both test assemblies. |
-| Unreal | `Source/<Module>/Private/Tests/Helpers/` |
+`Assets/Tests/EditMode/Helpers/` — inside the `EditModeTests` assembly
+`/test-setup` creates. If PlayMode tests need the same helpers, ask before
+creating `Assets/Tests/Helpers/TestHelpers.asmdef` and referencing it from both
+test assemblies.
 
-`tests/helpers/` below means the helper root for the project's engine.
+`tests/helpers/` below means that helper root.
 
 **When to run:**
 - After `/test-setup` scaffolds the framework (first time)
@@ -43,30 +41,29 @@ the only place its test runner compiles them (`.claude/docs/directory-structure.
 ## Assertions: use the project's test framework, never bare `assert()`
 
 **Generated helpers must assert through the configured test framework's assertion
-API**, resolved from `testing.framework` — not through GDScript's built-in
-`assert()`.
+API**, resolved from `testing.framework` (NUnit) — not through `Debug.Assert`
+or a bare `throw`.
 
-Two things go wrong with a bare `assert()` in a helper, and both are silent:
+Two things go wrong with a bare `Debug.Assert` in a helper, and both are silent:
 
 1. **It aborts the run instead of failing the test.** A framework assertion
    records a failure and continues, so one broken expectation yields one red test.
-   A bare `assert()` halts execution, so the first failure hides every result
+   A bare `Debug.Assert` or exception halts execution, so the first failure hides every result
    after it.
-2. **It is stripped in release builds.** A helper library built on `assert()`
+2. **It is stripped in release builds.** A helper library built on `Debug.Assert`
    stops asserting entirely in exactly the build you most want checked, and does
    so without any error — the tests still "pass".
 
 **Look up the assertion form for the configured framework before generating
 code.** Do not copy the forms in this file or in other skills' examples as
-authoritative — they are illustrative and have drifted (`assert_eq`,
-`assert_true` and `assert_that` all appear across the repo). If you cannot
+authoritative — they are illustrative and may have drifted. If you cannot
 confirm the correct API for the project's framework, say so and generate no
 helper rather than guessing.
 
-**Helpers must not extend the framework's test-suite base class.** A file in
-`tests/helpers/` that extends the suite type is discovered by the runner as a
-test suite containing zero tests. Helpers are plain classes; only real test files
-extend the suite.
+**Helpers must not extend the framework's test-suite base class.** A helper
+class that carries `[TestFixture]` is discovered by the runner as a test suite
+containing zero tests. Helpers are plain static classes; only real test files
+carry the fixture attribute.
 
 ---
 
@@ -89,23 +86,20 @@ Read from `project.yaml` first, falling back to `.claude/docs/technical-preferen
 - `engine.language` (else the `Language:` value)
 - `testing.framework` (else `Framework:` from the Testing section)
 
-If the engine is not configured in either source: "Engine not configured. Run `/setup-engine` first."
+If the engine is not configured in either source: "Engine not configured. Run `/setup-engine` first to set the Unity version."
 
 ---
 
 ## 3. Load Existing Test Patterns
 
-Scan the engine's test root for patterns already in use (Godot `tests/`, Unity
-`Assets/Tests/`, Unreal `Source/<Module>/Private/Tests/`):
+Scan the test root (`Assets/Tests/`) for patterns already in use:
 
 ```
-Glob pattern="tests/**/*_test.*"                  (Godot)
-Glob pattern="Assets/Tests/**/*Tests.cs"          (Unity)
-Glob pattern="Source/*/Private/Tests/**/*.cpp"    (Unreal)
+Glob pattern="Assets/Tests/**/*Tests.cs"
 ```
 
 For a representative sample (up to 5 files), read the test files and extract:
-- Setup patterns (how `before_each` / `setUp` / fixtures are written)
+- Setup patterns (how `[SetUp]` / fixtures are written)
 - Common assertion patterns (what is being asserted most often)
 - Object creation patterns (how game objects or scenes are instantiated in tests)
 - Mock/stub patterns (how dependencies are replaced)
@@ -122,133 +116,7 @@ Also read:
 
 ---
 
-## 4. Generate Engine-Specific Helpers
-
-### Godot 4 (GDUnit4 / GDScript)
-
-> **`FAIL_IF(...)` in the example below is a PLACEHOLDER, not an API.** It marks
-> the one line you must resolve from the project's actual test framework before
-> emitting any of this, per the rule in §2. Substitute the framework's real
-> failure call — the form that **registers a failure with the runner and lets the
-> suite continue** — and delete the marker comment.
->
-> **It is deliberately not spelled `assert_that`, `assert_eq` or `assert_true`.**
-> All three appear somewhere in this repo, they disagree, and **GdUnit4's API is
-> not covered by `docs/engine-reference/`** — so writing any of them here would be
-> asserting an API this repo cannot source, in the file whose whole job is to stop
-> people doing that. If you cannot confirm the correct call for the configured
-> framework, §2 already tells you the answer: **generate no helper.** An
-> unresolved `FAIL_IF` reaching disk is a bug; a missing helper is a task.
->
-> Worked examples must obey §2 too — a bare `assert()` here would be the exact
-> form §2 forbids, sixty lines below §2 forbidding it. A rule stated in prose
-> does not reach its own worked example unless someone makes it.
-
-**Base helper** (`tests/helpers/game_assertions.gd`):
-
-```gdscript
-## Game-specific assertion utilities for [Project Name] tests.
-## Domain-specific helpers built on the project's test framework.
-##
-## Usage (static — no instance needed):
-##   GameAssertions.assert_in_range(entity.health, 0, entity.max_health, "health")
-
-class_name GameAssertions
-extends RefCounted
-
-## Assert a value is within the inclusive range [min_val, max_val].
-## Use for any formula output that has defined bounds in a GDD.
-static func assert_in_range(
-    value: float,
-    min_val: float,
-    max_val: float,
-    label: String = "value"
-) -> void:
-    # FRAMEWORK ASSERT — resolve per the rule above; do not emit `assert()`.
-    FAIL_IF(
-        not (value >= min_val and value <= max_val),
-        "%s %.2f is outside expected range [%.2f, %.2f]" % [label, value, min_val, max_val]
-    )
-
-## Assert a signal was emitted during a callable block.
-## Usage: assert_signal_emitted(entity, "health_changed", func(): entity.take_damage(10))
-static func assert_signal_emitted(
-    obj: Object,
-    signal_name: String,
-    action: Callable
-) -> void:
-    # A lambda captures a local by value: `emitted = true` inside it would set
-    # the lambda's own copy. Mutate a Dictionary it shares instead. `...args`
-    # (4.5+) accepts a signal with any number of arguments.
-    var state := {"emitted": false}
-    obj.connect(signal_name, func(...args): state.emitted = true)
-    action.call()
-    # FRAMEWORK ASSERT — resolve per the rule above; do not emit `assert()`.
-    FAIL_IF(not state.emitted, "Expected signal '%s' to be emitted, but it was not." % signal_name)
-
-## Assert that a callable does NOT emit a signal.
-static func assert_signal_not_emitted(
-    obj: Object,
-    signal_name: String,
-    action: Callable
-) -> void:
-    var state := {"emitted": false}  # a Dictionary, as above
-    obj.connect(signal_name, func(...args): state.emitted = true)
-    action.call()
-    # FRAMEWORK ASSERT — resolve per the rule above; do not emit `assert()`.
-    FAIL_IF(state.emitted, "Expected signal '%s' NOT to be emitted, but it was." % signal_name)
-
-## Assert a node exists at path within a parent.
-static func assert_node_exists(parent: Node, path: NodePath) -> void:
-    # FRAMEWORK ASSERT — resolve per the rule above; do not emit `assert()`.
-    FAIL_IF(
-        not parent.has_node(path),
-        "Expected node at path '%s' to exist." % str(path)
-    )
-```
-
-**Factory helper** (`tests/helpers/game_factory.gd`):
-
-```gdscript
-## Factory functions for creating test game objects.
-## Returns minimal objects configured for unit testing (no scene tree required).
-##
-## Usage: var player = GameFactory.make_player(health: 100)
-
-class_name GameFactory
-extends RefCounted
-
-## Create a minimal player-like object for testing.
-## Override fields as needed.
-static func make_player(health: int = 100) -> Node:
-    var player = Node.new()
-    player.set_meta("health", health)
-    player.set_meta("max_health", health)
-    return player
-```
-
-**Scene helper** (`tests/helpers/scene_runner_helper.gd`):
-
-```gdscript
-## Utilities for scene-based integration tests. For input simulation and frame
-## stepping, use gdUnit4's own `scene_runner()` from inside the suite.
-
-class_name SceneRunnerHelper
-extends RefCounted
-
-## Load a scene under `host` — the calling test suite, which passes `self` —
-## and wait one frame for _ready() to complete. A plain class, so the runner
-## never discovers this file as a suite with zero tests.
-static func load_scene_and_wait(host: Node, scene_path: String) -> Node:
-    var scene: Node = load(scene_path).instantiate()
-    host.add_child(scene)
-    await host.get_tree().process_frame
-    return scene
-```
-
----
-
-### Unity (NUnit / C#)
+## 4. Generate Unity Helpers
 
 **Base helper** (`Assets/Tests/EditMode/Helpers/GameAssertions.cs`):
 
@@ -320,63 +188,6 @@ public static class GameFactory
 
 ---
 
-### Unreal Engine (C++)
-
-**Base helper** (`Source/<Module>/Private/Tests/Helpers/GameTestHelpers.h`):
-
-```cpp
-#pragma once
-
-#include "CoreMinimal.h"
-#include "Misc/AutomationTest.h"
-
-/**
- * Game-specific assertion macros and helpers for [Project Name] automation tests.
- * Include in any test file that needs domain-specific assertions.
- *
- * Usage:
- *   GAME_TEST_ASSERT_IN_RANGE(TestName, DamageValue, 10.0f, 50.0f, TEXT("Damage"));
- */
-
-// Assert a float value is within inclusive range [Min, Max]
-#define GAME_TEST_ASSERT_IN_RANGE(TestName, Value, Min, Max, Label) \
-    TestTrue( \
-        FString::Printf(TEXT("%s (%.2f) in range [%.2f, %.2f]"), Label, Value, Min, Max), \
-        (Value) >= (Min) && (Value) <= (Max) \
-    )
-
-// Assert a UObject pointer is valid (not null, not garbage collected)
-#define GAME_TEST_ASSERT_VALID(TestName, Ptr, Label) \
-    TestTrue( \
-        FString::Printf(TEXT("%s is valid"), Label), \
-        IsValid(Ptr) \
-    )
-
-// Assert an Actor is in the world (spawned successfully)
-#define GAME_TEST_ASSERT_SPAWNED(TestName, ActorPtr, ClassName) \
-    TestNotNull( \
-        FString::Printf(TEXT("Spawned actor of class %s"), TEXT(#ClassName)), \
-        ActorPtr \
-    )
-
-/**
- * Helper to create a minimal test world.
- * Remember to call World->DestroyWorld(false) in teardown.
- */
-namespace GameTestHelpers
-{
-    inline UWorld* CreateTestWorld(const FString& WorldName = TEXT("TestWorld"))
-    {
-        UWorld* World = UWorld::CreateWorld(EWorldType::Game, false);
-        FWorldContext& WorldContext = GEngine->CreateNewWorldContext(EWorldType::Game);
-        WorldContext.SetCurrentWorld(World);
-        return World;
-    }
-}
-```
-
----
-
 ## 5. Generate System-Specific Helpers
 
 For `[system-name]` or `all` modes, generate a helper per system:
@@ -386,40 +197,38 @@ Read only the GDD sections this needs — `Grep pattern="^## ([0-9]+\. )?(Formul
 - Formula variables and their bounds
 - Common test scenarios mentioned in Edge Cases
 
-Generate `tests/helpers/[system]_factory.[ext]` with factory functions
+Generate `tests/helpers/[System]Factory.cs` with factory functions
 specific to that system's objects.
 
-Example pattern for a `combat` system (Godot/GDScript):
+Example pattern for a `combat` system:
 
-```gdscript
-## Factory and assertion helpers for Combat system tests.
-## Generated by /test-helpers combat on [date].
-## Based on: design/gdd/combat.md
+```csharp
+using UnityEngine;
 
-class_name CombatTestFactory
-extends RefCounted
+/// <summary>
+/// Factory and assertion helpers for Combat system tests.
+/// Generated by /test-helpers combat on [date].
+/// Based on: design/gdd/combat.md
+/// </summary>
+public static class CombatTestFactory
+{
+    public const float DamageMin = 0f;
+    public const float DamageMax = 999f; // From GDD: damage formula upper bound
 
-const DAMAGE_MIN := 0
-const DAMAGE_MAX := 999  # From GDD: damage formula upper bound
+    /// <summary>Create a minimal attacker for damage formula tests.</summary>
+    public static GameObject MakeAttacker(float attack = 10f, float critChance = 0f)
+    {
+        var go = GameFactory.MakeGameObject("Attacker");
+        // Attach the project's attacker component here once it exists.
+        return go;
+    }
 
-## Create a minimal attacker object for damage formula tests.
-static func make_attacker(attack: float = 10.0, crit_chance: float = 0.0) -> Node:
-    var attacker = Node.new()
-    attacker.set_meta("attack", attack)
-    attacker.set_meta("crit_chance", crit_chance)
-    return attacker
-
-## Create a minimal target object for damage receive tests.
-static func make_target(defense: float = 0.0, health: float = 100.0) -> Node:
-    var target = Node.new()
-    target.set_meta("defense", defense)
-    target.set_meta("health", health)
-    target.set_meta("max_health", health)
-    return target
-
-## Assert damage output is within GDD-specified bounds.
-static func assert_damage_in_bounds(damage: float) -> void:
-    GameAssertions.assert_in_range(damage, DAMAGE_MIN, DAMAGE_MAX, "damage")
+    /// <summary>Assert damage output is within GDD-specified bounds.</summary>
+    public static void AssertDamageInBounds(float damage)
+    {
+        GameAssertions.AssertInRange(damage, DamageMin, DamageMax, "damage");
+    }
+}
 ```
 
 ---
@@ -431,13 +240,12 @@ Present a summary of what will be created:
 ```
 ## Test Helpers to Create
 
-Base helpers (engine: [engine], helper root: [helper root]):
-- [helper root]/game_assertions.[ext]
-- [helper root]/game_factory.[ext]
-[engine-specific extras]
+Base helpers (helper root: [helper root]):
+- [helper root]/GameAssertions.cs
+- [helper root]/GameFactory.cs
 
 System helpers ([mode]):
-- [helper root]/[system]_factory.[ext]  ← from [system] GDD
+- [helper root]/[System]Factory.cs  ← from [system] GDD
 ```
 
 Ask: "May I write these helper files to `[helper root]`?"
@@ -448,10 +256,7 @@ regenerated."
 
 After writing: Verdict: **COMPLETE** — helper files created.
 
-"Helper files created. To use them in a test:
-- Godot: `class_name` is auto-imported — no explicit import needed
-- Unity: Add `using` directive or reference the test assembly
-- Unreal: `#include \"Tests/Helpers/GameTestHelpers.h\"` (from inside the module)"
+"Helper files created. To use them in a test: add a `using` directive or reference the test assembly."
 
 ---
 
@@ -459,8 +264,8 @@ After writing: Verdict: **COMPLETE** — helper files created.
 
 - **Never overwrite existing helpers** — they may contain hand-written
   customisations. Only generate new files that don't exist yet
-- **Generated code is a starting point** — the generated factory functions use
-  metadata patterns for simplicity; adapt to the actual class structure once
+- **Generated code is a starting point** — the generated factory functions are
+  deliberately minimal; adapt to the actual class structure once
   the code exists
 - **Helpers should reflect the GDD** — bounds and constants in helpers should
   trace to GDD Formulas sections, not invented values

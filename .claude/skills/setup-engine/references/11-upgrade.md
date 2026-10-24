@@ -18,7 +18,7 @@ If invoked as `/setup-engine upgrade [old-version] [new-version]`:
 
 ### Step 1 — Read Current Version State
 
-Read `docs/engine-reference/<engine>/VERSION.md` to confirm the current pinned
+Read `docs/engine-reference/unity/VERSION.md` to confirm the current pinned
 version, risk level, and any migration note URLs already recorded. If
 `old-version` was not provided as an argument, use the pinned version from this
 file.
@@ -28,8 +28,8 @@ file.
 Use WebSearch and WebFetch to locate the official migration guide between
 `old-version` and `new-version`:
 
-- Search: `"[engine] [old-version] to [new-version] migration guide"`
-- Search: `"[engine] [new-version] breaking changes changelog"`
+- Search: `"Unity [old-version] to [new-version] migration guide"`
+- Search: `"Unity [new-version] breaking changes changelog"`
 - Fetch the migration guide URL from VERSION.md if one is already recorded,
   or use the URL found via search.
 
@@ -42,20 +42,20 @@ Scan the **code root** (resolve per `.claude/docs/code-root-resolution.md`) for 
 target version:
 
 - Use Grep to search for deprecated API names extracted from the migration
-  guide (e.g., old function names, removed node types, changed property names)
+  guide (e.g., old function names, removed component types, changed property names)
 - List each file that matches, with the specific API reference found
 
 Present the audit results as a table:
 
 ```
-Pre-Upgrade Audit: [engine] [old-version] → [new-version]
+Pre-Upgrade Audit: Unity [old-version] → [new-version]
 ==========================================================
 
 Files requiring changes:
   File                              | Deprecated API Found       | Effort
   --------------------------------- | -------------------------- | ------
-  src/gameplay/player_movement.gd   | old_api_name               | Low
-  src/ui/hud.gd                     | removed_node_type          | Medium
+  Assets/.../PlayerMovement.cs      | old_api_name               | Low
+  Assets/.../Hud.cs                                | removed_node_type          | Medium
 
 Breaking changes to watch for:
   - [change description from migration guide]
@@ -85,7 +85,7 @@ Wait for explicit confirmation before continuing.
 
 After confirmation:
 
-1. Update `docs/engine-reference/<engine>/VERSION.md`:
+1. Update `docs/engine-reference/unity/VERSION.md`:
    - `Engine Version` → `[new-version]`
    - `Project Pinned` → today's date
    - `Last Docs Verified` → today's date
@@ -107,7 +107,7 @@ After confirmation:
 After updating VERSION.md, output:
 
 ```
-VERSION.md updated: [engine] [old-version] → [new-version]
+VERSION.md updated: Unity [old-version] → [new-version]
 
 Next steps:
 1. Migrate deprecated API usages in the [N] files listed above

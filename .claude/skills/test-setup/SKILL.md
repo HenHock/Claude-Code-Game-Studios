@@ -1,6 +1,6 @@
 ---
 name: test-setup
-description: "Scaffold the test framework and CI — tests/ directory, engine test runner, GitHub Actions workflow. Once, before the first sprint."
+description: "Scaffold the test framework and CI — tests/ directory, Unity Test Framework, GitHub Actions workflow. Once, before the first sprint."
 argument-hint: "[force]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash(grep -q 'com.unity.test-framework' Packages/manifest.json), Bash(bash "*/.claude/skills/test-setup/../../hooks/yaml-helper.sh" resolve_config *)
@@ -18,7 +18,7 @@ every file write follows `.claude/docs/automation-modes.md`
 # Test Setup
 
 This skill scaffolds the automated testing infrastructure for the project.
-It detects the configured engine, generates the appropriate test runner
+It confirms Unity is configured, generates the Unity Test Framework
 configuration, creates the standard directory layout, and wires up CI/CD
 so tests run on every push.
 

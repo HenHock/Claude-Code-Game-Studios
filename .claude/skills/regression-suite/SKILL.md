@@ -90,8 +90,8 @@ If it does not exist: note "No regression suite found — will create one."
 
 Glob all test files:
 ```
-tests/unit/**/*_test.*
-tests/integration/**/*_test.*
+Assets/Tests/EditMode/**/*Tests.cs
+Assets/Tests/PlayMode/**/*Tests.cs
 tests/regression/**/*
 ```
 
@@ -144,7 +144,7 @@ against those smoke paths and skip the GDD-criterion loop below.)
 
 For each GDD acceptance criterion, determine whether a test exists:
 
-1. Grep `tests/unit/[system]/` and `tests/integration/[system]/` for file names
+1. Grep `Assets/Tests/EditMode/[System]/` and `Assets/Tests/PlayMode/[System]/` for file names
    and function names related to the criterion's key noun/verb
 2. Assign coverage:
 
@@ -165,7 +165,7 @@ For each GDD acceptance criterion, determine whether a test exists:
 For each closed bug:
 
 1. Extract the system slug from the bug's metadata
-2. Grep `tests/unit/[system]/` and `tests/integration/[system]/` for a test
+2. Grep `Assets/Tests/EditMode/[System]/` and `Assets/Tests/PlayMode/[System]/` for a test
    that references the bug ID or the specific failure scenario
 3. Assign:
    - **HAS REGRESSION TEST** — a test was found that would catch this bug
@@ -173,7 +173,7 @@ For each closed bug:
 
 For MISSING REGRESSION TEST items:
 - Flag them as regression gaps
-- Suggest the test file path: `tests/unit/[system]/[bug-slug]_regression_test.[ext]`
+- Suggest the test file path: `Assets/Tests/EditMode/[System]/[bug-slug]_regression_test.[ext]`
 - Note: "Without this test, this bug can silently return in a future sprint."
 
 ---

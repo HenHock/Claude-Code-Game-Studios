@@ -16,7 +16,7 @@ Assemble the full smoke check report:
 ## Smoke Check Report
 **Date**: [date]
 **Sprint**: [sprint name / number, or "Not identified"]
-**Engine**: [engine]
+**Engine**: Unity
 **QA Plan**: [path, or "Not found — run /qa-plan first"]
 **Argument**: [sprint | quick | blank]
 
@@ -107,17 +107,15 @@ Any platform with one or more FAIL checks contributes to the overall FAIL verdic
 **FAIL** if ANY of:
 - Automated test suite ran and reported one or more test failures
 - The automated suite did not complete: a timeout, a compile, parse or build
-  error, or no results file after the run (Phase 2 names each engine's form)
-- The build check (WAIVED path) failed: a non-zero exit, a timeout, or a Godot
-  `SCRIPT ERROR` or no-main-scene line
+  error, or no results file after the run (Phase 2 names each form)
+- The build check (WAIVED path) failed: a non-zero exit, or a timeout
 - Any Batch 1 (core stability) check returned FAIL
 - Any Batch 2 (primary sprint mechanic or regression check) returned FAIL
 
 **NOT ASSESSED** if ANY of:
 - The automated suite is **unconfirmed NOT RUN** — nobody has reported a result
-- The runner could not run (gdUnit4 103 or 104, gdUnit4 or the Unity Test
-  Framework not installed), or it ran and executed zero tests
-  (`No test cases found`, `testcasecount="0"`, `No automation tests matched`)
+- The runner could not run (the Unity Test Framework not installed), or it ran and executed zero tests
+  (`No test cases found`, `testcasecount="0"`)
 - Unity Play Mode tests exist and are `PlayMode: NOT RUN`, unconfirmed — the
   Edit Mode result does not cover them
 - A Batch 1 or Batch 2 check could not be executed (no build, engine not
@@ -136,7 +134,6 @@ Any platform with one or more FAIL checks contributes to the overall FAIL verdic
   NOT RUN **and the developer has confirmed the result from their local IDE or CI**
 - All Batch 1 and Batch 2 smoke checks PASS
 - At least one warning: a Logic/Integration story with MISSING test evidence,
-  a runner warning on a passing suite (gdUnit4 101 — orphan nodes leaked), or
   a NOT RUN suite the developer confirmed
 
 **PASS** if ALL of:
