@@ -8,6 +8,45 @@ existing project on the older config files.
 
 ---
 
+## [Unreleased] — Agent-legible game (harness principles)
+
+**The game itself becomes the agent's harness.** Nine engine-agnostic H-rules,
+based on Kyle Kukshtel's *Your Game Is A Harness*: seeded randomness, save/load
+from day one, state changes as replayable commands, tunables in data, a
+simulation that runs without the renderer, flat entities, capture with a
+numeric diff, text profiles, and small verified steps. Engine-specific wiring
+comes later.
+
+### Added
+- `.claude/docs/agent-harness.md`: the single source of truth. Principles, the
+  verification loop, and the `harness.*` capability contract.
+- `.claude/hooks/inject-harness.sh` (SubagentStart): every spawned agent gets
+  the short form of the rules, whatever its brief says.
+- `.claude/rules/harness.md`: code-level do/don't for every code root.
+- `.claude/scripts/harness-check.sh`: reports which `harness.*` capabilities are
+  set, whether a Harness Foundation ADR exists, and which stories have a filled
+  Harness block. Observations only.
+- A `harness:` section in `effects-map.md`, and a commented, unset block in
+  `project.yaml`. Unset means NOT CONFIGURED, never a pass.
+
+### Changed
+- `coding-standards.md` and `CLAUDE.md` carry the H-rules, so every session
+  loads them.
+- Templates: stories gain a `## Harness` block, ADRs a Harness Impact section,
+  and technical designs an Agent Legibility subsection.
+- Skills: `/create-architecture` defines the simulation/presentation and
+  command boundaries and lists a Harness Foundation ADR. `/create-stories`
+  fills the Harness block. `/dev-story` briefs the rules and reports a
+  `Harness result:` line. `/story-done` reports Harness: NOT ASSESSED for an
+  unfilled block (advisory). `/code-review` checks H1–H6.
+  `/create-control-manifest` always includes them. `/sprint-plan` puts the
+  harness foundation in the first sprint.
+- Nine agents (technical-director, lead-programmer, gameplay-, engine-, ai- and
+  tools-programmer, qa-lead, qa-tester, prototyper) gain a Harness Principles
+  section. Prototypes are exempt except for H1 and H4.
+
+---
+
 ## [1.2.0] — 2026-10-19
 
 **The story skills are rebuilt around shared helper scripts, a read guard stops

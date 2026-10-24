@@ -302,7 +302,7 @@ project.yaml                       -- Machine-readable project config (engine, m
   agents/                          -- 49 agent definitions (YAML frontmatter)
   skills/                          -- 74 slash command definitions (YAML frontmatter)
   hooks/                           -- 15 event hooks (.sh, wired by settings.json) + yaml-helper.sh, update-check.sh
-  rules/                           -- 14 path-specific rule files
+  rules/                           -- 15 path-specific rule files
   docs/
     quick-start.md                 -- This file
     technical-preferences.md       -- Legacy fallback for project.yaml config (mirror; see project.yaml at repo root)
