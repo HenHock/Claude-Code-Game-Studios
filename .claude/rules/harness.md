@@ -1,8 +1,6 @@
 ---
 paths:
-  - "src/**"
   - "Assets/**/*.cs"
-  - "Source/**/*.{h,cpp}"
 ---
 
 # Harness Rules (Agent-Legible Game)

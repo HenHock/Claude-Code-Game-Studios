@@ -126,16 +126,14 @@ if [ -z "$stage" ]; then
   fi
 
   # Count source files (language-agnostic) under the engine's code root --
-  # src/, Assets/ or Source/ (directory-structure.md). Counting src/ alone left
-  # every Unity and Unreal project at 0, so this ladder never reached
-  # Production. Capped at the threshold below: the status line runs on every
+  # Assets/ (directory-structure.md). Capped at the threshold below: the status line runs on every
   # turn, and Unity's Assets/ can hold thousands of files, so find stops at 10.
   code_root=""
   if [ "$helper" = true ] && command -v resolve_code_root >/dev/null 2>&1; then
     code_root=$(cd "$cwd" 2>/dev/null && resolve_code_root 2>/dev/null | cut -f1)
   fi
   if [ -n "$code_root" ] && [ -d "$cwd/$code_root" ]; then
-    src_count=$(find "$cwd/$code_root" -type f \( -name "*.gd" -o -name "*.cs" -o -name "*.cpp" -o -name "*.h" -o -name "*.py" -o -name "*.rs" -o -name "*.lua" -o -name "*.tscn" -o -name "*.tres" \) 2>/dev/null | head -n 10 | wc -l | tr -d ' ')
+    src_count=$(find "$cwd/$code_root" -type f \( -name "*.cs" \) 2>/dev/null | head -n 10 | wc -l | tr -d ' ')
   fi
 
   # Check for ADRs (signals Pre-Production phase)

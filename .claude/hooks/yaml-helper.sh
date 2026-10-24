@@ -544,7 +544,7 @@ team.size::individual|small|studio
 performance.enforce::warn|block|off
 platform.cert_tier::none|itch|steam|console
 accessibility.target::none|standard|aaa
-engine.name::Godot|Unity|Unreal
+engine.name::Unity
 project.stage::Concept|Systems Design|Technical Setup|Pre-Production|Production|Polish|Release
 testing.strict.logic::true|false
 testing.strict.integration::true|false
@@ -1422,19 +1422,15 @@ resolve_setting() {
 #
 # WHY THIS EXISTS. `.claude/docs/directory-structure.md` is explicit that the
 # code root is not a style preference but a hard toolchain constraint: Unity
-# compiles only `Assets/` and `Packages/`, and UnrealBuildTool discovers modules
-# under `Source/`. `src/` is that table's GODOT row, not a universal path.
+# compiles only `Assets/` and `Packages/`.
 #
 # Every hook that filtered staged or on-disk files with a literal `^src/`
-# therefore matched NOTHING on a Unity or Unreal project — and matching nothing
-# is indistinguishable from scanning cleanly. That is the exact row
-# `.claude/rules/skill-authoring.md` records for `/security-audit`
-# ("Godot-only greps returned zero hits on Unity/Unreal, and zero hits read as
-# clean"), reproduced in four more places.
+# therefore matched NOTHING on a Unity project — and matching nothing
+# is indistinguishable from scanning cleanly.
 #
 # UNSET DOES NOT DEFAULT TO `src`. Obligation 2 of skill-authoring.md: an absent
 # value may not default to the permissive one. Defaulting here would re-create
-# the Godot bias this function exists to remove, and would do it invisibly. An
+# the bias this function exists to remove, and would do it invisibly. An
 # unresolvable root returns empty, and the CALLER must announce that its check
 # did not run — see the `_no_code_root` reporting in validate-commit.sh.
 #
@@ -1472,21 +1468,18 @@ resolve_code_root() {
   fi
 
   case "$(printf '%s' "$ename" | tr '[:upper:]' '[:lower:]')" in
-    godot)   root="src" ;;
     unity)   root="Assets" ;;
-    unreal*) root="Source" ;;
     *)       root="" ;;
   esac
 
   # 3. No usable engine value — believe the tree, but only if it is unambiguous.
   #    Names are compared exactly, against the directory listing: `[ -d Assets ]`
-  #    is also true for Godot's own `assets/` on a case-insensitive filesystem
-  #    (Windows, default macOS), which made src/ + assets/ "ambiguous" and a lone
-  #    assets/ a Unity project.
+  #    is also true for a lowercase `assets/` on a case-insensitive filesystem
+  #    (Windows, default macOS).
   if [ -z "$root" ]; then
     for d in "$_YH_ROOT"/*/; do
       d="${d%/}"; d="${d##*/}"
-      case "$d" in src|Assets|Source) found="$d"; n=$((n + 1)) ;; esac
+      case "$d" in Assets) found="$d"; n=$((n + 1)) ;; esac
     done
     if [ "$n" = 1 ]; then root="$found"; src="detected"; else root=""; src=""; fi
   fi
@@ -1909,7 +1902,7 @@ EOF
   # engine_values: engine.name, .version and .language from project.yaml, each
   # falling back to technical-preferences.md, the record a v1.0 project that
   # never migrated still has. Its Engine line holds name and version together
-  # ("Godot 4.6", "Unreal Engine 5.4"): the last word is the version when it
+  # ("Unity 6000.0"): the last word is the version when it
   # starts with a digit. Locked keys, so project.local.yaml is not read.
   local ev_name ev_ver ev_lang ev_line ev_ns ev_vs ev_ls
   if _rc_named engine_values || _rc_named specialists; then
@@ -1935,7 +1928,7 @@ EOF
   fi
 
   # specialists: the agents a skill starts for engine work. primary is derived
-  # from the engine (Godot -> godot-specialist), else the legacy Primary line.
+  # from the engine (Unity -> unity-specialist), else the legacy Primary line.
   # code, shader, ui and additional come from project.yaml's specialists block;
   # a member set to null is UNSET, never an agent name. Only when the block is
   # absent do they fall back to technical-preferences.md (the v1.0 migration
@@ -1943,9 +1936,7 @@ EOF
   local sp_primary sp_psrc sp_src sp_code sp_shader sp_ui sp_add
   if _rc_named specialists; then
     case "$(printf '%s' "$ev_name" | tr '[:upper:]' '[:lower:]')" in
-      godot)   sp_primary="godot-specialist" ;;
       unity)   sp_primary="unity-specialist" ;;
-      unreal*) sp_primary="unreal-specialist" ;;
       *)       sp_primary="" ;;
     esac
     sp_psrc="engine.name"

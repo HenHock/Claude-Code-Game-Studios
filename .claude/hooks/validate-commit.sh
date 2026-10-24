@@ -252,7 +252,7 @@ fi
 # modified tracked file unchecked. `-a` counts in a short-option cluster only
 # before a letter that takes a value (`-am x` is -a; `-ma` is the message "a").
 #
-# A path-limited commit (`git commit -m x src/player.gd`, no -i/--include)
+# A path-limited commit (`git commit -m x Assets/Player.cs`, no -i/--include)
 # records ONLY those paths -- `git commit --dry-run` lists nothing else -- so a
 # broken file staged for later must not block it. The tokeniser says so on its
 # first line (CCGS-ONLY), and only when it read every commit in the command:
@@ -418,7 +418,7 @@ else
     _AFTER=$(printf '%s' "$COMMAND" | LC_ALL=C awk '
         !f && match($0, /(^|[^A-Za-z0-9_.-])commit([ \t]|$)/) { f = 1; print substr($0, RSTART + RLENGTH); next }
         f { print }')
-    for _p in $(printf '%s' "$_AFTER" | LC_ALL=C grep -oE '(assets|Assets|Content)/[^[:space:]"'"'"';|&)]*'); do
+    for _p in $(printf '%s' "$_AFTER" | LC_ALL=C grep -oE 'Assets/[^[:space:]"'"'"';|&)]*'); do
         WT_FILES=$(printf '%s\n%s' "$WT_FILES" "$($_GIT diff --name-only -- "$_p" 2>/dev/null)")
     done
     # No tokeniser to read a `git add`'s paths: take every change and new file.
@@ -490,13 +490,10 @@ trap '[ -n "$TMP_DESIGN" ] && rm -f "$TMP_DESIGN"' EXIT
 # Making it merely faster is not enough -- the cost stays linear and the hook
 # starves again at a larger file count. Batch it, or it returns.
 #
-# WHERE DATA LIVES is engine-specific, like the code root: Godot keeps it in
-# assets/data/, Unity under Assets/ (Assets/Data/, Assets/Game/Data/), Unreal
-# under Content/. Anchored to ^assets/data/ alone, this -- the hook's only
-# blocking check -- never fired on Unity or Unreal. It stays inside the asset
-# roots so an editor's JSON-with-comments (.vscode/settings.json) never blocks.
+# WHERE DATA LIVES: Unity keeps it under Assets/ (Assets/Data/,
+# Assets/Game/Data/). It stays inside the asset root so an editor's JSON-with-comments (.vscode/settings.json) never blocks.
 # ---------------------------------------------------------------------------
-DATA_FILES=$(echo "$STAGED" | grep -E '^(assets|Assets|Content)/(.*/)?[Dd]ata/.*\.[Jj][Ss][Oo][Nn]$')
+DATA_FILES=$(echo "$STAGED" | grep -E '^Assets/(.*/)?[Dd]ata/.*\.[Jj][Ss][Oo][Nn]$')
 if [ -n "$DATA_FILES" ]; then
     PYTHON_CMD="$_VC_PY"
     if [ -n "$PYTHON_CMD" ]; then
@@ -750,17 +747,12 @@ fi
 # the normal case and not an error.
 # --- resolve the code root before either scan below ------------------------
 #
-# Both scans used to be hardcoded to `^src/gameplay/` and `^src/`. Per
-# .claude/docs/directory-structure.md, `src/` is the GODOT row of the code-root
-# table -- Unity compiles only `Assets/`, Unreal builds only from `Source/`. So
-# on two of the three supported engines both greps matched nothing on every
-# commit, both checks silently did not run, and the hook exited 0. A scan that
-# cannot run and a scan that found nothing produced the identical artifact.
+# Unity compiles only `Assets/` (.claude/docs/directory-structure.md). A scan
+# that cannot run and a scan that found nothing produce the identical artifact,
+# so an unresolved root is announced below.
 #
-# The `/gameplay/` narrowing is dropped rather than translated: it describes a
-# Godot source layout and has no Unity or Unreal equivalent, so keeping it would
-# leave the check Godot-only by a second route. The hardcoded-value scan instead
-# widens to the whole code root and is bounded by source-code EXTENSION, which
+# The hardcoded-value scan covers the whole code root and is bounded by
+# source-code EXTENSION, which
 # is what actually keeps it precise -- without it, a Unity commit would drag
 # `.meta`, `.asset` and `.prefab` YAML (all full of `speed: 5`) into a scan
 # meant for code, and a hook that cries wolf gets muted rather than fixed.
@@ -775,7 +767,7 @@ fi
 # itself. Only fires when source code is actually being committed, so a
 # docs-only or config-only commit stays quiet and the notice keeps its meaning.
 if [ -z "$CODE_ROOT" ]; then
-    if echo "$STAGED" | grep -qiE '\.(gd|cs|cpp|cc|hpp|h|c|py|js|ts|rs|java|kt|lua|gdshader|shader|hlsl)$'; then
+    if echo "$STAGED" | grep -qiE '\.(cs|shader|hlsl)$'; then
         WARNINGS="$WARNINGS\nSKIPPED: source files are staged but no code root could be resolved (engine.name unset, and the tree does not name one unambiguously). The hardcoded-value and TODO-owner scans did NOT run. Run /setup-engine, or set engine.name in project.yaml."
     fi
 fi
@@ -783,7 +775,7 @@ fi
 CODE_FILES=""
 [ -n "$CODE_ROOT" ] && CODE_FILES=$(echo "$STAGED" \
     | grep -E "^${CODE_ROOT}/" \
-    | grep -iE '\.(gd|cs|cpp|cc|hpp|h|c|py|js|ts|rs|java|kt|lua)$')
+    | grep -iE '\.cs$')
 if [ -n "$CODE_FILES" ]; then
     HARDCODED=$(printf '%s\n' "$CODE_FILES" | tr '\n' '\0' \
         | xargs -0 grep -lE '(damage|health|speed|rate|chance|cost|duration)[[:space:]]*[:=][[:space:]]*[0-9]+' 2>/dev/null || true)

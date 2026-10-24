@@ -190,10 +190,9 @@ fi
 
 # Code health quick check.
 #
-# Reads the ENGINE-SPECIFIC code root, not a literal `src/`. Hardcoding `src/`
-# made this line Godot-only: on a Unity or Unreal project the directory test
-# failed, the banner printed no code-health line at all, and a clean project and
-# an unreadable one looked identical. See resolve_code_root in yaml-helper.sh.
+# Reads the code root through resolve_code_root (Unity: `Assets/`) rather than a
+# hardcoded literal, so an unresolved root is visible instead of reading as a
+# clean project. See resolve_code_root in yaml-helper.sh.
 #
 # Sourcing here is defensive: the two source sites above are both conditional,
 # so by this point the function may or may not exist.
@@ -211,8 +210,7 @@ fi
 # block below, so a timeout here lost the recovery too -- and counted each
 # "Binary file ... matches" line as a TODO.
 if [ -n "$CODE_ROOT" ] && [ -d "$CODE_ROOT" ]; then
-    _SS_SRC=(--include='*.gd' --include='*.cs' --include='*.cpp' --include='*.h' --include='*.hpp'
-             --include='*.c' --include='*.py' --include='*.rs' --include='*.lua')
+    _SS_SRC=(--include='*.cs')
     # tr: BSD wc (macOS) right-aligns its count, and these are printed as-is.
     TODO_COUNT=$(grep -rI "${_SS_SRC[@]}" "TODO" "$CODE_ROOT/" 2>/dev/null | wc -l | tr -d ' ')
     FIXME_COUNT=$(grep -rI "${_SS_SRC[@]}" "FIXME" "$CODE_ROOT/" 2>/dev/null | wc -l | tr -d ' ')
@@ -234,7 +232,7 @@ if [ -f project.yaml ] && [ -f CLAUDE.md ]; then
           | sed -n 's|^@docs/engine-reference/\([a-z]*\)/VERSION\.md.*|\1|p')
     # engine.name, not the first `name:` line: `project.name: Marrow` above the
     # engine block read as engine "marrow" and warned on a correct project. The
-    # first word only, so "Unreal Engine 5" is the unreal reference folder.
+    # first word only.
     CFG=$(awk '/^engine:/ { e = 1; next } e && /^[^[:space:]#]/ { exit }
                e && /^[[:space:]]+name:/ { sub(/^[[:space:]]+name:[[:space:]]*/, ""); gsub(/["'"'"']/, "");
                                            split($0, w, /[[:space:]#]/); print w[1]; exit }' \
@@ -248,6 +246,22 @@ if [ -f project.yaml ] && [ -f CLAUDE.md ]; then
         echo "   Fix: re-run /setup-engine, or edit the ENGINE-REFERENCE-IMPORT line."
     fi
 fi
+
+# --- Unity version reminder ---------------------------------------------------
+# No Unity version is pinned in the template; /setup-engine pins it at first
+# init. An OBSERVATION, never an action: it reports, the user decides.
+_UV=""
+if [ -f project.yaml ]; then
+    if ! command -v get_yaml_key >/dev/null 2>&1 && [ -f .claude/hooks/yaml-helper.sh ]; then
+        . .claude/hooks/yaml-helper.sh 2>/dev/null
+    fi
+    if command -v get_yaml_key >/dev/null 2>&1; then
+        _UV=$(get_yaml_key project.yaml engine.version 2>/dev/null | tr -d '\r')
+    fi
+fi
+case "$_UV" in
+    ""|null|"~") echo "Unity version not set — run /setup-engine to pin it." ;;
+esac
 
 # --- Active session state recovery ---
 # Only THIS block is gated by features.session_state, not the whole hook: the

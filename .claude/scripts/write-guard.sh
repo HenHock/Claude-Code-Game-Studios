@@ -157,7 +157,7 @@ rel() {
 }
 tsv() { printf '%s' "$1" | tr '\t\n' '  '; }
 
-# The engine names project.yaml may hold, and each engine's code root
+# The engine name project.yaml may hold, and the code root
 # (directory-structure.md, "The code root is engine-specific").
 engine_name() {
   [ -f project.yaml ] || return 0
@@ -165,13 +165,7 @@ engine_name() {
   YG_PATH=engine.name awk -f "$HERE/yaml-get.awk" project.yaml
 }
 ENGINE=$(engine_name | tr 'A-Z' 'a-z')
-case "$ENGINE" in
-  godot) ROOTS="src" ;;
-  unity) ROOTS="Assets" ;;
-  unreal) ROOTS="Source" ;;
-  # Unset or unknown: the three roots, so no rule is skipped for want of one.
-  *) ROOTS="src Assets Source" ;;
-esac
+ROOTS="Assets"
 
 APPLIED=""
 applied() { APPLIED="${APPLIED:+$APPLIED,}$1"; }
@@ -181,7 +175,6 @@ applied() { APPLIED="${APPLIED:+$APPLIED,}$1"; }
 overwrite_why() {
   case "$1" in
     production/epics/*/EPIC.md) echo "/create-epics updates an existing EPIC.md in place and never rewrites it" ;;
-    project.godot) echo "/setup-engine never replaces an existing Godot project file" ;;
     tests/helpers/*) echo "/test-helpers never overwrites existing helpers, which may hold hand-written code" ;;
     docs/tech-debt-register.md) echo "/tech-debt appends to the register and never rewrites it" ;;
     docs/engine-reference/*) echo "/setup-engine never overwrites an engine reference doc without asking" ;;
@@ -192,23 +185,19 @@ rule_overwrite() {
   [ "$TOOL" = Write ] || return 0
   [ -f "$1" ] || return 0
   _w=$(overwrite_why "$1")
-  # Where /test-setup writes: the test roots of the three engines, CI and the
+  # Where /test-setup writes: the test roots, CI and the
   # QA evidence folder. Other paths never ask test-scaffold.sh.
-  case "$1" in tests/*|.github/*|production/qa/*|Assets/Tests/*|Source/*) ;; *) _w="${_w:--}" ;; esac
+  case "$1" in tests/*|.github/*|production/qa/*|Assets/Tests/*) ;; *) _w="${_w:--}" ;; esac
   [ "$_w" = "-" ] && return 0
   if [ -z "$_w" ]; then
-    # The files /test-setup creates, as test-scaffold.sh lists them per engine.
+    # The files /test-setup creates, as test-scaffold.sh lists them.
     if [ ! -f "$HERE/test-scaffold.sh" ]; then
       printf 'SKIPPED\toverwrite\ttest-scaffold.sh is missing, so the files /test-setup creates were not checked\n'
       return 0
     fi
-    _engines="$ENGINE"
-    case "$_engines" in godot|unity|unreal) ;; *) _engines="godot unity unreal" ;; esac
-    for _e in $_engines; do
-      if bash "$HERE/test-scaffold.sh" --root . "$_e" --list 2>/dev/null | grep -qxF "$1"; then
-        _w="/test-setup only creates the files that are missing"; break
-      fi
-    done
+    if bash "$HERE/test-scaffold.sh" --root . unity --list 2>/dev/null | grep -qxF "$1"; then
+      _w="/test-setup only creates the files that are missing"
+    fi
   fi
   [ -z "$_w" ] || printf 'OVERWRITE\t%s\t%s\n' "$(tsv "$1")" "$_w"
 }
@@ -337,15 +326,15 @@ rule_prototype() {
         fi ;;
     esac
   fi
-  # A reference that climbs out of prototypes/ into a code root (../src/,
-  # Godot's res://src/), or one from the code root into prototypes/.
+  # A reference that climbs out of prototypes/ into a code root (../Assets/),
+  # or one from the code root into prototypes/.
   ROOTS="$ROOTS" D="$_dir" P="$(tsv "$_path")" awk '
     BEGIN {
       BINMODE = 3
       n = split(ENVIRON["ROOTS"], r, " "); alt = ""
       for (i = 1; i <= n; i++) alt = alt (alt == "" ? "" : "|") r[i]
-      if (ENVIRON["D"] == "into-production") re = "(res://|\\.\\./)(\\.\\./)*(" alt ")/"
-      else re = "(res://|\\.\\./|[\"'"'"'(<])(\\.\\./)*prototypes/"
+      if (ENVIRON["D"] == "into-production") re = "(\\.\\./)(\\.\\./)*(" alt ")/"
+      else re = "(\\.\\./|[\"'"'"'(<])(\\.\\./)*prototypes/"
     }
     { l = $0; sub(/\r$/, "", l) }
     l ~ re { gsub(/\t/, " ", l); printf "PROTOTYPE_IMPORT\t%s\t%s\t%d\t%s\n", ENVIRON["P"], ENVIRON["D"], NR, l }
