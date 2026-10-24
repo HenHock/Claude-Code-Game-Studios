@@ -106,7 +106,7 @@ Fixture defaults.
 - [ ] Exactly 3 stories are drafted — one per acceptance criterion at `fine`
 - [ ] Each story file has the header fields Epic, Status, Layer, Type, Manifest Version, and a Context block with GDD, `Requirement: TR-[system]-NNN`, ADR Governing Implementation, ADR Version, Engine/Risk
 - [ ] Each story has Acceptance Criteria, QA Test Cases, Test Evidence and Dependencies sections
-- [ ] The formula story is typed Logic with evidence path `Assets/Tests/EditMode/[system]/…` (the Unity test root)
+- [ ] The formula story is typed Logic with evidence path `Assets/Scripts/Testing/EditMode/[system]/…` (the Unity test root)
 - [ ] "QL-STORY-READY skipped — Lean mode." appears and each QA Test Cases section reads "N/A — no qa-lead specs at this tier…" (no improvised test cases)
 - [ ] "May I write" is asked once, after the full list is shown, and names the 3 stories, `EPIC.md` and `production/epics/index.md`
 - [ ] Files are named `production/epics/combat/story-NNN-[slug].md`

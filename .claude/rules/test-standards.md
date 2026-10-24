@@ -1,7 +1,7 @@
 ---
 paths:
   - "tests/**"
-  - "Assets/Tests/**/*.cs"
+  - "Assets/Scripts/Testing/**/*.cs"
 ---
 
 # Test Standards
@@ -31,7 +31,7 @@ paths:
 
 ## Examples
 
-**Correct** (proper naming + Arrange/Act/Assert) — NUnit (`Assets/Tests/EditMode/HealthTests.cs`):
+**Correct** (proper naming + Arrange/Act/Assert) — NUnit (`Assets/Scripts/Testing/EditMode/HealthTests.cs`):
 
 ```csharp
 using NUnit.Framework;

@@ -62,4 +62,4 @@ write to the wrong directory.
 Where a skill says `src/`, read it as *the code root* and substitute the table
 above. Where a skill greps, glob the resolved root. Where a skill writes,
 write under the resolved root and use the engine's own conventions beneath it
-(`Assets/Scripts/<System>/`).
+(`Assets/Scripts/Core/<Feature>/`; full layout in `.claude/docs/unity-folder-structure.md`).

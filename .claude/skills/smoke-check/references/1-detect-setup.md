@@ -20,7 +20,7 @@ Before running anything, understand the environment:
    whose declared engine is not the installed one is worth saying out loud.
 
 1. **Test framework check**: verify that **game** test files exist — not merely
-   that `tests/` does. Check the **test root** (`Assets/Tests/`, per
+   that `tests/` does. Check the **test root** (`Assets/Scripts/Testing/`, per
    `.claude/docs/directory-structure.md`) and `tests/smoke/` for actual test
    files. A **test file** is one the Unity Test Framework executes — a C# test
    class (NUnit). Markdown checklists do not
@@ -48,7 +48,7 @@ Before running anything, understand the environment:
    > be established.
 
    > **Do not gate on `tests/` existing.** `/test-setup` creates the
-   > `Assets/Tests/` folders with assembly definitions, so the directory tree is
+   > `Assets/Scripts/Testing/` folders with assembly definitions, so the directory tree is
    > present on any project that ran setup — whether or not a single game test
    > was ever written. Count actual test files instead; gated on the directory,
    > a project with no build and zero game tests passes this step.

@@ -121,8 +121,8 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`, `platform.multiplayer: true`, `platform.online: true`
-- `Assets/Scripts/Net/CombatSync.cs` line 42: `[ServerRpc] void ApplyDamageServerRpc(ulong targetId, int amount)` applies `amount` with no sender or range validation
-- `Assets/Scripts/Online/LeaderboardClient.cs` line 8: `const string ApiKey = "sk_live_...";`
+- `Assets/Scripts/Core/Net/CombatSync.cs` line 42: `[ServerRpc] void ApplyDamageServerRpc(ulong targetId, int amount)` applies `amount` with no sender or range validation
+- `Assets/Scripts/Core/Online/LeaderboardClient.cs` line 8: `const string ApiKey = "sk_live_...";`
 
 **Input:** `/security-audit full`
 
@@ -136,7 +136,7 @@ Fixture defaults.
 7. Phase 7: "⛔ CRITICAL security findings must be resolved before any public release. Do not proceed to `/launch-checklist` until these are addressed." and re-run `/security-audit quick` before `/gate-check release`
 
 **Assertions:**
-- [ ] The RPC finding cites `Assets/Scripts/Net/CombatSync.cs` with its line and an attack scenario
+- [ ] The RPC finding cites `Assets/Scripts/Core/Net/CombatSync.cs` with its line and an attack scenario
 - [ ] The hardcoded key is raised to CRITICAL in the multiplayer context
 - [ ] Every finding carries a specific remediation
 - [ ] Release recommendation is DO NOT SHIP (open CRITICAL findings) — never FIX BEFORE SHIPPING or CLEAR TO SHIP
@@ -148,7 +148,7 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`; no `platform` block at all
-- `Assets/Scripts/Networking/Lobby.cs` defines `[ServerRpc]` methods `JoinLobbyServerRpc()` and `SendChatServerRpc()`
+- `Assets/Scripts/Core/Networking/Lobby.cs` defines `[ServerRpc]` methods `JoinLobbyServerRpc()` and `SendChatServerRpc()`
 - `modes.automation` unset (collaborative)
 
 **Input:** `/security-audit`
@@ -196,8 +196,8 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`, `engine.language: C#`, `platform.multiplayer: true`, `platform.online: true`, `modes.review_mode: full`
-- `Assets/Scripts/Save/SaveManager.cs` reads and writes save data
-- `Assets/Scripts/Net/PlayerNet.cs` has `[ServerRpc]` methods that validate their inputs
+- `Assets/Scripts/Core/Save/SaveManager.cs` reads and writes save data
+- `Assets/Scripts/Core/Net/PlayerNet.cs` has `[ServerRpc]` methods that validate their inputs
 - No findings in the categories that can run
 
 **Input:** `/security-audit`
@@ -225,8 +225,8 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`, `engine.language: C#`, `platform.multiplayer: false`, `platform.online: false`
-- `Assets/Scripts/` holds the implemented game (35 `.cs` files), including `Assets/Scripts/Save/SaveManager.cs`
-- `Assets/Scripts/Analytics/Telemetry.cs` line 12: `const string ApiKey = "sk_live_...";`
+- `Assets/Scripts/` holds the implemented game (35 `.cs` files), including `Assets/Scripts/Core/Save/SaveManager.cs`
+- `Assets/Scripts/Core/Analytics/Telemetry.cs` line 12: `const string ApiKey = "sk_live_...";`
 - No other findings
 
 **Input:** `/security-audit`

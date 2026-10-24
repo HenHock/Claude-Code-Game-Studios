@@ -74,7 +74,7 @@ does not turn on.
 >
 > - It reports a passing automated suite → the test root must actually
 >   contain test files and the project must have a runner. "24 passed, 0 failed"
->   in a repo with no test files under `Assets/Tests/` and no runner is a
+>   in a repo with no test files under `Assets/Scripts/Testing/` and no runner is a
 >   finding, not evidence.
 > - It marks a critical path PASS → the code for that path must exist in the code
 >   root. A PASS on "banking ends the run" with no banking code is a finding.

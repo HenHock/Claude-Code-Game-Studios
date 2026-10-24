@@ -4,13 +4,13 @@
 
 `/smoke-check` is the gate between implementation and QA hand-off. Phase 1 runs
 `project-coherence.sh`, verifies that **game test files** exist under the
-engine's test root (`Assets/Tests/`) or `tests/smoke/` (not merely that `tests/` exists), and
+engine's test root (`Assets/Scripts/Testing/`) or `tests/smoke/` (not merely that `tests/` exists), and
 reads the engine from `project.yaml` (falling back to `technical-preferences.md`),
 then resolves the editor executable — the one `commands.test` names, else
 `engine.path`, else the name on `PATH` — before it calls the runner unavailable.
 Phase 2 runs `commands.test` (or the Unity default) under a timeout and
 reads the result from the Unity Test Framework results file; Play Mode
-tests under `Assets/Tests/PlayMode/` get a second run with their own results
+tests under `Assets/Scripts/Testing/PlayMode/` get a second run with their own results
 file. At `qa.level: minimal` with no game tests, the automated row is WAIVED
 and Phase 2 runs a build check instead — `commands.smoke`, else
 `commands.build`, when set. Phase 3 scans test coverage against the QA plan or
@@ -69,7 +69,7 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml` has `engine.name: Unity` and `commands.test` set to the Edit Mode command `/setup-engine` writes
 - `com.unity.test-framework` is in `Packages/manifest.json`; game tests exist under
-  `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/`
+  `Assets/Scripts/Testing/EditMode/` and `Assets/Scripts/Testing/PlayMode/`
 - `production/qa/qa-plan-sprint-005.md` exists
 - The runner exits 0 with 12 tests, 12 passing
 - The developer says the build was launched this session and selects no FAILED item in Batch 1, Batch 2 or Batch 3
@@ -159,7 +159,7 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml` sets `modes.rigor: standard` (so `qa.level` resolves to `standard`)
-- Engine is Unity; `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/` exist but hold only
+- Engine is Unity; `Assets/Scripts/Testing/EditMode/` and `Assets/Scripts/Testing/PlayMode/` exist but hold only
   the assembly definition files `/test-setup` creates
 - No `tests/smoke/` directory
 
@@ -184,7 +184,7 @@ Fixture defaults.
 
 **Fixture:**
 - No `modes.rigor` set (the default, `minimal`, so `qa.level` resolves to `minimal`)
-- Engine is Unity; no game test files under `Assets/Tests/` or `tests/smoke/`
+- Engine is Unity; no game test files under `Assets/Scripts/Testing/` or `tests/smoke/`
 - `commands.smoke` is the Unity batch-mode build/compile check; it exits 0 with no `error CS` line
 - The user says the build was launched this session and confirms every Batch 1, Batch 2 and Batch 3 check
 
@@ -234,7 +234,7 @@ Fixture defaults.
 **Fixture:**
 - As Case 1, with every story COVERED or EXPECTED and nothing selected in
   Batch 1, Batch 2 or Batch 3
-- The suites under `Assets/Tests/EditMode/` declare no `[Test]` methods; the
+- The suites under `Assets/Scripts/Testing/EditMode/` declare no `[Test]` methods; the
   results file reports `testcasecount="0"` and the runner exits 0
 
 **Input:** `/smoke-check`
@@ -295,7 +295,7 @@ Fixture defaults.
 **Fixture:**
 - `engine.name: Unity`; `com.unity.test-framework` is in `Packages/manifest.json`
 - `commands.test` is the Edit Mode command `/setup-engine` writes
-- `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/` both hold test files
+- `Assets/Scripts/Testing/EditMode/` and `Assets/Scripts/Testing/PlayMode/` both hold test files
 - Edit Mode exits 0 with 8/8 passing; Play Mode exits 2 with 1 of 3 failing
 
 **Input:** `/smoke-check`
@@ -303,7 +303,7 @@ Fixture defaults.
 **Expected behavior:**
 1. The Edit Mode run deletes `test-results/editmode.xml` first, then runs
 2. Because `commands.test` does not pass `-testPlatform PlayMode` and
-   `Assets/Tests/PlayMode/` holds tests, the skill runs Play Mode too, deleting
+   `Assets/Scripts/Testing/PlayMode/` holds tests, the skill runs Play Mode too, deleting
    and then writing `test-results/playmode.xml`
 3. The report has one Status line per platform: `EditMode: PASS (8/8)` and
    `PlayMode: FAIL (1 failure)`

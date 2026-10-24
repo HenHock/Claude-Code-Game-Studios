@@ -60,7 +60,7 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml` has `engine.name: Unity`, so the code root is `Assets/`
-- `Assets/ui/hud.cs` wraps three strings in `tr()` that have no entry in
+- `Assets/Scripts/Core/UI/hud.cs` wraps three strings in `tr()` that have no entry in
   `assets/data/strings/strings-en.json`
 - No `production/localization/freeze-status.md` exists
 

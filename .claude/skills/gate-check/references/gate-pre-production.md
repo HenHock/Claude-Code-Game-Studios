@@ -12,7 +12,7 @@
 - [ ] At least 3 Architecture Decision Records in `docs/architecture/` covering
       Foundation-layer systems (scene management, event architecture, save/load)
 - [ ] Engine reference docs exist in `docs/engine-reference/[engine]/`
-- [ ] Test framework initialized: the test root exists — `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/`; see `.claude/docs/directory-structure.md`
+- [ ] Test framework initialized: the test root exists — `Assets/Scripts/Testing/EditMode/` and `Assets/Scripts/Testing/PlayMode/`; see `.claude/docs/directory-structure.md`
 - [ ] CI/CD test workflow exists at `.github/workflows/tests.yml` (or equivalent)
 - [ ] At least one example test file exists to confirm the framework is functional
 - [ ] Master architecture document exists at `docs/architecture/architecture.md`

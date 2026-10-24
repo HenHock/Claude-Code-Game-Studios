@@ -490,10 +490,9 @@ trap '[ -n "$TMP_DESIGN" ] && rm -f "$TMP_DESIGN"' EXIT
 # Making it merely faster is not enough -- the cost stays linear and the hook
 # starves again at a larger file count. Batch it, or it returns.
 #
-# WHERE DATA LIVES: Unity keeps it under Assets/ (Assets/Data/,
-# Assets/Game/Data/). It stays inside the asset root so an editor's JSON-with-comments (.vscode/settings.json) never blocks.
+# WHERE DATA LIVES: Unity keeps it under Assets/ (Assets/Configs/<Feature>/). It stays inside the asset root so an editor's JSON-with-comments (.vscode/settings.json) never blocks.
 # ---------------------------------------------------------------------------
-DATA_FILES=$(echo "$STAGED" | grep -E '^Assets/(.*/)?[Dd]ata/.*\.[Jj][Ss][Oo][Nn]$')
+DATA_FILES=$(echo "$STAGED" | grep -E '^Assets/((.*/)?[Dd]ata/|Configs/).*\.[Jj][Ss][Oo][Nn]$')
 if [ -n "$DATA_FILES" ]; then
     PYTHON_CMD="$_VC_PY"
     if [ -n "$PYTHON_CMD" ]; then

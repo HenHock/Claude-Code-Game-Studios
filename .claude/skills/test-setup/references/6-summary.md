@@ -12,7 +12,8 @@ Test infrastructure created for Unity.
 
 Files created:
 - tests/README.md
-- Assets/Tests/EditMode/ and Assets/Tests/PlayMode/ (Unity's test roots)
+- Assets/Scripts/Testing/EditMode/<Project>.Tests.EditMode.asmdef and
+  Assets/Scripts/Testing/PlayMode/<Project>.Tests.PlayMode.asmdef (Unity's test roots)
 - tests/smoke/critical-paths.md
 - production/qa/evidence/.gitkeep
 [Unity-specific files]
@@ -21,7 +22,7 @@ Files created:
 Next steps:
 1. [If missing] Add `com.unity.test-framework` to `Packages/manifest.json`
 2. Write your first test in the test root:
-   Assets/Tests/EditMode/[System]Tests.cs
+   Assets/Scripts/Testing/EditMode/[Feature]/[System]Tests.cs
 3. Run `/qa-plan sprint` before your first sprint to classify stories and set
    test evidence requirements. At `workflow: minimal` — the default — skip
    this: there are no sprints. At `qa.level: minimal`, also the default, tests
@@ -30,7 +31,7 @@ Next steps:
 4. `/smoke-check` before every QA hand-off
 
 Gate note: /gate-check Technical Setup → Pre-Production now requires:
-- the test roots: Assets/Tests/EditMode/ and Assets/Tests/PlayMode/
+- the test roots: Assets/Scripts/Testing/EditMode/ and Assets/Scripts/Testing/PlayMode/
 - .github/workflows/tests.yml
 - At least one example test file
 Run /test-setup and write one example test before advancing.

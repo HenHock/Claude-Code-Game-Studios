@@ -52,7 +52,7 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`, so the code root is `Assets/`
 - `design/gdd/combat.md` documents melee hit detection
-- `Assets/combat/` holds the melee attack code; similar collision code already exists there
+- `Assets/Scripts/Core/Combat/` holds the melee attack code; similar collision code already exists there
 - `production/sprints/sprint-003.md` through `sprint-005.md` record completed combat tasks
 
 **Input:** `/estimate Add hitbox detection to melee attacks`
@@ -60,7 +60,7 @@ Fixture defaults.
 **Expected behavior:**
 1. Skill restates the task; the description is specific enough, so no clarification is asked
 2. Skill reads `design/gdd/combat.md` because the task relates to a documented system
-3. Skill scans `Assets/combat/` for affected files, integration points and existing tests
+3. Skill scans `Assets/Scripts/Core/Combat/` for affected files, integration points and existing tests
 4. Skill reads `production/sprints/` for similar completed tasks and velocity
 5. Output follows the Phase 4 template: Complexity Assessment, Effort Estimate (Optimistic / Expected / Pessimistic, in days), Recommended budget, Confidence, Risk Factors, Dependencies, Suggested Breakdown with a Total, Notes and Assumptions
 6. Recommended budget equals the Expected figure; all figures are in half-day increments
@@ -106,7 +106,7 @@ Fixture defaults.
 ### Case 3: No Sprint Velocity Data — Estimate still produced, gap stated
 
 **Fixture:**
-- `project.yaml`: `engine.name: Unity`; `Assets/core/` holds the inventory code the save touches
+- `project.yaml`: `engine.name: Unity`; `Assets/Scripts/Core/Save/` holds the inventory code the save touches
 - `design/gdd/save-load.md` documents the save system clearly
 - `production/sprints/` is empty — no historical sprints
 

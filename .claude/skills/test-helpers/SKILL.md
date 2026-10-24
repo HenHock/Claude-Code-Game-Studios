@@ -22,12 +22,12 @@ and assertion patterns are abstracted into helpers. This skill generates a
 `tests/helpers/` library tailored to the project's actual systems — so every developer writes less boilerplate and more assertions.
 
 **Output:** Unity test helper files in the **helper root** — the only place the
-Unity Test Framework compiles them (`.claude/docs/directory-structure.md`):
+Unity Test Framework compiles them (`.claude/docs/unity-folder-structure.md`):
 
-`Assets/Tests/EditMode/Helpers/` — inside the `EditModeTests` assembly
-`/test-setup` creates. If PlayMode tests need the same helpers, ask before
-creating `Assets/Tests/Helpers/TestHelpers.asmdef` and referencing it from both
-test assemblies.
+`Assets/Scripts/Testing/Shared/` — the `<Project>.Tests.Shared` assembly that
+`/test-setup` creates and both `<Project>.Tests.EditMode` and
+`<Project>.Tests.PlayMode` reference. It has no editor-only references, so
+PlayMode can use it.
 
 `tests/helpers/` below means that helper root.
 
@@ -92,10 +92,10 @@ If the engine is not configured in either source: "Engine not configured. Run `/
 
 ## 3. Load Existing Test Patterns
 
-Scan the test root (`Assets/Tests/`) for patterns already in use:
+Scan the test root (`Assets/Scripts/Testing/`) for patterns already in use:
 
 ```
-Glob pattern="Assets/Tests/**/*Tests.cs"
+Glob pattern="Assets/Scripts/Testing/**/*Tests.cs"
 ```
 
 For a representative sample (up to 5 files), read the test files and extract:
@@ -118,7 +118,7 @@ Also read:
 
 ## 4. Generate Unity Helpers
 
-**Base helper** (`Assets/Tests/EditMode/Helpers/GameAssertions.cs`):
+**Base helper** (`Assets/Scripts/Testing/Shared/GameAssertions.cs`):
 
 ```csharp
 using NUnit.Framework;
@@ -158,7 +158,7 @@ public static class GameAssertions
 }
 ```
 
-**Factory helper** (`Assets/Tests/EditMode/Helpers/GameFactory.cs`):
+**Factory helper** (`Assets/Scripts/Testing/Shared/GameFactory.cs`):
 
 ```csharp
 using UnityEngine;

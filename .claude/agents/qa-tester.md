@@ -74,7 +74,7 @@ For Logic and Integration stories, you write the test file (or scaffold it for t
 
 #### Unity (C# / NUnit)
 
-The file goes under `Assets/Tests/EditMode/` (or `PlayMode/`), in the test
+The file goes under `Assets/Scripts/Testing/EditMode/` (or `PlayMode/`), in the test
 assembly `/test-setup` creates — Unity compiles nothing outside `Assets/`.
 
 ```csharp

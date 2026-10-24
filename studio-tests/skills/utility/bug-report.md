@@ -166,10 +166,10 @@ Fixture defaults.
 ### Case 5: Director Gate Check — Analyze Mode, no gate
 
 **Fixture:**
-- `Assets/save/save_manager.cs` exists and contains an unguarded null dereference and an unclosed file handle
+- `Assets/Scripts/Core/Save/save_manager.cs` exists and contains an unguarded null dereference and an unclosed file handle
 - `production/qa/bugs/` holds `BUG-0011.md` (the highest existing number)
 
-**Input:** `/bug-report analyze Assets/save/save_manager.cs`
+**Input:** `/bug-report analyze Assets/Scripts/Core/Save/save_manager.cs`
 
 **Expected behavior:**
 1. Analyze Mode reads the target file
@@ -195,7 +195,7 @@ Fixture defaults.
 - `production/qa/bugs/` holds a bug file for bug 42 written in the older form:
   a three-digit number followed by a slug (`-save-corruption.md`), with
   `**Status**: Fixed — Pending Verification`
-- The bug's root-cause code path is gone from `Assets/save/`, but no test in
+- The bug's root-cause code path is gone from `Assets/Scripts/Core/Save/`, but no test in
   `tests/` covers the save system, and the reproduction needs a console suspend
   that no automated check can drive
 

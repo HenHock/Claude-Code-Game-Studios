@@ -24,8 +24,12 @@
 #
 # Files, in this order (the skill's Phases 3 to 5):
 #   all      tests/README.md, production/qa/evidence/.gitkeep
-#   unity    Assets/Tests/EditMode/EditModeTests.asmdef,
-#            Assets/Tests/PlayMode/PlayModeTests.asmdef
+#   unity    Assets/Scripts/Testing/Shared/<Project>.Tests.Shared.asmdef,
+#            Assets/Scripts/Testing/EditMode/<Project>.Tests.EditMode.asmdef,
+#            Assets/Scripts/Testing/PlayMode/<Project>.Tests.PlayMode.asmdef
+#            (layout: .claude/docs/unity-folder-structure.md; <Project> is
+#            project.name of project.yaml with everything but letters, digits
+#            and underscores removed, "Game" while it is unset)
 #   all      .github/workflows/tests.yml, tests/smoke/critical-paths.md
 # Unity tests live in the engine's test root because it does not compile code
 # under tests/.
@@ -104,6 +108,21 @@ fi
 # A version goes into file text: keep it to the characters a version has.
 case "$VER" in ''|-|*[!A-Za-z0-9._+-]*) VER="" ;; esac
 
+# <Project> for the assembly names: project.name, spaces and punctuation dropped.
+PROJ=""
+if [ -f "$HERE/yaml-get.awk" ]; then
+  for _yf in project.local.yaml project.yaml; do
+    if [ -z "$PROJ" ] && [ -f "$_yf" ]; then
+      PROJ=$(YG_PATH=project.name awk -f "$HERE/yaml-get.awk" "$_yf" | tr -cd 'A-Za-z0-9_')
+    fi
+  done
+fi
+PROJ_SET=1
+case "$PROJ" in ''|[0-9]*) PROJ_SET=""; PROJ=Game ;; esac
+ASM_SHARED="Assets/Scripts/Testing/Shared/$PROJ.Tests.Shared.asmdef"
+ASM_EDIT="Assets/Scripts/Testing/EditMode/$PROJ.Tests.EditMode.asmdef"
+ASM_PLAY="Assets/Scripts/Testing/PlayMode/$PROJ.Tests.PlayMode.asmdef"
+
 ENGNAME=Unity
 if [ -n "$VER" ]; then ENGTXT="$ENGNAME $VER"; else ENGTXT="$ENGNAME [version]"; fi
 DATE="${DATE_ARG:-$(date +%Y-%m-%d)}"
@@ -116,7 +135,7 @@ SMOKE=tests/smoke/critical-paths.md
 list_paths() {
   echo "$README"
   echo "$EVID"
-  echo Assets/Tests/EditMode/EditModeTests.asmdef; echo Assets/Tests/PlayMode/PlayModeTests.asmdef
+  echo "$ASM_SHARED"; echo "$ASM_EDIT"; echo "$ASM_PLAY"
   echo "$CI"
   echo "$SMOKE"
 }
@@ -143,10 +162,13 @@ live under the engine's test root, not in `tests/`: a test under `tests/` is nev
 compiled, and the run reports 0 tests and `Passed`, a false pass.
 
 ```
-Assets/Tests/
-  EditMode/       # Isolated unit tests (formulas, state machines, logic)
-  PlayMode/       # Integration tests in a running scene
+Assets/Scripts/Testing/
+  EditMode/<Feature>/   # Isolated unit tests (formulas, state machines, logic)
+  PlayMode/<Feature>/   # Integration tests in a running scene
 ```
+
+The feature path mirrors `Assets/Scripts/Core/<Feature>/` (layout:
+`.claude/docs/unity-folder-structure.md`).
 
 `tests/` keeps this README and `smoke/`. Every `tests/unit/` path below means
 that test root.
@@ -180,7 +202,7 @@ are failures too; a compile error writes no results file. Delete each results
 file before its run so an old file is never read as a new result. Read the
 `<test-run>` element of the results file: `testcasecount="0"` means nothing was
 compiled or found, which is not a pass. Do not add `-quit`; `-runTests` exits by
-itself. An Edit Mode run never runs the tests in `Assets/Tests/PlayMode/`, so
+itself. An Edit Mode run never runs the tests in `Assets/Scripts/Testing/PlayMode/`, so
 run both.
 
 ## Test Naming
@@ -285,11 +307,25 @@ tpl_smoke() {
 TPL_SMOKE
 }
 
+tpl_asmdef_shared() {
+  cat <<'TPL_ASMDEF_SHARED'
+{
+  "name": "@PROJ@.Tests.Shared",
+  "references": ["UnityEngine.TestRunner", "@PROJ@.Core"],
+  "includePlatforms": [],
+  "overrideReferences": true,
+  "precompiledReferences": ["nunit.framework.dll"],
+  "autoReferenced": false,
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"]
+}
+TPL_ASMDEF_SHARED
+}
+
 tpl_asmdef_edit() {
   cat <<'TPL_ASMDEF_EDIT'
 {
-  "name": "EditModeTests",
-  "references": ["UnityEngine.TestRunner", "UnityEditor.TestRunner"],
+  "name": "@PROJ@.Tests.EditMode",
+  "references": ["UnityEngine.TestRunner", "UnityEditor.TestRunner", "@PROJ@.Core", "@PROJ@.Tests.Shared"],
   "includePlatforms": ["Editor"],
   "overrideReferences": true,
   "precompiledReferences": ["nunit.framework.dll"],
@@ -302,8 +338,8 @@ TPL_ASMDEF_EDIT
 tpl_asmdef_play() {
   cat <<'TPL_ASMDEF_PLAY'
 {
-  "name": "PlayModeTests",
-  "references": ["UnityEngine.TestRunner", "UnityEditor.TestRunner"],
+  "name": "@PROJ@.Tests.PlayMode",
+  "references": ["UnityEngine.TestRunner", "@PROJ@.Core", "@PROJ@.Tests.Shared"],
   "includePlatforms": [],
   "overrideReferences": true,
   "precompiledReferences": ["nunit.framework.dll"],
@@ -314,7 +350,7 @@ TPL_ASMDEF_PLAY
 }
 
 render() {
-  sed -e "s|@ENGINE@|$ENGTXT|g" -e "s|@DATE@|$DATE|g"
+  sed -e "s|@ENGINE@|$ENGTXT|g" -e "s|@DATE@|$DATE|g" -e "s|@PROJ@|$PROJ|g"
 }
 # content_of <path> -- the file's text, ready to write.
 content_of() {
@@ -324,8 +360,9 @@ content_of() {
     "$CI")
       tpl_ci_unity | render ;;
     "$SMOKE") tpl_smoke ;;
-    Assets/Tests/EditMode/EditModeTests.asmdef) tpl_asmdef_edit ;;
-    Assets/Tests/PlayMode/PlayModeTests.asmdef) tpl_asmdef_play ;;
+    "$ASM_SHARED") tpl_asmdef_shared | render ;;
+    "$ASM_EDIT") tpl_asmdef_edit | render ;;
+    "$ASM_PLAY") tpl_asmdef_play | render ;;
     *) : ;;
   esac
 }
@@ -375,10 +412,13 @@ case "$ENG" in
     if made "$CI"; then
       need unity_license "$CI" "add the UNITY_LICENSE secret to the repository (manual)"
     fi
-    if made Assets/Tests/EditMode/EditModeTests.asmdef || made Assets/Tests/PlayMode/PlayModeTests.asmdef; then
-      # The test assemblies see only other .asmdef files; any outside Assets/Tests is the game's.
-      if [ -z "$(find Assets -name '*.asmdef' -not -path 'Assets/Tests/*' 2>/dev/null | head -1)" ]; then
-        need game_asmdef Assets/Tests "the test assemblies see only other .asmdef files: with none for the game scripts, ask before adding one and list it in both test assemblies' references"
+    if made "$ASM_SHARED" || made "$ASM_EDIT" || made "$ASM_PLAY"; then
+      if [ -z "$PROJ_SET" ]; then
+        need project_name project.yaml "set project.name: the assemblies are named Game.Tests.* and reference Game.Core; rename them to <Project>.* once it is known"
+      fi
+      # The test assemblies reference <Project>.Core, an asmdef /setup-engine creates.
+      if [ ! -f "Assets/Scripts/Core/$PROJ.Core.asmdef" ]; then
+        need core_asmdef "Assets/Scripts/Core/$PROJ.Core.asmdef" "the test assemblies reference $PROJ.Core: create it (/setup-engine, .claude/docs/unity-folder-structure.md) or they will not compile"
       fi
     fi ;;
 esac

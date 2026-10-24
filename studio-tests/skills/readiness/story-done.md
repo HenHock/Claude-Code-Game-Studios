@@ -50,7 +50,7 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml` sets `modes.rigor: standard` (→ `workflow: standard`,
   `qa.level: standard`, `review_mode: lean`) and `engine.name: Unity`, so
-  `Assets/Tests/EditMode/` is the test root
+  `Assets/Scripts/Testing/EditMode/` is the test root
 - Story file at `production/epics/core/story-light-pickup.md` with:
   - `Type: Logic` and 3 acceptance criteria, all implemented as described:
     AC-1 "Picking up a light adds it to the inventory", AC-2 "A pickup at the
@@ -58,7 +58,7 @@ Fixture defaults.
   - `TR-light-001`; the story quotes an older wording of the requirement, while
     `tr-registry.yaml` holds the current text, which the implementation matches
   - `ADR: ADR-0003` (Accepted), whose guidance was followed
-  - A `## Test Evidence` section naming `Assets/Tests/EditMode/light/PickupTests.cs`, which
+  - A `## Test Evidence` section naming `Assets/Scripts/Testing/EditMode/Light/PickupTests.cs`, which
     exists with one test per criterion — `PickupAddsToInventory`,
     `PickupRefusedAtLimit`, `PickupRemovesWorldLight` — so every
     criterion maps to a test

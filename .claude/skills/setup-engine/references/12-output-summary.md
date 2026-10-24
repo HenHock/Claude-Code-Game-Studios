@@ -17,10 +17,16 @@ Reference Docs:  [created/skipped]
 CLAUDE.md:       [updated]
 Tech Prefs:      [created/updated]
 project.yaml:    [created/updated]
+Asset loading:   [addressables/resources/direct]
+Folder layout:   [created/already present/skipped - no Unity project yet]
+                 (Assets/Content, Scripts/Core|Debugging|Testing|Editor,
+                 Plugins, Settings, Configs; see .claude/docs/unity-folder-structure.md)
+Assemblies:      [<Project>.Core, .Debugging, .Editor created/skipped]
 Agent Config:    [verified]
 
 Next Steps:
 1. Review docs/engine-reference/unity/VERSION.md
+   (Test assemblies come from /test-setup)
 ```
 
 Then print **one** Next-Steps list, matching the resolved `workflow` tier:

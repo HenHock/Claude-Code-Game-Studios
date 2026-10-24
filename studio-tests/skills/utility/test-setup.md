@@ -11,7 +11,7 @@ already exist at these paths." before writing.
 
 It creates `tests/README.md`, `tests/smoke/critical-paths.md`,
 `production/qa/evidence/`, `.github/workflows/tests.yml`, and the engine's test
-root: `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/` with
+root: `Assets/Scripts/Testing/EditMode/` and `Assets/Scripts/Testing/PlayMode/` with
 their `.asmdef` files. When the
 infrastructure already exists it exits early unless `force` is passed, and
 `force` only creates missing files — it never overwrites. No director gates
@@ -53,27 +53,27 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml` has `engine.name: Unity`
 - `Packages/manifest.json` lists `com.unity.test-framework`
-- No `Assets/Tests/`; the user approves the plan
+- No `Assets/Scripts/Testing/`; the user approves the plan
 
 **Input:** `/test-setup`
 
 **Expected behavior:**
 1. Skill reads engine → Unity; the Test Framework package check passes
-2. The plan places unit and integration tests under `Assets/Tests/` — Unity
+2. The plan places unit and integration tests under `Assets/Scripts/Testing/` — Unity
    compiles only `Assets/` and `Packages/` — not under `tests/unit/`
 3. Skill asks "May I create these files? I will not overwrite any test files that
-   already exist at these paths." and generates `Assets/Tests/EditMode/EditModeTests.asmdef` (Editor-only)
-   and `Assets/Tests/PlayMode/PlayModeTests.asmdef`
+   already exist at these paths." and generates `Assets/Scripts/Testing/EditMode/<Project>.Tests.EditMode.asmdef` (Editor-only)
+   and `Assets/Scripts/Testing/PlayMode/<Project>.Tests.PlayMode.asmdef`
 4. `.github/workflows/tests.yml` runs `game-ci/unity-test-runner@v4` for
    `editmode` and `playmode`, and the `UNITY_LICENSE` secret is noted
 5. The README's Running Unity tests note gives two runs — Edit Mode into
    `test-results/editmode.xml`, Play Mode into `test-results/playmode.xml`
-6. The Phase 6 gate note names Unity's test root (`Assets/Tests/EditMode/` and
-   `Assets/Tests/PlayMode/`), not `tests/unit/` and `tests/integration/`
+6. The Phase 6 gate note names Unity's test root (`Assets/Scripts/Testing/EditMode/` and
+   `Assets/Scripts/Testing/PlayMode/`), not `tests/unit/` and `tests/integration/`
 7. Approval is asked before writing; verdict COMPLETE
 
 **Assertions:**
-- [ ] Tests are under `Assets/Tests/`, never `tests/` or a top-level `Tests/` (neither is compiled: 0 tests, "Passed")
+- [ ] Tests are under `Assets/Scripts/Testing/`, never `tests/` or a top-level `Tests/` (neither is compiled: 0 tests, "Passed")
 - [ ] `.asmdef` files are generated
 - [ ] EditMode and PlayMode runner config is present, in CI and as two local runs with separate results files
 - [ ] The gate note names the Unity test root
@@ -84,7 +84,7 @@ Fixture defaults.
 ### Case 2: Infrastructure Already Exists — Early exit, nothing re-initialized
 
 **Fixture:**
-- Unity project; `Assets/Tests/EditMode/`, `Assets/Tests/PlayMode/`, `.github/workflows/tests.yml`
+- Unity project; `Assets/Scripts/Testing/EditMode/`, `Assets/Scripts/Testing/PlayMode/`, `.github/workflows/tests.yml`
   and the `.asmdef` files all exist
 - No `force` argument
 
@@ -127,7 +127,7 @@ Fixture defaults.
 ### Case 4: Director Gate Check — No gate; test-setup is a scaffolding utility
 
 **Fixture:**
-- Engine configured, `Assets/Tests/` does not exist
+- Engine configured, `Assets/Scripts/Testing/` does not exist
 
 **Input:** `/test-setup`
 
@@ -147,7 +147,7 @@ Fixture defaults.
 
 - [ ] Reads the engine (`project.yaml`, then `technical-preferences.md`) before generating any scaffold
 - [ ] Generates engine-appropriate test runner config and CI workflow (not generic)
-- [ ] Puts unit and integration tests in the Unity test root (`Assets/Tests/`)
+- [ ] Puts unit and integration tests in the Unity test root (`Assets/Scripts/Testing/`)
 - [ ] Creates `production/qa/evidence/` — the path the Phase 6 summary reports
 - [ ] Asks approval before creating files
 - [ ] Exits early when infrastructure exists; `force` creates only missing files and never overwrites

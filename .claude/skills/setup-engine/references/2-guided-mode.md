@@ -50,6 +50,7 @@ mode) and Read those ranges with offset and limit:
 1. 2D, 3D, or both?
 2. Primary input method? (keyboard/mouse, gamepad, touch, or mixed — informs Input System setup)
 3. Team size and experience?
+4. Runtime asset loading: Addressables, the `Resources/` folder, or direct references only? (Answer feeds `unity.asset_loading` in `project.yaml`; `.claude/docs/unity-folder-structure.md`)
 
 ### Produce a recommendation
 

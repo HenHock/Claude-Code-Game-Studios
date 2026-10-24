@@ -4,7 +4,7 @@
 
 `/test-helpers [system-name | all | scaffold]` generates test helper files in
 the **helper root** — the only place Unity's test runner compiles them:
-`Assets/Tests/EditMode/Helpers/` (inside the `EditModeTests` assembly). It
+`Assets/Scripts/Testing/Shared/` (the `<Project>.Tests.Shared` assembly, referenced by EditMode and PlayMode). It
 writes base assertion and factory helpers (`scaffold`), and a
 `[helper root]/[system]_factory.[ext]` per system built from that system's GDD
 (`[system-name]` or `all`). No argument runs `scaffold` when no helpers exist,
@@ -59,10 +59,10 @@ Fixture defaults.
   `testing.framework: NUnit`; `com.unity.test-framework` is in
   `Packages/manifest.json`, so NUnit's assertion API can be confirmed from the
   installed package
-- `Assets/Tests/EditMode/EditModeTests.asmdef` and
-  `Assets/Tests/EditMode/Player/PlayerMovementTests.cs` exist
+- `Assets/Scripts/Testing/EditMode/<Project>.Tests.EditMode.asmdef` and
+  `Assets/Scripts/Testing/EditMode/Player/PlayerMovementTests.cs` exist
 - `design/gdd/player.md` has a Formulas section bounding health to 0–100
-- No existing files in `Assets/Tests/EditMode/Helpers/`; the user approves the write
+- No existing files in `Assets/Scripts/Testing/Shared/`; the user approves the write
 
 **Input:** `/test-helpers player`
 
@@ -70,17 +70,17 @@ Fixture defaults.
 1. Skill reads engine, language and framework; samples the existing test file
 2. Skill greps `design/gdd/player.md` for the Formulas / Edge Cases / Detailed
    Rules headings instead of reading it whole
-3. Skill drafts `Assets/Tests/EditMode/Helpers/PlayerFactory.cs`: a static class
+3. Skill drafts `Assets/Scripts/Testing/Shared/PlayerFactory.cs`: a static class
    (not a test fixture) with `Make*` factories with default parameters, bound
    constants commented as coming from the GDD, and a header line
    "Based on: design/gdd/player.md"
 4. Every assertion goes through NUnit's confirmed API — no bare `Debug.Assert()`,
    no `FAIL_IF` placeholder
-5. Skill presents the file list and asks "May I write these helper files to `Assets/Tests/EditMode/Helpers/`?"
+5. Skill presents the file list and asks "May I write these helper files to `Assets/Scripts/Testing/Shared/`?"
 6. Files written on approval; verdict COMPLETE, followed by the usage note
 
 **Assertions:**
-- [ ] Generated helper is C# at `Assets/Tests/EditMode/Helpers/PlayerFactory.cs`
+- [ ] Generated helper is C# at `Assets/Scripts/Testing/Shared/PlayerFactory.cs`
 - [ ] Bound constants trace to the GDD's Formulas section (not invented values)
 - [ ] Helper does not extend the test-suite base class and uses no singleton
 - [ ] No bare `Debug.Assert()` and no unresolved `FAIL_IF` reaches the file
@@ -113,17 +113,17 @@ Fixture defaults.
 
 **Fixture:**
 - Unity/C#/NUnit configured as in Case 1
-- `Assets/Tests/EditMode/Helpers/GameAssertions.cs` already exists with hand-written additions
-- `Assets/Tests/EditMode/Helpers/GameFactory.cs` does not exist; the user approves the write
+- `Assets/Scripts/Testing/Shared/GameAssertions.cs` already exists with hand-written additions
+- `Assets/Scripts/Testing/Shared/GameFactory.cs` does not exist; the user approves the write
 
 **Input:** `/test-helpers scaffold`
 
 **Expected behavior:**
 1. Skill drafts the base helpers only — `GameAssertions.cs` and
    `GameFactory.cs`; no system-specific helpers in `scaffold` mode
-2. Skill asks "May I write these helper files to `Assets/Tests/EditMode/Helpers/`?"
-3. The missing file, `Assets/Tests/EditMode/Helpers/GameFactory.cs`, is created
-4. For the existing file, skill reports: "Skipping `Assets/Tests/EditMode/Helpers/GameAssertions.cs`
+2. Skill asks "May I write these helper files to `Assets/Scripts/Testing/Shared/`?"
+3. The missing file, `Assets/Scripts/Testing/Shared/GameFactory.cs`, is created
+4. For the existing file, skill reports: "Skipping `Assets/Scripts/Testing/Shared/GameAssertions.cs`
    — already exists. Remove the file manually if you want it regenerated."
 5. Verdict COMPLETE
 
@@ -184,22 +184,22 @@ Fixture defaults.
   `testing.framework: NUnit`; `com.unity.test-framework` is in
   `Packages/manifest.json`, so NUnit's assertion API can be confirmed from the
   installed package
-- `/test-setup` has created `Assets/Tests/EditMode/EditModeTests.asmdef`
+- `/test-setup` has created `Assets/Scripts/Testing/EditMode/<Project>.Tests.EditMode.asmdef`
 - No helpers exist yet; the user approves the write
 
 **Input:** `/test-helpers scaffold`
 
 **Expected behavior:**
-1. The helper root is `Assets/Tests/EditMode/Helpers/` — inside the
-   `EditModeTests` assembly, where Unity compiles it
+1. The helper root is `Assets/Scripts/Testing/Shared/` — the
+   `<Project>.Tests.Shared` assembly, where Unity compiles it
 2. Skill drafts `GameAssertions.cs` and `GameFactory.cs` for that folder,
    asserting through NUnit's `Assert`
-3. Skill asks "May I write these helper files to `Assets/Tests/EditMode/Helpers/`?"
+3. Skill asks "May I write these helper files to `Assets/Scripts/Testing/Shared/`?"
 4. Files written on approval; the usage note says to reference the test assembly;
    verdict COMPLETE
 
 **Assertions:**
-- [ ] Helpers are written under `Assets/Tests/EditMode/Helpers/`
+- [ ] Helpers are written under `Assets/Scripts/Testing/Shared/`
 - [ ] Nothing is written under `tests/helpers/` — outside `Assets/`, Unity never compiles it
 - [ ] The "May I write" ask names the Unity helper root
 - [ ] Verdict is COMPLETE
@@ -209,7 +209,7 @@ Fixture defaults.
 ## Protocol Compliance
 
 - [ ] Reads engine, language and test framework before generating any helper
-- [ ] Writes helpers only to the helper root (`Assets/Tests/EditMode/Helpers/`)
+- [ ] Writes helpers only to the helper root (`Assets/Scripts/Testing/Shared/`)
 - [ ] Section-greps the GDD for system helpers (numbered headings such as `## 4. Formulas` included); constants trace to its Formulas section
 - [ ] Asserts only through the configured framework — never bare `Debug.Assert()` — and generates nothing when that API cannot be confirmed
 - [ ] Helpers never extend the framework's test-suite base class
@@ -223,6 +223,5 @@ Fixture defaults.
 
 - `all` mode (one factory per system with test files) follows Case 1 per system;
   not separately tested.
-- A Unity project whose PlayMode tests need the helpers too (the skill asks before
-  creating a shared `TestHelpers.asmdef`) is not tested.
+- A PlayMode test using the helpers through `<Project>.Tests.Shared` is not tested.
 - A requested system with no GDD is not tested; the skill does not define that path.

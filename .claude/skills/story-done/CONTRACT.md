@@ -78,14 +78,14 @@ then `COMPLETE`; see the verdict section of `SKILL.md`.
 ## Downstream Skill Expects
 **Next skill:** `/gate-check` (Production → Polish gate, or end-of-sprint review)
 - It will read: story files in `production/epics/` checking `Status: Complete` and presence of `## Completion Notes`
-- It will read: `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/` for test file presence and will run the test suite via Bash
+- It will read: `Assets/Scripts/Testing/EditMode/` and `Assets/Scripts/Testing/PlayMode/` for test file presence and will run the test suite via Bash
 - It assumes: every Complete Logic story whose `testing.strict.logic` gate resolved to BLOCKING (the default) has a corresponding test file that **exists**; under an explicit `testing.strict.logic: false` a Logic story may be Complete with the test gap documented in `## Completion Notes`
   > **Existence, not passing.** `/story-done` checks that the test file exists and runs nothing, so a Complete Logic story may carry a test that fails. `/gate-check` running the suite is the FIRST point at which pass/fail is established, so it must never treat a Complete status as evidence the tests passed — it has to run them. That is also why an unconfigured test runner is `NOT ASSESSED` there rather than a silent skip: with no run, nothing upstream has verified the story either.
 - It assumes: Visual/Feel and UI stories that are Complete have a retained screenshot in `production/qa/evidence/`, and Visual/Feel ones a signed-off evidence doc as well — that gate is BLOCKING by default; only under an explicit `testing.strict.visual`/`.ui: false` may such a story be Complete with the deviation documented in `## Completion Notes`
 - It will read: `production/sprint-status.yaml` for `status: done` entries if that file exists
 
 ## Known Fragile Points
-- The story's `## Test Evidence` path is checked first; when it does not match, Phase 4 searches `Assets/Tests/EditMode/[System]/` (or `Assets/Tests/PlayMode/[System]/`) before flagging the test missing, so a file under a slightly different name is still found — one outside that folder is not
+- The story's `## Test Evidence` path is checked first; when it does not match, Phase 4 searches `Assets/Scripts/Testing/EditMode/[System]/` (or `Assets/Scripts/Testing/PlayMode/[System]/`) before flagging the test missing, so a file under a slightly different name is still found — one outside that folder is not
 - The scope check reads the story's `## Files` list (filled by `/create-stories`, replaced by `/dev-story`). A story written before the section existed falls back to the checkpoint's **Files in progress** when it names this story, else reports scope NOT ASSESSED; changes already committed are not seen, since it compares uncommitted files only
 - If `Type:` is absent from the story header, test evidence gate enforcement is ADVISORY only — stories can slip through without tests
 - Manifest version staleness check is skipped if `docs/architecture/control-manifest.md` does not exist; the check being skipped is noted in the report but is non-blocking

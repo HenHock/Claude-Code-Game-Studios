@@ -53,7 +53,7 @@ Fixture defaults.
 
 **Fixture:**
 - `design/gdd/inventory-crafting-system.md` enumerates 20 scope items
-- `Assets/gameplay/inventory/` and `Assets/gameplay/crafting/` implement all 20, plus one addition (item sorting) found in a recent commit
+- `Assets/Scripts/Core/Gameplay/inventory/` and `Assets/Scripts/Core/Gameplay/crafting/` implement all 20, plus one addition (item sorting) found in a recent commit
 - No items were dropped
 
 **Input:** `/scope-check inventory crafting system`
@@ -105,7 +105,7 @@ Fixture defaults.
 
 **Fixture:**
 - No `design/gdd/crafting.md` and no file in `design/` matches "crafting"
-- `Assets/gameplay/crafting/` contains implemented code
+- `Assets/Scripts/Core/Gameplay/crafting/` contains implemented code
 
 **Input:** `/scope-check crafting`
 
@@ -126,7 +126,7 @@ Fixture defaults.
 
 **Fixture:**
 - `design/gdd/dialogue.md` exists but contains only section headings and `[TO BE CONFIGURED]` placeholders — no scope items
-- `Assets/narrative/dialogue/` contains implemented code
+- `Assets/Scripts/Core/Narrative/dialogue/` contains implemented code
 
 **Input:** `/scope-check dialogue`
 

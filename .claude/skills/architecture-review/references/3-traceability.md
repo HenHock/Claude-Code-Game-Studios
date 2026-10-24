@@ -90,7 +90,7 @@ Full-read a story only when its Test Evidence section is missing or ambiguous.
 ### Step 3b-2 — Load test files
 
 Glob the test root (`.claude/docs/directory-structure.md`):
-`Assets/Tests/**/*Tests.cs`. With no
+`Assets/Scripts/Testing/**/*Tests.cs`. With no
 test root found, say the test index could not be built rather than reading an
 empty glob as "no tests". Build an index: system → [test file paths].
 
@@ -113,7 +113,7 @@ Extended matrix format:
 
 | TR-ID | GDD | Requirement | ADR | Story | Test File | Test Status |
 |-------|-----|-------------|-----|-------|-----------|-------------|
-| TR-combat-001 | combat.md | Hitbox < 1 frame | ADR-0003 | story-001-hitbox.md | Assets/Tests/EditMode/Combat/HitboxTests.cs | COVERED |
+| TR-combat-001 | combat.md | Hitbox < 1 frame | ADR-0003 | story-001-hitbox.md | Assets/Scripts/Testing/EditMode/Combat/HitboxTests.cs | COVERED |
 | TR-combat-002 | combat.md | Combo window | — | story-002-combo.md | — | NONE (Visual/Feel) |
 | TR-inventory-001 | inventory.md | Persistent storage | ADR-0005 | — | — | NO STORY |
 ```

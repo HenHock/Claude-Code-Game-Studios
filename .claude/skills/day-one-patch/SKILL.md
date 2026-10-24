@@ -154,7 +154,7 @@ Ask qa-lead to determine: **Is a targeted smoke check sufficient, or do any fixe
 
 Run the required QA scope:
 - **Targeted smoke check** — run `/smoke-check` (it takes no system argument)
-- **Broader regression** — run the affected systems' tests in the test root (`Assets/Tests/` — `.claude/docs/directory-structure.md`) with `commands.test` from `project.yaml`, narrowed to the affected suites where the runner allows — never a runner line written from memory. If `commands.test` is unset, the broader regression is NOT ASSESSED; say so.
+- **Broader regression** — run the affected systems' tests in the test root (`Assets/Scripts/Testing/` — `.claude/docs/directory-structure.md`) with `commands.test` from `project.yaml`, narrowed to the affected suites where the runner allows — never a runner line written from memory. If `commands.test` is unset, the broader regression is NOT ASSESSED; say so.
 
 QA verdict must be PASS or PASS WITH WARNINGS before proceeding. If FAIL: scope the failing fix out of the day-one patch and defer to 1.1.
 

@@ -16,11 +16,14 @@ tests/
   smoke/          — Critical path test list (15-minute manual gate)
   README.md       — Test framework documentation
 
-Assets/Tests/
-  EditMode/       — Isolated unit tests for formulas, state, and logic
-  PlayMode/       — Cross-system tests in a running scene, save/load round-trips
+Assets/Scripts/Testing/
+  EditMode/<Feature>/  — Isolated unit tests for formulas, state, and logic
+                         (+ <Project>.Tests.EditMode.asmdef)
+  PlayMode/<Feature>/  — Cross-system tests in a running scene, save/load round-trips
+                         (+ <Project>.Tests.PlayMode.asmdef)
   [Unity does not compile code in tests/, so unit and integration tests
-   live under Assets/Tests/]
+   live under Assets/Scripts/Testing/; the feature path mirrors
+   Assets/Scripts/Core/<Feature>/ — see .claude/docs/unity-folder-structure.md]
 
 production/qa/
   evidence/       — Screenshot and manual test sign-off records

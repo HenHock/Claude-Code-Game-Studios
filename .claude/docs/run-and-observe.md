@@ -63,7 +63,7 @@ Builds/Win64/Game.exe -screen-width 1280 -screen-height 720 -screen-fullscreen 0
 `-screen-*` are Unity's own player arguments. `--scene`, `--screenshot` and
 `--after` are **yours**, read by the script below. The template does not ship
 it: the first time a Unity story needs a screenshot, `/dev-story` asks to write
-it, verbatim, to `Assets/Scripts/ScreenshotOnArg.cs`. It needs no scene edit — it boots itself, and does nothing unless the player
+it, verbatim, to `Assets/Scripts/Core/Capture/ScreenshotOnArg.cs`. It needs no scene edit — it boots itself, and does nothing unless the player
 was launched with `--screenshot`:
 
 ```csharp

@@ -56,7 +56,7 @@ Unity then reports `result="Passed"` with exit 0 over zero tests.
 
 **Play Mode is a second run.** `-testPlatform EditMode` — this default, and
 `commands.test` as `/setup-engine` writes it — never runs the integration tests
-`/test-setup` scaffolds under `Assets/Tests/PlayMode/`. When that folder holds a
+`/test-setup` scaffolds under `Assets/Scripts/Testing/PlayMode/`. When that folder holds a
 test file and the command you ran did not already pass `-testPlatform PlayMode`,
 run Play Mode the same way, into its own results file, and read it by the same
 rules:

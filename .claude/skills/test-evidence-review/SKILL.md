@@ -109,11 +109,11 @@ For each story, find the evidence. **Check the story's stated evidence path firs
 — the one Section 2 captured from its `## Test Evidence` section. If it exists, use
 it. Fall back to searching only when no path is stated or it is not found:
 
-**Logic stories**: search the unit-test root — `Assets/Tests/EditMode/`; see `.claude/docs/directory-structure.md` — for a file whose name
+**Logic stories**: search the unit-test root — `Assets/Scripts/Testing/EditMode/`; see `.claude/docs/directory-structure.md` — for a file whose name
 contains the story slug or its system. Test files are named per
 `.claude/rules/test-standards.md`, not necessarily `[story-slug]_test.*`.
 
-**Integration stories**: the same, under the integration root (`Assets/Tests/PlayMode/`)
+**Integration stories**: the same, under the integration root (`Assets/Scripts/Testing/PlayMode/`)
   - Also check `production/qa/playtests/` for playtest records mentioning the story
 
 **Visual/Feel and UI stories**: Glob `production/qa/evidence/` for a retained image

@@ -102,7 +102,7 @@ Fixture defaults.
 - [ ] Files land at `production/epics/[epic-slug]/EPIC.md`
 - [ ] Each EPIC.md contains Layer, GDD path, Architecture Module, Governing ADRs table, GDD Requirements table, Definition of Done
 - [ ] The first epic's Engine Risk is HIGH — the highest among its governing ADRs, not the first or the average
-- [ ] The Definition of Done asks Logic and Integration stories for passing tests under `Assets/Tests/` (the Unity test root) and Visual/Feel and UI stories for retained screenshots in `production/qa/evidence/` — each screen touched for UI, plus a lead sign-off for Visual/Feel
+- [ ] The Definition of Done asks Logic and Integration stories for passing tests under `Assets/Scripts/Testing/` (the Unity test root) and Visual/Feel and UI stories for retained screenshots in `production/qa/evidence/` — each screen touched for UI, plus a lead sign-off for Visual/Feel
 - [ ] "PR-EPIC skipped — Lean mode." appears; no producer is spawned
 - [ ] `production/epics/index.md` is created or updated after writing, and only after an ask that named it
 - [ ] Verdict is COMPLETE and names `/create-stories [epic-slug]`

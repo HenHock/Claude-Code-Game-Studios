@@ -7,9 +7,9 @@ available`.
 **Parse check:** the `commands.smoke` command (`-batchmode -quit -projectPath .
 -logFile -`). Exit 1 with `error CS…` lines means a script does not compile.
 
-**Capture** needs `Assets/Scripts/ScreenshotOnArg.cs`, given word for word in
+**Capture** needs `Assets/Scripts/Core/Capture/ScreenshotOnArg.cs`, given word for word in
 `run-and-observe.md` (named in `SKILL.md`, Phase 6). When the project has none
 (look for `Assets/**/ScreenshotOnArg.cs`), ask "May I write
-`Assets/Scripts/ScreenshotOnArg.cs`?" and write it exactly as given before
+`Assets/Scripts/Core/Capture/ScreenshotOnArg.cs`?" and write it exactly as given before
 launching. Declined: nothing can capture, so report
 `Run result: NOT VERIFIED — ScreenshotOnArg.cs not written`.

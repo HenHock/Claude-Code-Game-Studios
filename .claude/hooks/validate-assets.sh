@@ -99,7 +99,7 @@ ERRORS=""     # Build-breaking issues -- exit 2 so Claude hears about it
 # BLOCKING: Check JSON validity for data files in the Unity data folder --
 # the same set validate-commit.sh blocks on.
 # Invalid JSON will break runtime loading -- this is a build-breaking error
-if echo "$REL_PATH" | grep -qE '^Assets/(.*/)?[Dd]ata/.*\.[Jj][Ss][Oo][Nn]$'; then
+if echo "$REL_PATH" | grep -qE '^Assets/((.*/)?[Dd]ata/|Configs/).*\.[Jj][Ss][Oo][Nn]$'; then
     FILE_PATH="$REL_PATH"
     if [ -f "$FILE_PATH" ]; then
         # Find a working Python command

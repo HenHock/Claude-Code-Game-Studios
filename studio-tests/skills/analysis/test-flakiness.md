@@ -56,7 +56,7 @@ Fixture defaults.
 - `project.yaml`: `engine.name: Unity`; `modes.automation` unset (collaborative)
 - `test-results/` holds 6 NUnit XML files from 6 runs of the same commit
 - `LootDrop_RollsRareItem` fails in 2 of the 6 runs (33%); the other 40 tests pass in all 6
-- `Assets/Tests/EditMode/Loot/LootDropTests.cs` calls `Random.value` with no seed
+- `Assets/Scripts/Testing/EditMode/Loot/LootDropTests.cs` calls `Random.value` with no seed
 - `tests/regression-suite.md` has a Quarantined Tests table with 1 existing entry
 
 **Input:** `/test-flakiness scan`

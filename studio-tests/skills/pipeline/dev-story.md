@@ -73,7 +73,7 @@ Fixture defaults.
   Type Logic, `Requirement: TR-combat-001`, `ADR Governing Implementation: ADR-0003`,
   an `ADR Version` equal to ADR-0003's `## Last Verified` date, a `Manifest Version`
   equal to the manifest header date, Dependencies None, Test Evidence
-  `Assets/Tests/EditMode/Combat/CombatDamageCalcTests.cs`
+  `Assets/Scripts/Testing/EditMode/Combat/CombatDamageCalcTests.cs`
 - `docs/architecture/tr-registry.yaml` has `TR-combat-001`; ADR-0003 exists and is
   Accepted; `docs/architecture/control-manifest.md` exists
 - `production/sprint-status.yaml` does not exist
@@ -103,7 +103,7 @@ Fixture defaults.
 - [ ] The In Progress ask names the story file; `Status:` becomes `In Progress` only after it and before any agent is spawned, and the sprint-status-absent line is printed
 - [ ] Primary is `gameplay-programmer`; secondary comes from `specialists.code`, not the roster table
 - [ ] The ADR guidance is passed inline, not as the ADR path
-- [ ] The brief names `Assets/Tests/EditMode/Combat/CombatDamageCalcTests.cs` (`[System]Tests`) and requires one test per acceptance criterion
+- [ ] The brief names `Assets/Scripts/Testing/EditMode/Combat/CombatDamageCalcTests.cs` (`[System]Tests`) and requires one test per acceptance criterion
 - [ ] The compile check's command and exit code are reported, and exactly one `Run result:` line appears
 - [ ] Story is NOT marked Complete; the handoff is `/code-review` then `/story-done`
 - [ ] The CHECKPOINT block in `active.md` is overwritten, not appended to
@@ -324,10 +324,10 @@ The `full` column of the file-check table has its own STOP rule, so the
 **Expected behavior:**
 1. Spawns `ui-programmer` with `unity-specialist` (`specialists.code`) and
    `unity-ui-specialist` (`specialists.ui`, for a UI story)
-2. The brief sends the code to `Assets/Scripts/<System>/`, the Unity code root
+2. The brief sends the code to `Assets/Scripts/Core/<Feature>/`, the Unity code root
 3. Verification runs `commands.smoke` and reports its exit code
 4. Before launching, globs `Assets/**/ScreenshotOnArg.cs`, finds none and asks
-   "May I write `Assets/Scripts/ScreenshotOnArg.cs`?"; on yes writes the script
+   "May I write `Assets/Scripts/Core/Capture/ScreenshotOnArg.cs`?"; on yes writes the script
    verbatim from `.claude/docs/run-and-observe.md`
 5. Launches the built player with `--scene`/`--screenshot` and prints
    `Run result: OBSERVED — …` with the retained path
@@ -335,7 +335,7 @@ The `full` column of the file-check table has its own STOP rule, so the
 **Assertions:**
 - [ ] No file is written under `src/` — the Unity code root is `Assets/`
 - [ ] Both specialists come from the `specialists` block, not the roster table
-- [ ] `ScreenshotOnArg.cs` is written only after its ask, at `Assets/Scripts/`, exactly as run-and-observe.md gives it
+- [ ] `ScreenshotOnArg.cs` is written only after its ask, at `Assets/Scripts/Core/Capture/`, exactly as run-and-observe.md gives it
 - [ ] If the user declines that ask, the result is `Run result: NOT VERIFIED — ScreenshotOnArg.cs not written`, not an observation
 - [ ] Verification names `commands.smoke` and its exit code
 
@@ -394,7 +394,7 @@ The `full` column of the file-check table has its own STOP rule, so the
 - `project.yaml`: `engine.name: Unity`, `modes.workflow: minimal`, `qa.level: minimal`
 - Story Type Logic, `Status: Ready`, ADR fields `N/A (minimal — no ADRs)`
 - The programmer agent reports that it hit its turn limit after adding
-  `Assets/Scripts/Combat/Damage.cs`, which calls a helper it never defined
+  `Assets/Scripts/Core/Combat/Damage.cs`, which calls a helper it never defined
 
 **Input:** `/dev-story production/epics/[slug]/story-001-[slug].md`
 

@@ -1,6 +1,7 @@
 ---
 paths:
   - "Assets/**/{Data,data}/**/*.json"
+  - "Assets/Configs/**/*.json"
 ---
 
 # Data File Rules

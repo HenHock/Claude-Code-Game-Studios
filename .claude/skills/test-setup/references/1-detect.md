@@ -16,10 +16,10 @@
 
 2. **Check for existing test infrastructure**:
    - Glob `tests/` — does the directory exist?
-   - Glob `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/` — do they exist?
+   - Glob `Assets/Scripts/Testing/EditMode/` and `Assets/Scripts/Testing/PlayMode/` — do they exist?
    - Glob `.github/workflows/` — does a CI workflow file exist?
-   - The `Assets/Tests/` folders are the **test root** in
-     `.claude/docs/directory-structure.md`; tests anywhere else are never
+   - The `Assets/Scripts/Testing/` folders are the **test root** in
+     `.claude/docs/unity-folder-structure.md`; tests anywhere else are never
      compiled by Unity.
 
 3. **Report findings**:

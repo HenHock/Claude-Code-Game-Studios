@@ -53,15 +53,15 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`, so the asset root and code root are `Assets/`
 - `design/art/art-bible.md` Asset Standards: textures PNG, power-of-two, ≤2MB; SFX OGG, 44.1 kHz, ≤500KB (no duration budget); naming rule: lowercase with underscores, art `[category]_[name]_[variant]_[size].[ext]`, audio `[category]_[context]_[name]_[variant].[ext]`
-- `Assets/art/characters/` contains: `char_grunt_idle_512.png`, `char_sniper_run_512.png` (512×512 PNG, 300KB each)
-- `Assets/audio/sfx/` contains: `sfx_player_jump_01.ogg`, `sfx_item_pickup_01.ogg` (OGG, 44.1 kHz, 80KB and under 1 s each)
+- `Assets/Content/Characters/Sprites/` contains: `char_grunt_idle_512.png`, `char_sniper_run_512.png` (512×512 PNG, 300KB each)
+- `Assets/Content/Characters/Audio/` contains: `sfx_player_jump_01.ogg`, `sfx_item_pickup_01.ogg` (OGG, 44.1 kHz, 80KB and under 1 s each)
 - Code under `Assets/` references all four files
 
 **Input:** `/asset-audit`
 
 **Expected behavior:**
 1. Skill reads the asset standards from `design/art/art-bible.md` (Phase 1)
-2. Skill resolves the engine to Unity and globs `Assets/art/**/*` and `Assets/audio/**/*` (Phase 2)
+2. Skill resolves the engine to Unity and globs `Assets/Content/**/*` (Phase 2)
 3. Every name matches the art bible's naming rule; every file is within budget and in the expected format; every file is referenced from code
 4. Summary shows 4 assets scanned, 0 in every violation count and no section not assessed; the violation tables are empty
 5. Verdict is COMPLIANT
@@ -80,7 +80,7 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`
 - `design/art/art-bible.md` asset standards: textures PNG, power-of-two, ≤2MB
-- `Assets/art/environment/` contains 5 correctly named power-of-two PNG textures, all referenced from code
+- `Assets/Content/Environment/Textures/` contains 5 correctly named power-of-two PNG textures, all referenced from code
 - 3 of them are 4096×4096 at 4MB each; 2 are 1024×1024 at 1MB each
 
 **Input:** `/asset-audit`
@@ -107,8 +107,8 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`
 - `design/art/art-bible.md` asset standards: SFX OGG ≤500KB; music OGG or MP3 ≤8MB
-- `Assets/audio/music/music_menu_theme_01.wav` exists (WAV format, 6MB), referenced from code
-- `Assets/audio/sfx/sfx_player_footstep_01.ogg` exists (OGG format, 40KB), referenced from code
+- `Assets/Content/Menu/Audio/music_menu_theme_01.wav` exists (WAV format, 6MB), referenced from code
+- `Assets/Content/Characters/Audio/sfx_player_footstep_01.ogg` exists (OGG format, 40KB), referenced from code
 
 **Input:** `/asset-audit`
 
@@ -133,9 +133,9 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`; `design/art/art-bible.md` sets texture budgets
-- `Assets/art/characters/` holds 3 other correctly named textures, within budget and referenced from code
-- `Assets/Scripts/Enemies/Boss.cs` loads `Assets/art/characters/boss/char_boss_idle_512.png`
-- `Assets/art/characters/boss/` is empty — the file does not exist
+- `Assets/Content/Characters/Sprites/` holds 3 other correctly named textures, within budget and referenced from code
+- `Assets/Scripts/Core/Enemies/Boss.cs` loads `Assets/Content/Characters/Boss/Textures/char_boss_idle_512.png`
+- `Assets/Content/Characters/Boss/Textures/` is empty — the file does not exist
 - `design/gdd/enemies.md` also names `char_boss_roar_512.png`, which no code references
 
 **Input:** `/asset-audit`
@@ -143,13 +143,13 @@ Fixture defaults.
 **Expected behavior:**
 1. Skill searches code for asset references (Phase 3 "Missing assets") and checks each path exists
 2. `char_boss_idle_512.png` is not found
-3. The Missing Assets table lists Reference Location `Assets/Scripts/Enemies/Boss.cs` and the Expected Path
+3. The Missing Assets table lists Reference Location `Assets/Scripts/Core/Enemies/Boss.cs` and the Expected Path
 4. The GDD-only name `char_boss_roar_512.png` is not reported — the missing-asset check searches code, not GDDs
 5. Verdict is NON-COMPLIANT
 6. Next steps point to `/content-audit` for the GDD cross-check
 
 **Assertions:**
-- [ ] The Missing Assets table lists `Assets/Scripts/Enemies/Boss.cs` as the reference location and `Assets/art/characters/boss/char_boss_idle_512.png` as the expected path
+- [ ] The Missing Assets table lists `Assets/Scripts/Core/Enemies/Boss.cs` as the reference location and `Assets/Content/Characters/Boss/Textures/char_boss_idle_512.png` as the expected path
 - [ ] The GDD-only asset name is not reported as missing
 - [ ] Verdict is NON-COMPLIANT when a code-referenced asset is missing
 - [ ] Next steps name `/content-audit` for GDD-vs-asset completeness
@@ -209,7 +209,7 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`
 - `design/art/art-bible.md` does not exist; no design doc states asset standards
-- `Assets/art/ui/` holds 3 correctly named power-of-two PNGs; code under `Assets/` references all three
+- `Assets/Content/Menu/Sprites/` holds 3 correctly named power-of-two PNGs; code under `Assets/` references all three
 
 **Input:** `/asset-audit`
 
@@ -232,8 +232,8 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`, so the asset root and code root are `Assets/`
 - `design/art/art-bible.md` asset standards: textures ≤4MB; no naming convention stated
-- `Assets/Characters/Grunt/` holds `T_Grunt_D.png` (2.5MB) and `T_Grunt_N.png` (2.1MB)
-- `Assets/Scripts/GruntCharacter.cs` loads `Assets/Characters/Grunt/T_Grunt_D.png`
+- `Assets/Content/Characters/Grunt/Textures/` holds `T_Grunt_D.png` (2.5MB) and `T_Grunt_N.png` (2.1MB)
+- `Assets/Scripts/Core/Characters/Grunt/GruntCharacter.cs` loads `Assets/Content/Characters/Grunt/Textures/T_Grunt_D.png`
 
 **Input:** `/asset-audit`
 
@@ -257,7 +257,7 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml` has no `engine.name`; `.claude/docs/technical-preferences.md` reads `[TO BE CONFIGURED]`
 - Both `Assets/` and `Source/` exist, so the tree does not decide the engine
-- `design/art/art-bible.md` has asset standards; `Assets/art/` holds PNG files
+- `design/art/art-bible.md` has asset standards; `Assets/Content/` holds PNG files
 
 **Input:** `/asset-audit`
 

@@ -75,7 +75,7 @@ If no engine is configured (no `engine.name` in `project.yaml`, and `technical-p
 
 ## Phase 3: ADR Compliance Check
 
-**Argument:** `/code-review [file(s)]` may optionally include a story file path as the last argument (e.g., `/code-review Assets/Scripts/Combat/Attack.cs production/epics/combat/story-001.md`). If a story path is provided, read it to extract the governing ADR reference.
+**Argument:** `/code-review [file(s)]` may optionally include a story file path as the last argument (e.g., `/code-review Assets/Scripts/Core/Combat/Attack.cs production/epics/combat/story-001.md`). If a story path is provided, read it to extract the governing ADR reference.
 
 Search for ADR references in, in priority order:
 1. The story file (if provided as argument)

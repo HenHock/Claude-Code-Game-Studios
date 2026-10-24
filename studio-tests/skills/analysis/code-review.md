@@ -54,7 +54,7 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`, `specialists.code: unity-specialist`, `specialists.shader: null`, `specialists.ui: null`
-- `Assets/gameplay/health_component.cs` meets all six Phase 4 checks:
+- `Assets/Scripts/Core/Gameplay/health_component.cs` meets all six Phase 4 checks:
   - Doc comments (`##`) on every public method and the class
   - Every method under cyclomatic complexity 10 and under 40 lines
   - Dependencies injected; no singletons
@@ -64,7 +64,7 @@ Fixture defaults.
 - `docs/architecture/adr-0004-health.md` has `## Decision` and `## Consequences` sections, and the code follows the chosen approach
 - The specialist reports no issues; there is nothing to suggest
 
-**Input:** `/code-review Assets/gameplay/health_component.cs`
+**Input:** `/code-review Assets/Scripts/Core/Gameplay/health_component.cs`
 
 **Expected behavior:**
 1. Skill reads the source file and the coding standards
@@ -90,17 +90,17 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`, `specialists.code: unity-specialist`
-- `Assets/ui/inventory_ui.cs` has:
+- `Assets/Scripts/Core/UI/inventory_ui.cs` has:
   - 2 public methods (`refresh_slots`, `sort_items`) without doc comments
   - `GameManager.instance` used at lines 42 and 87
   - All other standards met
 - No ADR reference in the file header, and no commit touching it names an ADR
 - No story path is passed
 
-**Input:** `/code-review Assets/ui/inventory_ui.cs`
+**Input:** `/code-review Assets/Scripts/Core/UI/inventory_ui.cs`
 
 **Expected behavior:**
-1. Skill searches the file header and `git log --oneline -- Assets/ui/inventory_ui.cs` for `ADR-NNNN` references and finds none
+1. Skill searches the file header and `git log --oneline -- Assets/Scripts/Core/UI/inventory_ui.cs` for `ADR-NNNN` references and finds none
 2. Output notes: "No ADR references found — ADR compliance check skipped. For full ADR compliance review, provide the story path: `/code-review [files] [story-path]`."
 3. Standards Compliance shows 4/6 passing and lists the failures with line references: the two undocumented methods and the singleton at lines 42 and 87
 4. Required Changes lists the missing doc comments and the singleton, with dependency injection as the fix
@@ -121,12 +121,12 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`, `specialists.code: unity-specialist`
-- `Assets/core/save_system.cs` header: `# Implements ADR-0010 (docs/architecture/adr-0010-save-format.md)`
+- `Assets/Scripts/Core/Save/save_system.cs` header: `# Implements ADR-0010 (docs/architecture/adr-0010-save-format.md)`
 - `adr-0010-save-format.md` `## Decision`: save data goes through `SaveService` as JSON; direct `FileAccess` writes from gameplay code are explicitly rejected
 - `save_system.cs` writes save data with `FileAccess.open(..., FileAccess.WRITE)` directly at line 58
 - Code otherwise meets all six standards checks
 
-**Input:** `/code-review Assets/core/save_system.cs`
+**Input:** `/code-review Assets/Scripts/Core/Save/save_system.cs`
 
 **Expected behavior:**
 1. Skill reads only the Decision and Consequences sections of ADR-0010
@@ -149,20 +149,20 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`
-- `Assets/networking/` does not exist
+- `Assets/Scripts/Core/Networking/` does not exist
 
-**Input:** `/code-review Assets/networking/`
+**Input:** `/code-review Assets/Scripts/Core/Networking/`
 
 **Expected behavior:**
 1. Skill records its inputs as FOUND / ABSENT; the target source files are ABSENT
 2. Every required input is ABSENT, so the skill stops before producing review sections
-3. Output reports `NOT ASSESSED — NO DATA` as the whole verdict, naming `Assets/networking/` as missing
+3. Output reports `NOT ASSESSED — NO DATA` as the whole verdict, naming `Assets/Scripts/Core/Networking/` as missing
 4. No specialist or `qa-tester` agent is spawned
 5. No review section is filled in, and the result is not presented as APPROVED
 
 **Assertions:**
 - [ ] Skill does not crash when the path does not exist
-- [ ] Output names the attempted path `Assets/networking/`
+- [ ] Output names the attempted path `Assets/Scripts/Core/Networking/`
 - [ ] Verdict is `NOT ASSESSED — NO DATA`, not APPROVED
 - [ ] No specialist agent is spawned when there is nothing to review
 
@@ -172,9 +172,9 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml` has `modes.review_mode: full` and no `engine.name`; `.claude/docs/technical-preferences.md` reads `[TO BE CONFIGURED]`
-- `Assets/gameplay/loot_system.cs` hardcodes a drop rate `0.05` at line 31; everything else meets the standards
+- `Assets/Scripts/Core/Gameplay/loot_system.cs` hardcodes a drop rate `0.05` at line 31; everything else meets the standards
 
-**Input:** `/code-review Assets/gameplay/loot_system.cs`
+**Input:** `/code-review Assets/Scripts/Core/Gameplay/loot_system.cs`
 
 **Expected behavior:**
 1. Phase 2 finds no engine configured and skips the engine specialist steps
@@ -199,9 +199,9 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml` has no `engine.name`; `.claude/docs/technical-preferences.md` reads `[TO BE CONFIGURED]`
-- `Assets/gameplay/loot_table.cs` meets all six Phase 4 checks and raises no architecture, SOLID or game-specific concern
+- `Assets/Scripts/Core/Gameplay/loot_table.cs` meets all six Phase 4 checks and raises no architecture, SOLID or game-specific concern
 
-**Input:** `/code-review Assets/gameplay/loot_table.cs`
+**Input:** `/code-review Assets/Scripts/Core/Gameplay/loot_table.cs`
 
 **Expected behavior:**
 1. Phase 2 records `Engine validation: NOT ASSESSED — no engine configured`; no engine specialist is spawned
@@ -218,12 +218,12 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`, `specialists.code: unity-specialist`
-- `Assets/gameplay/stamina.cs` meets all six Phase 4 checks and raises no
+- `Assets/Scripts/Core/Gameplay/stamina.cs` meets all six Phase 4 checks and raises no
   architecture, SOLID or game-specific concern; the specialist reports it clean
 - Its header reads `# Implements ADR-0008 (docs/architecture/adr-0008-stamina.md)`,
   and no such file exists
 
-**Input:** `/code-review Assets/gameplay/stamina.cs`
+**Input:** `/code-review Assets/Scripts/Core/Gameplay/stamina.cs`
 
 **Expected behavior:**
 1. Phase 3 finds the `ADR-0008` reference but cannot read the ADR

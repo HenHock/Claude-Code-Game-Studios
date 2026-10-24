@@ -10,7 +10,7 @@ After completing the review and writing approved files, present:
 1. **Immediate actions**: List the top 3 ADRs to create (highest-impact gaps first,
    Foundation layer before Feature layer)
 2. **Pre-gate checklist**: Check whether these exist via Glob and mark each ✅ or ❌:
-   - the test root — `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/` — if ❌: run `/test-setup`
+   - the test root — `Assets/Scripts/Testing/EditMode/` and `Assets/Scripts/Testing/PlayMode/` — if ❌: run `/test-setup`
    - `.github/workflows/tests.yml` — if ❌: run `/test-setup`
    - `design/accessibility-requirements.md` — if ❌: run `/ux-design`
    - `design/ux/interaction-patterns.md` — if ❌: run `/ux-design`

@@ -81,6 +81,6 @@ No gate IDs assigned.
 ---
 
 ## Coverage Notes
-- ECS conversion (Case 1) must include a unit test using the ECS test framework (`World`, `EntityManager`) under `Assets/Tests/EditMode/`
+- ECS conversion (Case 1) must include a unit test using the ECS test framework (`World`, `EntityManager`) under `Assets/Scripts/Testing/EditMode/`
 - Burst incompatibility (Case 3) is safety-critical — the agent must catch this before the code is written
 - Chunk layout (Case 5) verifies the agent designs against a stated budget and says how it will be measured, rather than asserting unmeasured numbers

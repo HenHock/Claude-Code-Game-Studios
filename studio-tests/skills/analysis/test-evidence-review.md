@@ -9,8 +9,8 @@ takes a scope: a single story path, `sprint` (the most recent plan in
 with no argument it asks which. If the resolved scope holds zero stories it stops
 with `NOT ASSESSED — no stories in scope` and routes to the skill that creates
 them. For each story it collects Story Type, evidence path and acceptance
-criteria with targeted greps, locates the evidence (`Assets/Tests/EditMode/[system]/`,
-`Assets/Tests/PlayMode/[system]/`, `production/qa/evidence/`,
+criteria with targeted greps, locates the evidence (`Assets/Scripts/Testing/EditMode/[system]/`,
+`Assets/Scripts/Testing/PlayMode/[system]/`, `production/qa/evidence/`,
 `production/qa/smoke-*.md`), and reviews automated tests for assertion count,
 edge cases, naming and formula traceability, and manual evidence for criterion
 linkage, sign-offs, retained screenshots and freshness. It resolves `qa.level`
@@ -63,22 +63,22 @@ Fixture defaults.
 ### Case 1: Happy Path — Single Logic story with a strong test
 
 **Fixture:**
-- `project.yaml`: `engine.name: Unity`, so the unit-test root is `Assets/Tests/EditMode/`; `modes.automation` unset (collaborative)
-- `production/epics/combat/story-001-damage-calc.md` (slug `damage-calc`): `## Test Evidence` gives Story Type Logic and the path `Assets/Tests/EditMode/combat/DamageCalcTests.cs`; `## Acceptance Criteria` includes "damage is never below 1" and "critical hits multiply damage by 2.0"
-- `Assets/Tests/EditMode/combat/DamageCalcTests.cs` opens with `// Story: production/epics/combat/story-001-damage-calc.md`, has 4 test functions with 3+ assertions each, named like `ZeroArmor_ReturnsBaseDamage` and `MaxCrit_DoublesDamage`, and names the GDD's `damage_formula` in a comment
+- `project.yaml`: `engine.name: Unity`, so the unit-test root is `Assets/Scripts/Testing/EditMode/`; `modes.automation` unset (collaborative)
+- `production/epics/combat/story-001-damage-calc.md` (slug `damage-calc`): `## Test Evidence` gives Story Type Logic and the path `Assets/Scripts/Testing/EditMode/Combat/DamageCalcTests.cs`; `## Acceptance Criteria` includes "damage is never below 1" and "critical hits multiply damage by 2.0"
+- `Assets/Scripts/Testing/EditMode/Combat/DamageCalcTests.cs` opens with `// Story: production/epics/combat/story-001-damage-calc.md`, has 4 test functions with 3+ assertions each, named like `ZeroArmor_ReturnsBaseDamage` and `MaxCrit_DoublesDamage`, and names the GDD's `damage_formula` in a comment
 
 **Input:** `/test-evidence-review production/epics/combat/story-001-damage-calc.md`
 
 **Expected behavior:**
 1. Single-story mode: skill reads the story's Test Evidence and Acceptance Criteria
-2. Section 3 finds the test file under `Assets/Tests/EditMode/combat/`
+2. Section 3 finds the test file under `Assets/Scripts/Testing/EditMode/Combat/`
 3. Section 4: assertion coverage is normal (3+ per function); "zero" and "max" cases cover the numeric criteria; names follow `[Scenario]_[Expected]`; the formula is referenced
 4. Story verdict: **ADEQUATE**; overall verdict ADEQUATE; 0 BLOCKING items
 5. Report is presented in conversation, then the skill asks "May I write this test evidence review to `production/qa/evidence-review-[date].md`?" as optional
 6. Verdict: **COMPLETE**
 
 **Assertions:**
-- [ ] The test file is located under `Assets/Tests/EditMode/combat/` for the Logic story
+- [ ] The test file is located under `Assets/Scripts/Testing/EditMode/Combat/` for the Logic story
 - [ ] Assertion coverage, edge cases, naming and formula traceability are each reported
 - [ ] Story verdict is ADEQUATE
 - [ ] The report is shown before the optional "May I write" prompt
@@ -91,7 +91,7 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`, `modes.rigor: standard` (so `qa.level: standard` — tests are required); no `testing.strict` block
 - `production/epics/combat/story-002-crit-roll.md` (slug `crit-roll`): Story Type Logic
-- `Assets/Tests/EditMode/combat/CritRollTests.cs` has `public void Test1()` with no assertions and `public void CritRoll_AppliesMultiplier()` with one assertion
+- `Assets/Scripts/Testing/EditMode/Combat/CritRollTests.cs` has `public void Test1()` with no assertions and `public void CritRoll_AppliesMultiplier()` with one assertion
 
 **Input:** `/test-evidence-review production/epics/combat/story-002-crit-roll.md`
 
@@ -216,20 +216,20 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml`: `engine.name: unity`
 - `production/epics/inventory/story-003-stack-merge.md`: Story Type Logic; its
-  `## Test Evidence` names `Assets/Tests/EditMode/InventoryTests.cs`
+  `## Test Evidence` names `Assets/Scripts/Testing/EditMode/InventoryTests.cs`
 - That file exists and holds one `[Test]` per acceptance criterion (4 in all), each with 3 or more `Assert.That` calls, named in the `[Scenario]_[Expected]` form (`MergeStacks_FullStack_SpillsToNewSlot`), with the empty-stack and max-stack cases covered
 - The inventory GDD has no Formulas section, so formula traceability does not apply
-- Nothing named `StackMergeTests.*` exists anywhere, and `Assets/Tests/EditMode/` does not exist
+- Nothing named `StackMergeTests.*` exists anywhere, and `Assets/Scripts/Testing/EditMode/` does not exist
 
 **Input:** `/test-evidence-review production/epics/inventory/story-003-stack-merge.md`
 
 **Expected behavior:**
-1. Section 3 finds the test at the stated path under `Assets/Tests/EditMode/`
+1. Section 3 finds the test at the stated path under `Assets/Scripts/Testing/EditMode/`
 2. Section 4 reviews its assertions; story verdict **ADEQUATE**
 
 **Assertions:**
 - [ ] The test is found at the stated Unity path — the story is not reported MISSING
-- [ ] The review does not require a `[System]Tests.*` name or a `Assets/Tests/EditMode/` location
+- [ ] The review does not require a `[System]Tests.*` name or a `Assets/Scripts/Testing/EditMode/` location
 
 ---
 
@@ -238,7 +238,7 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`, `modes.rigor: standard` (so `qa.level: standard` — a Logic story's test is required)
 - `production/epics/combat/` contains `story-003-hit-feedback.md` (no Story Type, as in Case 4) and `story-005-knockback.md`: Story Type Logic, no evidence path stated
-- No test exists for it: `Assets/Tests/EditMode/combat/` does not exist, and no other test file names the slug `knockback` or references the story
+- No test exists for it: `Assets/Scripts/Testing/EditMode/Combat/` does not exist, and no other test file names the slug `knockback` or references the story
 
 **Input:** `/test-evidence-review combat`
 

@@ -63,7 +63,7 @@ Fixture defaults.
   `performance.memory_ceiling_mb: 2048`; `performance.enforce` unset (resolves
   to `warn`); `modes.automation` unset (collaborative)
 - No config key, design doc or `CLAUDE.md` section states a load-time target
-- `Assets/gameplay/combat/enemy_manager.cs` has a `_process()` that loops over every
+- `Assets/Scripts/Core/Gameplay/combat/enemy_manager.cs` has a `_process()` that loops over every
   enemy and, inside that loop, over every active projectile, and casts a ray per
   enemy every frame
 - Reworking the nested loop into a spatial partition is a multi-day change
@@ -145,7 +145,7 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`, `performance.enforce: warn`, `performance.draw_call_limit: 200`, the other three budgets set
 - `project.local.yaml`: `performance.enforce: block`, so the resolved block at the top of the skill shows `block`
-- `Assets/levels/forest/forest_builder.cs` instantiates 600 individual foliage `MeshInstance3D` nodes, each with its own material and no instancing
+- `Assets/Scripts/Core/Levels/forest/forest_builder.cs` instantiates 600 individual foliage `MeshInstance3D` nodes, each with its own material and no instancing
 - `modes.automation` unset (collaborative)
 
 **Input:** `/perf-profile forest`
@@ -228,8 +228,8 @@ Fixture defaults.
 - `project.yaml` at the project root: `engine.name: Unity`,
   `performance.target_framerate: 60`, `performance.frame_budget_ms: 16.6`,
   `performance.draw_call_limit: 200`, `performance.memory_ceiling_mb: 2048`
-- The session's working directory is `Assets/gameplay/` (a subfolder), not the root
-- `Assets/gameplay/combat/enemy_manager.cs` has a `_process()` with a nested loop
+- The session's working directory is `Assets/Scripts/Core/Gameplay/` (a subfolder), not the root
+- `Assets/Scripts/Core/Gameplay/combat/enemy_manager.cs` has a `_process()` with a nested loop
 
 **Input:** `/perf-profile combat`
 

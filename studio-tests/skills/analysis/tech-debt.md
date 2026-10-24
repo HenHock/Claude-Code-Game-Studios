@@ -62,10 +62,10 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml`: `engine.name: Unity`; `modes.automation` unset (collaborative)
 - `docs/tech-debt-register.md` is in the skill's Debt Register Format and has 2 `Open` rows:
-  - TD-001 — Code Quality, Files `Assets/core/save_system.cs`: a `# HACK` workaround for a save-path bug. That `HACK` comment is no longer in the file
-  - TD-002 — Code Quality, Files `Assets/gameplay/combat.cs`: the `# TODO` comments in that file
-- `Assets/gameplay/combat.cs` has 2 `# TODO` comments and 1 `# FIXME` comment
-- `Assets/ui/hud.cs` is 620 lines long; 12 source files in `Assets/` in total
+  - TD-001 — Code Quality, Files `Assets/Scripts/Core/Save/save_system.cs`: a `# HACK` workaround for a save-path bug. That `HACK` comment is no longer in the file
+  - TD-002 — Code Quality, Files `Assets/Scripts/Core/Gameplay/combat.cs`: the `# TODO` comments in that file
+- `Assets/Scripts/Core/Gameplay/combat.cs` has 2 `# TODO` comments and 1 `# FIXME` comment
+- `Assets/Scripts/Core/UI/hud.cs` is 620 lines long; 12 source files in `Assets/` in total
 
 **Input:** `/tech-debt scan`
 

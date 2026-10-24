@@ -59,8 +59,8 @@ generated — see Phase 5. Semantics of each tier are in
 
 **Examples**:
 ```bash
-/reverse-document design Assets/Scripts/MagicSystem
-/reverse-document architecture Assets/Scripts/EntityComponent
+/reverse-document design Assets/Scripts/Core/Magic
+/reverse-document architecture Assets/Scripts/Core/Entities
 /reverse-document concept prototypes/vehicle-combat
 ```
 

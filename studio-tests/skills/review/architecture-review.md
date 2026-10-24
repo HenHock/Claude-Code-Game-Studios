@@ -67,7 +67,7 @@ Fixture defaults.
   ADR under `NO_DEPS_SECTION`; together they cover every requirement; no two contradict
 - `docs/architecture/architecture.md` exists and names every system in the index
 - No prior `docs/architecture/architecture-review-*.md` report
-- Pre-gate items all exist: `Assets/Tests/EditMode/`, `Assets/Tests/PlayMode/` (the Unity test root),
+- Pre-gate items all exist: `Assets/Scripts/Testing/EditMode/`, `Assets/Scripts/Testing/PlayMode/` (the Unity test root),
   `.github/workflows/tests.yml`, `design/accessibility-requirements.md`,
   `design/ux/interaction-patterns.md`
 
