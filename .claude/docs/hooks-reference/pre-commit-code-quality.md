@@ -2,9 +2,8 @@
 
 ## Trigger
 
-Runs before any commit that modifies files under the code root — `src/`
-(Godot), `Assets/` (Unity) or `Source/` (Unreal); see
-`.claude/docs/code-root-resolution.md`.
+Runs before any commit that modifies files under the code root — `Assets/`;
+see `.claude/docs/code-root-resolution.md`.
 
 ## Purpose
 
@@ -49,10 +48,8 @@ if [ -n "$CODE_FILES" ]; then
             echo "WARNING: $file has TODO/FIXME without owner tag. Use TODO(name) format."
         fi
 
-        # Run language-specific linter (uncomment appropriate line)
-        # For GDScript: gdlint "$file" || EXIT_CODE=1
+        # Run the C# linter (uncomment)
         # For C#: dotnet format --check "$file" || EXIT_CODE=1
-        # For C++: clang-format --dry-run -Werror "$file" || EXIT_CODE=1
     done
 
     # Run unit tests for modified systems

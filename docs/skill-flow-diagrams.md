@@ -289,7 +289,7 @@ How a story gets from backlog to closed (summary view):
 ```
 [Phase 3 — one-time infrastructure setup]
 /test-setup ────────────────────────────────────────────────────► test framework scaffolded + CI/CD wired
-/test-helpers ──────────────────────────────────────────────────► tests/helpers/ (GDUnit4, NUnit, etc.)
+/test-helpers ──────────────────────────────────────────────────► tests/helpers/ (Unity Test Framework / NUnit)
 
 [Phase 5 — per-sprint QA cycle]
 /qa-plan [sprint or feature]

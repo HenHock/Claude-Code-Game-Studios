@@ -3,13 +3,13 @@
   <p align="center">
     Turn a single Claude Code session into a full game development studio.
     <br />
-    49 agents. 74 skills. One coordinated AI team.
+    39 agents. 74 skills. One coordinated AI team.
   </p>
 </p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
-  <a href=".claude/agents"><img src="https://img.shields.io/badge/agents-49-blueviolet" alt="49 Agents"></a>
+  <a href=".claude/agents"><img src="https://img.shields.io/badge/agents-39-blueviolet" alt="39 Agents"></a>
   <a href=".claude/skills"><img src="https://img.shields.io/badge/skills-74-green" alt="74 Skills"></a>
   <a href=".claude/hooks"><img src="https://img.shields.io/badge/hooks-16-orange" alt="16 Hooks"></a>
   <a href=".claude/rules"><img src="https://img.shields.io/badge/rules-15-red" alt="15 Rules"></a>
@@ -24,7 +24,7 @@
 
 Building a game solo with AI is powerful — but a single chat session has no structure. No one stops you from hardcoding magic numbers, skipping design docs, or writing spaghetti code. There's no QA pass, no design review, no one asking "does this actually fit the game's vision?"
 
-**Claude Code Game Studios** solves this by giving your AI session the structure of a real studio. Instead of one general-purpose assistant, you get 49 specialized agents organized into a studio hierarchy — directors who guard the vision, department leads who own their domains, and specialists who do the hands-on work. Each agent has defined responsibilities, escalation paths, and quality gates.
+**Claude Code Game Studios** solves this by giving your AI session the structure of a real studio. Instead of one general-purpose assistant, you get 39 specialized agents organized into a studio hierarchy — directors who guard the vision, department leads who own their domains, and specialists who do the hands-on work. Each agent has defined responsibilities, escalation paths, and quality gates.
 
 The result: you still make every decision, but now you have a team that asks the right questions, catches mistakes early, and keeps your project organized from first brainstorm to launch.
 
@@ -54,7 +54,7 @@ The result: you still make every decision, but now you have a team that asks the
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| **Agents** | 49 | Specialized subagents across design, programming, art, audio, narrative, QA, and production |
+| **Agents** | 39 | Specialized subagents across design, programming, art, audio, narrative, QA, and production |
 | **Skills** | 74 | Slash commands for every workflow phase (`/start`, `/design-system`, `/create-epics`, `/create-stories`, `/dev-story`, `/story-done`, etc.) |
 | **Hooks** | 16 | Automated validation on commits, pushes, asset changes, design-doc reads, writes and registries, session lifecycle, agent audit trail, harness-rule injection into every subagent, and gap detection |
 | **Rules** | 15 | Path-scoped coding standards enforced when editing gameplay, engine, AI, UI, network code, scene and asset files, the harness rules for all code, and more |
@@ -85,19 +85,17 @@ Tier 3 — Specialists
 ```
 
 Each agent declares a model in its frontmatter: the three directors ask for
-Opus, `lead-programmer` and fifteen specialists name Sonnet, and the remaining thirty
+Opus, `lead-programmer` and seven specialists name Sonnet, and the remaining twenty-eight
 **inherit your session's model**. Treat the tiers as seniority of role, not as
 a billing plan — most of the studio runs on whatever model you are already using.
 
 ### Engine Specialists
 
-The template includes agent sets for all three major engines. Use the set that matches your project:
+This is a **Unity-only fork** of Claude Code Game Studios. The Unity version is not pinned in the template — you choose it at `/setup-engine`. The Unity agent set:
 
 | Engine | Lead Agent | Sub-Specialists |
 |--------|-----------|-----------------|
-| **Godot 4** | `godot-specialist` | GDScript, Shaders, GDExtension |
 | **Unity** | `unity-specialist` | DOTS/ECS, Shaders/VFX, Addressables, UI Toolkit |
-| **Unreal Engine 5** | `unreal-specialist` | GAS, Blueprints, Replication, UMG/CommonUI |
 
 ## Slash Commands
 
@@ -201,7 +199,7 @@ Hooks fail gracefully if optional tools are missing — you just lose validation
 
    Or jump directly to a specific skill if you already know what you need:
    - `/brainstorm` — explore game ideas from scratch
-   - `/setup-engine godot 4.7` — configure your engine if you already know
+   - `/setup-engine <version>` — configure your Unity version if you already know
    - `/project-stage-detect` — analyze an existing project
 
 ## Configuration
@@ -263,7 +261,7 @@ versions, and which files are safe to overwrite vs. which need a manual merge.
 CLAUDE.md                           # Master configuration
 .claude/
   settings.json                     # Hooks, permissions, safety rules
-  agents/                           # 49 agent definitions (markdown + YAML frontmatter)
+  agents/                           # 39 agent definitions (markdown + YAML frontmatter)
   skills/                           # 74 slash commands (subdirectory per skill)
   hooks/                            # 18 scripts (bash) — 15 event hooks, two helpers they
                                     #   source (yaml-helper.sh, update-check.sh), and one
@@ -273,9 +271,9 @@ CLAUDE.md                           # Master configuration
   docs/
     workflow-catalog.yaml           # 7-phase pipeline definition (read by /help)
     templates/                      # 62 document templates (+ per-section guidance)
-src/                                # Game source code (Godot). The code root is
+src/                                # Game source code. The code root is
                                     #   ENGINE-SPECIFIC: Unity compiles only
-                                    #   Assets/, Unreal builds from Source/<Module>/
+                                    #   Assets/
 assets/                             # Art, audio, VFX, shaders, data files
 design/                             # GDDs, narrative docs, level designs
 docs/                               # Technical documentation and ADRs
@@ -290,7 +288,7 @@ studio-tests/                       # QA for the skills and agents themselves �
 
 CCGS is a template you are meant to edit. `studio-tests/` is how
 you check that an edited or newly written skill still holds up — a catalog of all
-74 skills and 49 agents, per-category quality rubrics, behavioral specs, and
+74 skills and 39 agents, per-category quality rubrics, behavioral specs, and
 templates for writing specs of your own.
 
 ```
@@ -344,7 +342,7 @@ auto mode.
 | `validate-read.sh` | PreToolUse (Read) | Refuses a whole-file read of a design doc over 40 KB and answers with its headings, so the retry reads one section (`features.read_guard`) |
 | `validate-write.sh` | PreToolUse (Write/Edit) | Warns, never blocks, when a write would break a rule the skills state: a file they never overwrite, the config guard, the prototype boundary, a localization freeze |
 | `validate-registry.sh` | PreToolUse (Write/Edit) | Warns when a write to the entity or TR-ID registry would delete or renumber an entry, or set a status its header does not list |
-| `validate-assets.sh` | PostToolUse (Write/Edit) | Checks data-file JSON under `assets/`, `Assets/` or `Content/`, and asset naming in Godot's `assets/` only — exits early if the file is under none of them |
+| `validate-assets.sh` | PostToolUse (Write/Edit) | Checks data-file JSON under `assets/` or `Assets/`, and asset naming under `assets/` only — exits early if the file is under none of them |
 | `session-start.sh` | Session open | Shows current branch and recent commits for orientation |
 | `detect-gaps.sh` | Session open | Detects fresh projects (suggests `/start`) and missing design docs when code or prototypes exist |
 | `pre-compact.sh` | Before compaction | Logs the compaction (its output does not reach Claude — `session-start.sh` restores context afterwards) |
@@ -363,11 +361,11 @@ auto mode.
 ### Path-Scoped Rules
 
 Coding standards are automatically enforced based on file location. The paths
-below are Godot's. Each rule also matches the Unity and Unreal layouts: the code
-rules match C# under `Assets/**/Gameplay/` and C++ under `Source/**/Gameplay/` (and `Core`,
-`AI`, `Networking`, `UI`), data matches JSON under `Assets/**/Data/` and
-`Content/**/Data/`, shaders match by file type, and tests match
-C# under `Assets/Tests/` and C++ under `Source/**/Tests/`.
+below are the generic layout. Each rule also matches the Unity layout: the code
+rules match C# under `Assets/**/Gameplay/` (and `Core`,
+`AI`, `Networking`, `UI`), data matches JSON under `Assets/**/Data/`,
+shaders match by file type, and tests match
+C# under `Assets/Tests/`.
 
 | Path | Enforces |
 |------|----------|
@@ -380,7 +378,7 @@ C# under `Assets/Tests/` and C++ under `Source/**/Tests/`.
 | `design/narrative/**` | Lore consistency, character voice, canon levels |
 | `assets/data/**/*.json` | JSON validity, naming conventions, schema rules |
 | `assets/shaders/**` | Naming conventions, performance targets, cross-platform rules |
-| `**/*.tscn`, `**/*.tres` | Scene and resource files changed in the editor where possible; safe hand-edit rules |
+| `**/*.unity`, `**/*.prefab`, `Assets/**/*.asset` | Scene and resource files changed in the editor where possible; safe hand-edit rules |
 | `tests/**` | Test naming, coverage requirements, fixture patterns |
 | `prototypes/**` | Relaxed standards, README required, hypothesis documented |
 
@@ -403,7 +401,7 @@ This is a **template**, not a locked framework. Everything is meant to be custom
 - **Modify skills** — adjust workflows to match your team's process
 - **Add rules** — create new path-scoped rules for your project's directory structure
 - **Tune hooks** — adjust validation strictness, add new checks
-- **Pick your engine** — use the Godot, Unity, or Unreal agent set (or none)
+- **Unity only** — this fork ships the Unity agent set; the Unity version is chosen at `/setup-engine`
 - **Tune process weight** — `modes.rigor` and its underlying knobs in `project.yaml` (see [Configuration](#configuration)). Override per-run with `--review solo` on any skill.
 
 ## Platform Support

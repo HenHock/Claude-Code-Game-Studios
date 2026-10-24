@@ -18,6 +18,7 @@ of the template to the next.
 ## Table of Contents
 
 - [Upgrade Strategies](#upgrade-strategies)
+- [Unreleased: Unity-only fork](#unreleased-unity-only-fork)
 - [v1.1.3 → v1.2.0](#v113--v120)
 - [v1.1.2 → v1.1.3](#v112--v113)
 - [v1.1.1 → v1.1.2](#v111--v112)
@@ -29,6 +30,32 @@ of the template to the next.
 - [v0.3.0 → v0.4.0](#v030--v040)
 - [v0.2.0 → v0.3.0](#v020--v030)
 - [v0.1.0 → v0.2.0](#v010--v020)
+
+---
+
+## Unreleased: Unity-only fork
+
+This branch removes Godot and Unreal support. If you merge it into a project
+built on the multi-engine template:
+
+1. **Unity projects:** nothing moves. Code root `Assets/` and the test roots
+   `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/` are unchanged. The
+   Unity version is not pinned by the template; set or re-check it with
+   `/setup-engine`.
+2. **Godot or Unreal projects:** do not take this change. It deletes the
+   engine specialists (`godot-*`, `unreal-specialist`, `ue-*`), the
+   `docs/engine-reference/godot/` and `unreal/` snapshots,
+   `.claude/scripts/godot-parse-check.gd`, the Godot language config reference
+   for `/setup-engine`, and `production/.gdignore`. Stay on the previous tag.
+3. If your `project.yaml` lists a removed agent under `specialists`, replace it
+   with a Unity agent (`unity-specialist`, `unity-shader-specialist`,
+   `unity-ui-specialist`, `unity-addressables-specialist`,
+   `unity-dots-specialist`).
+4. Update the `@docs/engine-reference/...` import in `CLAUDE.md` to
+   `@docs/engine-reference/unity/VERSION.md`.
+
+The agent count is now 39 (was 49). History sections below keep their Godot and
+Unreal mentions.
 
 ---
 

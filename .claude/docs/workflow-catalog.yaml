@@ -38,7 +38,7 @@ paths:
         artifact:
           any_of:
             - glob: "project.yaml"
-              pattern: 'name:[[:space:]]*"?(Godot|Unity|Unreal)'
+              pattern: 'name:[[:space:]]*"?Unity'
             - glob: ".claude/docs/technical-preferences.md"
               pattern: '\*\*Engine\*\*: [^[]'
         description: "Configure the engine and pin its version"
@@ -94,15 +94,15 @@ phases:
         required: true
         # engine.name in project.yaml is the primary source; technical-
         # preferences.md is the legacy fallback. Either one completes the step.
-        # /setup-engine writes the value quoted (`name: "Godot"`), so the quote
+        # /setup-engine writes the value quoted (`name: "Unity"`), so the quote
         # is optional in the first alternative.
         # Single-quoted so the `"` needs no escape — artifact-check.sh strips
         # the outer quotes and does not unescape.
         artifact:
           any_of:
             - glob: "project.yaml"
-              pattern: 'name:[[:space:]]*"?(Godot|Unity|Unreal)'
-            # technical-preferences.md writes "- **Engine**: Godot 4.7", so the
+              pattern: 'name:[[:space:]]*"?Unity'
+            # technical-preferences.md writes "- **Engine**: Unity <version>", so the
             # pattern must clear the bold markers. The [^[] guard rejects the
             # "[TO BE CONFIGURED]" placeholder.
             - glob: ".claude/docs/technical-preferences.md"

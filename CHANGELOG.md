@@ -8,6 +8,37 @@ existing project on the older config files.
 
 ---
 
+## [Unreleased] — Unity-only fork
+
+**The framework now targets Unity only.** The Godot and Unreal support is
+removed; the template stays a generic project template. No Unity version is
+pinned: the version is chosen at first init with `/setup-engine`
+(`docs/engine-reference/unity/VERSION.md` keeps `Installed at pin time: NOT
+DETERMINED` until then). The folder layout is unchanged: code root `Assets/`,
+tests in `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/`.
+
+### Removed
+- Ten agents (49 to 39): `godot-specialist`, `godot-gdscript-specialist`,
+  `godot-csharp-specialist`, `godot-shader-specialist`,
+  `godot-gdextension-specialist`, `unreal-specialist`, `ue-blueprint-specialist`,
+  `ue-gas-specialist`, `ue-replication-specialist`, `ue-umg-specialist`.
+- `docs/engine-reference/godot/` and `docs/engine-reference/unreal/`.
+- Their agent tests under `studio-tests/agents/engine/godot/` and `unreal/`.
+- `.claude/scripts/godot-parse-check.gd`,
+  `.claude/skills/setup-engine/references/godot-language-config.md` and
+  `production/.gdignore`.
+- Godot and Unreal rows from the code-root, test-root, specialist, naming,
+  `commands.*` and CI tables in the docs, and the Godot and Unreal entries in
+  `.gitignore`.
+
+### Changed
+- `CLAUDE.md` imports `docs/engine-reference/unity/VERSION.md`; engine is Unity,
+  language is C# (Unity Test Framework with NUnit for tests).
+- `README.md`, `docs/WORKFLOW-GUIDE.md` and `.claude/docs/` describe the Unity
+  agent set only; the model-tier counts are 3 Opus, 8 Sonnet, 28 inherit.
+
+---
+
 ## [Unreleased] — Agent-legible game (harness principles)
 
 **The game itself becomes the agent's harness.** Nine engine-agnostic H-rules,

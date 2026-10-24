@@ -55,24 +55,13 @@ session's model.
 | `live-ops-designer` | Live operations | Seasons, events, battle passes, retention, live economy |
 | `community-manager` | Community | Patch notes, player feedback, crisis comms, community health |
 
-## Engine-Specific Agents (use the set matching your engine)
+## Unity Agents
 
 ### Engine Leads
 
 | Agent | Engine | When to Use |
 | ---- | ---- | ---- |
-| `unreal-specialist` | Unreal Engine 5 | Blueprint vs C++, GAS overview, UE subsystems, Unreal optimization |
 | `unity-specialist` | Unity | MonoBehaviour vs DOTS, Addressables, URP/HDRP, Unity optimization |
-| `godot-specialist` | Godot 4 | GDScript patterns, node/scene architecture, signals, Godot optimization |
-
-### Unreal Engine Sub-Specialists
-
-| Agent | Subsystem | When to Use |
-| ---- | ---- | ---- |
-| `ue-gas-specialist` | Gameplay Ability System | Abilities, gameplay effects, attribute sets, tags, prediction |
-| `ue-blueprint-specialist` | Blueprint Architecture | BP/C++ boundary, graph standards, naming, BP optimization |
-| `ue-replication-specialist` | Networking/Replication | Property replication, RPCs, prediction, relevancy, bandwidth |
-| `ue-umg-specialist` | UMG/CommonUI | Widget hierarchy, data binding, CommonUI input, UI performance |
 
 ### Unity Sub-Specialists
 
@@ -82,12 +71,3 @@ session's model.
 | `unity-shader-specialist` | Shaders/VFX | Shader Graph, VFX Graph, URP/HDRP customization, post-processing |
 | `unity-addressables-specialist` | Asset Management | Addressable groups, async loading, memory, content delivery |
 | `unity-ui-specialist` | UI Toolkit/UGUI | UI Toolkit, UXML/USS, UGUI Canvas, data binding, cross-platform input |
-
-### Godot Sub-Specialists
-
-| Agent | Subsystem | When to Use |
-| ---- | ---- | ---- |
-| `godot-gdscript-specialist` | GDScript | Static typing, design patterns, signals, coroutines, GDScript performance |
-| `godot-csharp-specialist` | C# / .NET | .NET patterns, [Signal] delegates, async, nullable types, type-safe node access |
-| `godot-shader-specialist` | Shaders/Rendering | Godot shading language, visual shaders, particles, post-processing |
-| `godot-gdextension-specialist` | GDExtension | C++/Rust bindings, native performance, custom nodes, build systems |

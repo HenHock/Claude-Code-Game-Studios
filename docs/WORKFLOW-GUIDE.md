@@ -3,7 +3,7 @@
 > **How to go from zero to a shipped game using the Agent Architecture.**
 >
 > This guide walks you through every phase of game development using the
-> 49-agent system, 74 slash commands, and 15 automated hooks. It assumes you
+> 39-agent system, 74 slash commands, and 16 automated hooks. It assumes you
 > have Claude Code installed and are working from the project root.
 >
 > The pipeline has 7 phases. At `rigor: standard` and `full`, each phase has
@@ -104,7 +104,7 @@ OPTIONAL opportunities.
 Directories are created as needed. The system expects this layout:
 
 ```
-src/                  # Game source code (Godot; Unity: Assets/, Unreal: Source/<Module>/)
+src/                  # Game source code (the code root; on Unity this is Assets/)
   core/               # Engine/framework code
   gameplay/           # Gameplay systems
   ai/                 # AI systems
@@ -143,8 +143,8 @@ production/           # Sprint plans, milestones, releases
 > reach the phase that needs them. The important thing is to follow this
 > structure when you do create them, because the **rules system** enforces
 > standards based on file paths. Code in `src/gameplay/` gets gameplay rules,
-> code in `src/ai/` gets AI rules, and so on — and the same for C# and C++ in
-> Unity and Unreal `Gameplay/` and `AI/` folders.
+> code in `src/ai/` gets AI rules, and so on — and the same for C# in
+> Unity `Assets/**/Gameplay/` and `AI/` folders.
 
 ---
 
@@ -258,10 +258,10 @@ Validates structure and completeness before you proceed.
 /setup-engine
 ```
 
-Or with a specific engine:
+Or with a specific Unity version:
 
 ```
-/setup-engine godot 4.7
+/setup-engine <version>
 ```
 
 **What /setup-engine does:**
@@ -273,9 +273,9 @@ Or with a specific engine:
   advises cross-referencing `docs/engine-reference/`
 - Creates version-pinned reference docs in `docs/engine-reference/`
 
-**Why this matters:** Once you set the engine, the system knows which
-engine-specialist agents to use. If you pick Godot, agents like
-`godot-specialist`, `godot-gdscript-specialist`, and `godot-shader-specialist`
+**Why this matters:** Once you set the Unity version, the system knows which
+engine-specialist agents to use. Agents like
+`unity-specialist`, `unity-shader-specialist`, and `unity-ui-specialist`
 become your go-to experts.
 
 ### Step 1.4: Decompose Your Concept Into Systems
@@ -1378,14 +1378,10 @@ Tier 3 (Specialists):  gameplay-programmer, engine-programmer,
                        qa-tester, performance-analyst, devops-engineer,
                        analytics-engineer, accessibility-specialist,
                        live-ops-designer, prototyper, security-engineer,
-                       community-manager, godot-specialist,
-                       godot-gdscript-specialist, godot-shader-specialist,
-                       godot-csharp-specialist, godot-gdextension-specialist,
+                       community-manager,
                        unity-specialist, unity-dots-specialist,
                        unity-shader-specialist, unity-addressables-specialist,
-                       unity-ui-specialist, unreal-specialist,
-                       ue-blueprint-specialist, ue-gas-specialist,
-                       ue-replication-specialist, ue-umg-specialist
+                       unity-ui-specialist
 ```
 
 **Coordination rules:**
@@ -1399,7 +1395,7 @@ Tier 3 (Specialists):  gameplay-programmer, engine-programmer,
 
 ### Automated Hooks (Safety Net)
 
-The system has 15 hooks that run automatically:
+The system has 16 hooks that run automatically:
 
 | Hook | Trigger | What It Does |
 |------|---------|-------------|
@@ -1412,12 +1408,13 @@ The system has 15 hooks that run automatically:
 | `validate-read.sh` | Before a file read | Refuses a whole-file read of a design doc over 40 KB and answers with its headings |
 | `validate-write.sh` | Before a file write | Warns when a write would break a rule the skills state (never blocks) |
 | `validate-registry.sh` | Before an entity or TR-ID registry write | Warns when an entry would be deleted or renumbered, or a status is not in the header's list |
-| `validate-assets.sh` | After a file write | Checks data-file JSON, and asset naming in Godot's `assets/` |
+| `validate-assets.sh` | After a file write | Checks data-file JSON, and asset naming under `assets/` |
 | `validate-skill-change.sh` | Skill file written | Advises running `/skill-test` after `.claude/skills/` changes |
 | `log-agent.sh` | Agent start | Logs agent invocations for audit trail |
 | `log-agent-stop.sh` | Agent stop | Completes agent audit trail (start + stop) |
 | `validate-agent-artifact.sh` | Agent stop | Warns when a subagent stops without writing the file its brief named |
 | `session-stop.sh` | **Every response ends** | Session logging and the subagent spawn tally, in the background. Despite the name it fires once per response, not once per session. |
+| `inject-harness.sh` | Agent spawned | Gives every subagent the harness rules (`.claude/docs/agent-harness.md`) |
 
 ### Context Resilience
 
@@ -1551,20 +1548,11 @@ Reads existing code and generates GDD-format design documentation from it.
 | Prototype quickly | `prototyper` | 3 |
 | Audit security | `security-engineer` | 3 |
 | Communicate with players | `community-manager` | 3 |
-| Godot-specific help | `godot-specialist` | 3 |
-| GDScript-specific help | `godot-gdscript-specialist` | 3 |
-| Godot shader help | `godot-shader-specialist` | 3 |
-| GDExtension modules | `godot-gdextension-specialist` | 3 |
 | Unity-specific help | `unity-specialist` | 3 |
 | Unity DOTS/ECS | `unity-dots-specialist` | 3 |
 | Unity shaders/VFX | `unity-shader-specialist` | 3 |
 | Unity Addressables | `unity-addressables-specialist` | 3 |
 | Unity UI Toolkit | `unity-ui-specialist` | 3 |
-| Unreal-specific help | `unreal-specialist` | 3 |
-| Unreal GAS | `ue-gas-specialist` | 3 |
-| Unreal Blueprints | `ue-blueprint-specialist` | 3 |
-| Unreal replication | `ue-replication-specialist` | 3 |
-| Unreal UMG/CommonUI | `ue-umg-specialist` | 3 |
 
 ### Agent Hierarchy
 

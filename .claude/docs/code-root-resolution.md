@@ -11,11 +11,9 @@ code. This file is the procedure for applying it.
 
 | `engine.name` | Code root | Why it cannot be `src/` |
 |---|---|---|
-| Godot | `src/` | No constraint; Godot loads from `res://` anywhere under the project root |
 | Unity | `Assets/` | Unity compiles **only** `Assets/` and `Packages/` |
-| Unreal | `Source/<Module>/` | UnrealBuildTool discovers modules under `Source/`; content lives in `Content/` |
 
-`src/` is the **Godot row of that table, not a universal path.**
+`src/` is **not** a code root in this Unity-only fork; read it as `Assets/`.
 
 ## Resolution order
 
@@ -23,13 +21,10 @@ code. This file is the procedure for applying it.
 2. The legacy mirror: an `Engine:` line in
    `.claude/docs/technical-preferences.md`. A value of `[TO BE CONFIGURED]`
    does not count.
-3. Derivation from the tree, but **only when it is unambiguous**. Exactly one of
-   `src/`, `Assets/` or `Source/` present means that is the root. Two or more
-   present means the project is genuinely undecidable — do not guess. Compare the
-   names exactly as the directory listing spells them: on Windows and default
-   macOS an existence test for `Assets/` also succeeds on Godot's own `assets/`,
-   which would make `src/` + `assets/` look ambiguous and a lone `assets/` look
-   like Unity.
+3. Derivation from the tree: `Assets/` present means that is the root. Compare
+   the name exactly as the directory listing spells it: on Windows and default
+   macOS an existence test for `Assets/` also succeeds on the template's own
+   lowercase `assets/` folder, which is not the Unity root.
 4. Otherwise: **unresolved.**
 
 The hooks already implement exactly this as `resolve_code_root()` in
@@ -67,4 +62,4 @@ write to the wrong directory.
 Where a skill says `src/`, read it as *the code root* and substitute the table
 above. Where a skill greps, glob the resolved root. Where a skill writes,
 write under the resolved root and use the engine's own conventions beneath it
-(`Assets/Scripts/<System>/` on Unity, `Source/<Module>/<System>/` on Unreal).
+(`Assets/Scripts/<System>/`).
