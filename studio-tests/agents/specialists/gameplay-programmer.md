@@ -21,7 +21,7 @@ No gate IDs assigned.
 ### Case 1: In-domain request — appropriate output
 **Input:** "Implement a melee combo system where three consecutive light attacks chain into a finisher."
 **Expected behavior:**
-- Produces code or a code scaffold following the project's language (GDScript/C#) and coding standards
+- Produces code or a code scaffold following the project's language (C#) and coding standards
 - Models the combo as a state machine with an explicit transition table, and keeps the input-window check and finisher trigger as logic unit tests can drive without the full game running (logic separated from presentation)
 - References the relevant GDD section if one is provided in context
 - Does NOT implement UI feedback or enemy reactions: emits events/signals for them instead of referencing UI code, leaving the UI side to `ui-programmer` and enemy reactions to `ai-programmer`

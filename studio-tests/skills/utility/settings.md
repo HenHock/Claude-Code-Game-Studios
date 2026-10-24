@@ -66,7 +66,7 @@ Fixture defaults.
   docs:
     density: terse
   engine:
-    name: Godot
+    name: Unity
   ```
 - `project.local.yaml`:
   ```yaml
@@ -177,7 +177,7 @@ Fixture defaults.
 ### Case 5: `--local` on a locked key — refused with the team-wide route
 
 **Fixture:**
-- `project.yaml` sets `engine.name: Godot`; no `project.local.yaml`
+- `project.yaml` sets `engine.name: Unity`; no `project.local.yaml`
 
 **Input:** `/settings --local engine.name=Unity`
 

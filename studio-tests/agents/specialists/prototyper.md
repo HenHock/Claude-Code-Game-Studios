@@ -58,15 +58,15 @@
 - Does NOT mark the result as inconclusive — after 4 sessions with consistent negative responses, the evidence supports a decision
 
 ### Case 5: Context pass — using the project's engine scripting language
-**Input context**: Project uses Godot 4.6 with GDScript (`engine.name` and `engine.language` in `project.yaml`); the user has chosen the Engine path.
+**Input context**: Project uses Unity with C# (`engine.name` and `engine.language` in `project.yaml`); the user has chosen the Engine path.
 **Input**: "Prototype a basic grid movement system — player clicks a tile and the character moves to it."
 **Expected behavior**:
-- Produces the prototype in GDScript — not Python, C#, or pseudocode
-- Uses Godot 4.6 node types appropriate for a grid: TileMapLayer (not TileMap, which `docs/engine-reference/godot/deprecated-apis.md` lists as deprecated since 4.3) or a custom grid manager node, CharacterBody2D or Node2D for the player
+- Produces the prototype in C# — not Python or pseudocode
+- Uses Unity components appropriate for a grid: a Tilemap (or a custom grid manager MonoBehaviour), with a MonoBehaviour on a GameObject for the player; avoids any API `docs/engine-reference/unity/deprecated-apis.md` lists as deprecated
 - Does NOT apply production coding standards (no required test coverage, no doc comments, global state acceptable)
 - Writes the output to `prototypes/grid-movement-concept/` not to `src/`
 - After writing, hands control back: asks the user to run the project and paste any errors or describe what they observe, rather than assuming it worked
-- If a Godot 4.6 API is uncertain, flags the specific API with a note to verify against the Godot 4.6 docs — `docs/engine-reference/godot/VERSION.md` reaches the agent through `CLAUDE.md`'s import, and its Knowledge Gap Warning says to cross-reference that directory before suggesting Godot API calls
+- If a Unity API is uncertain, flags the specific API with a note to verify against the Unity docs for the pinned version — `docs/engine-reference/unity/VERSION.md` carries a Knowledge Gap Warning that says to cross-reference that directory before suggesting Unity API calls
 
 ---
 

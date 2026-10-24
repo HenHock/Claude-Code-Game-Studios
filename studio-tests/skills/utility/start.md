@@ -101,20 +101,20 @@ Fixture defaults.
 ### Case 2: Returning User — Onboarding skipped
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot` and `modes.rigor: minimal`; no explicit `modes.review_mode`
+- `project.yaml` has `engine.name: Unity` and `modes.rigor: minimal`; no explicit `modes.review_mode`
 - `design/game-brief.md` exists
 
 **Input:** `/start`
 
 **Expected behavior:**
 1. Phase 1 finds the engine set and the brief present
-2. The skill skips onboarding and names the engine (Godot) and the brief
+2. The skill skips onboarding and names the engine (Unity) and the brief
 3. Review mode is reported as `solo` (from `modes.rigor: minimal`)
 4. The skill points to `/help`
 
 **Assertions:**
 - [ ] The A–D starting-point question is not asked
-- [ ] The message names the configured engine (Godot) and the brief path
+- [ ] The message names the configured engine (Unity) and the brief path
 - [ ] Review mode is reported as `solo`, resolved from rigor
 - [ ] No write is made to `project.yaml` or `production/stage.txt`
 
@@ -133,7 +133,7 @@ Fixture defaults.
 
 **Expected behavior:**
 1. Phase 1 resolves the code root as `Assets/` and finds source files there (it
-   does not scan `src/` and conclude there is no code)
+   does not scan `Assets/` and conclude there is no code)
 2. Phase 3 D shares what it found (source files, 3 GDDs, engine Unity) and names
    `/project-stage-detect` as the immediate step
 3. Phase 4's card shows stage `Systems Design` (GDDs, no ADRs) and rigor
@@ -204,8 +204,8 @@ Fixture defaults.
 ### Case 6: Path D With Rigor Unset — inferred from the description, not asked
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot` and no `modes` block
-- `src/` holds GDScript files; `design/gdd/` holds 4 system GDDs; no
+- `project.yaml` has `engine.name: Unity` and no `modes` block
+- `Assets/` holds C# files; `design/gdd/` holds 4 system GDDs; no
   `docs/architecture/`
 - The user picks `D) Existing work` and says "a commercial game for Steam with
   one clear core loop", then picks `Save them`, then `Collaborative`
@@ -234,7 +234,7 @@ Fixture defaults.
 ### Case 7: Existing `modes:` Block — rigor and automation go into it, never a second one
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot` and an existing block `modes:` with
+- `project.yaml` has `engine.name: Unity` and an existing block `modes:` with
   only `review_mode: lean` under it; `modes.rigor` and `modes.automation` are
   unset (runs without the Fixture Defaults block, since it tests how the keys
   are added)
@@ -259,9 +259,9 @@ Fixture defaults.
 ### Case 8: Path D at `minimal` With No Brief — names where the brief comes from
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot`, `modes.rigor: minimal` and
+- `project.yaml` has `engine.name: Unity`, `modes.rigor: minimal` and
   `modes.automation: collaborative`
-- `src/` holds 14 GDScript files; `design/gdd/` holds 2 system GDDs; no
+- `Assets/` holds 14 C# files; `design/gdd/` holds 2 system GDDs; no
   `docs/architecture/`; no `design/game-brief.md` and no
   `design/gdd/game-concept.md`
 - The user picks `D) Existing work` and `Save them`
@@ -275,13 +275,13 @@ Fixture defaults.
 4. Phase 6 prints the existing-work path at `minimal`: `/project-stage-detect`,
    `/adopt`, then the brief's source, with no GDD, ADR or registry retrofit
 5. With no brief and 10 or more source files, the brief's source is
-   `/reverse-document design src/`; `/brainstorm` is not offered as the source
+   `/reverse-document design Assets/`; `/brainstorm` is not offered as the source
 
 **Assertions:**
 - [ ] The minimal path lists `/project-stage-detect` and `/adopt`, and no `/design-system retrofit`, `/architecture-decision retrofit` or `/architecture-review`
-- [ ] With no `design/game-brief.md`, the path names `/reverse-document design src/` as the brief's source, with the code root filled in
+- [ ] With no `design/game-brief.md`, the path names `/reverse-document design Assets/` as the brief's source, with the code root filled in
 - [ ] `/brainstorm` is not named as the brief's source
-- [ ] Variant — `src/` holds only 4 source files: the brief's source is `/brainstorm`, and `/reverse-document` is not named
+- [ ] Variant — `Assets/` holds only 4 source files: the brief's source is `/brainstorm`, and `/reverse-document` is not named
 - [ ] Variant — `design/game-brief.md` exists: this is the returning-user skip
 
 ---

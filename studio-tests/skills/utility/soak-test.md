@@ -52,10 +52,10 @@ Fixture defaults.
 
 ## Test Cases
 
-### Case 1: Happy Path — 2-hour, all-focus soak on Godot
+### Case 1: Happy Path — 2-hour, all-focus soak on Unity
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot`, `performance.target_framerate: 60` and
+- `project.yaml` has `engine.name: Unity`, `performance.target_framerate: 60` and
   `modes.workflow: standard` (pinned: unset resolves to minimal, which ends the run
   steps with `/bug-triage full`, Case 6)
 - `design/gdd/game-concept.md` states the intended session length
@@ -66,11 +66,11 @@ Fixture defaults.
 **Expected behavior:**
 1. Skill loads context: engine, performance budgets, concept, latest playtest and QA plan
 2. Checkpoints for `2h`: T+0, T+20, T+40, T+60, T+80, T+100, T+120
-3. Godot memory items: the Debugger's memory monitors, Static Memory (unit as
-   displayed), Object Count, Orphan Nodes — names marked NOT SOURCEABLE, since
-   `docs/engine-reference/godot/` does not cover them, for the tester to confirm
+3. Unity memory items: the Memory Profiler's Total Reserved Memory, GC Allocated
+   and Object Count (units as displayed) — names marked NOT SOURCEABLE, since
+   `docs/engine-reference/unity/` does not cover them, for the tester to confirm
    at T+0; alert when memory grows > 20% from T+0 after the first 15 minutes;
-   Orphan Nodes must return to its T+0 value after a scene unload
+   Object Count must return to its T+0 value after a scene unload
 4. Stability items (60 fps target) and balance/fatigue items are both included
 5. Protocol document has Pre-Session Setup, Baseline (T+0), a Checkpoint Log per
    checkpoint, Post-Session Analysis, and a Verdict section left for the tester
@@ -81,7 +81,7 @@ Fixture defaults.
 **Assertions:**
 - [ ] Checkpoints are exactly T+0, T+20, T+40, T+60, T+80, T+100, T+120
 - [ ] Memory thresholds are relative to T+0, and the unit is recorded as displayed (no unit assumed)
-- [ ] The Godot tool and counter names are marked NOT SOURCEABLE, not presented as verified, and Pre-Session Setup asks for the tool actually used
+- [ ] The Unity tool and counter names are marked NOT SOURCEABLE, not presented as verified, and Pre-Session Setup asks for the tool actually used
 - [ ] Memory, stability and balance observation items are all present (focus `all`)
 - [ ] "May I write" is asked with `production/qa/soak-test-[date]-2h.md`
 - [ ] The skill issues no verdict itself — the protocol's Verdict section is left for the tester
@@ -109,27 +109,27 @@ Fixture defaults.
 
 ---
 
-### Case 3: Narrow Focus on Unreal — 4-hour memory soak
+### Case 3: Narrow Focus — 4-hour memory soak
 
 **Fixture:**
-- `project.yaml` has `engine.name: Unreal`
+- `project.yaml` has `engine.name: Unity`
 
 **Input:** `/soak-test 4h memory`
 
 **Expected behavior:**
 1. Checkpoints for `4h`: T+0, T+30, T+60, T+90, T+120, T+180, T+240
-2. Unreal memory items: a memory readout at each checkpoint — `stat memory`,
-   marked NOT SOURCEABLE since `docs/engine-reference/unreal/` does not cover
-   it; record Physical Memory Used and Available (units as displayed)
-3. Alert threshold: Physical Memory Used growth > 20% over the full soak,
+2. Unity memory items: a memory readout at each checkpoint — the Memory Profiler,
+   marked NOT SOURCEABLE since `docs/engine-reference/unity/` does not cover
+   it; record Total Reserved Memory (units as displayed)
+3. Alert threshold: Total Reserved Memory growth > 20% over the full soak,
    against this run's T+0 — no absolute MB threshold
 4. Balance/fatigue observation items are not generated (focus is `memory`)
 5. Output path `production/qa/soak-test-[date]-4h.md`
 
 **Assertions:**
 - [ ] Checkpoints are exactly T+0, T+30, T+60, T+90, T+120, T+180, T+240
-- [ ] The Unreal threshold is a relative > 20% growth, not an absolute size
-- [ ] `stat memory` is marked NOT SOURCEABLE, a pointer to confirm rather than a verified command
+- [ ] The threshold is a relative > 20% growth, not an absolute size
+- [ ] The Memory Profiler is marked NOT SOURCEABLE, a pointer to confirm rather than a verified command
 - [ ] Balance/fatigue items are omitted for focus `memory`
 - [ ] "May I write" names the `-4h.md` path
 
@@ -184,7 +184,7 @@ Fixture defaults.
 ### Case 6: Minimal workflow — the run steps end with `/bug-triage full`
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: minimal` (pinned: Case 1 pins
+- `project.yaml`: `engine.name: Unity`, `modes.workflow: minimal` (pinned: Case 1 pins
   `standard`; this case tests the opposite)
 - No `production/sprints/` directory; the user approves the write
 

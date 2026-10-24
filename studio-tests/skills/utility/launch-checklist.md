@@ -75,8 +75,8 @@ Fixture defaults.
 
 **Fixture:**
 - `project.yaml`: `project.stage: Release`, `modes.rigor: standard`, `platform.cert_tier: steam`,
-  engine Godot (code root `src/`); a single-player game with no servers
-- `src/` has 40 source files with no TODO/FIXME/HACK, no debug output, no placeholder or hardcoded dev values
+  engine Unity (code root `Assets/`); a single-player game with no servers
+- `Assets/` has 40 source files with no TODO/FIXME/HACK, no debug output, no placeholder or hardcoded dev values
 - `assets/` exists with final assets
 - `production/releases/` does not exist yet
 - In Phase 4b the user answers `Yes — all of them` for every section, except the
@@ -120,8 +120,8 @@ Fixture defaults.
 ### Case 2: Blocking Findings — FIXMEs and debug output
 
 **Fixture:**
-- As Case 1, but `src/` contains 3 `FIXME` comments and one `print()` debug call in production code
-- `src/` also has one `HACK` comment whose justification is documented beside it
+- As Case 1, but `Assets/` contains 3 `FIXME` comments and one `print()` debug call in production code
+- `Assets/` also has one `HACK` comment whose justification is documented beside it
 
 **Input:** `/launch-checklist 2026-11-01`
 
@@ -167,8 +167,8 @@ Fixture defaults.
 ### Case 4: Nothing to Scan — `[?]` items, not green ticks
 
 **Fixture:**
-- `project.yaml`: `project.stage: Release`, `platform.cert_tier: itch`, engine Godot
-- `src/` exists but is empty; no `assets/` directory
+- `project.yaml`: `project.stage: Release`, `platform.cert_tier: itch`, engine Unity
+- `Assets/` exists but is empty; no `assets/` directory
 
 **Input:** `/launch-checklist 2026-11-01`
 

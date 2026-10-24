@@ -2,7 +2,7 @@
 
 ## Skill Summary
 
-`/test-setup [force]` scaffolds the test framework for the configured engine.
+`/test-setup [force]` scaffolds the Unity Test Framework (NUnit).
 It reads `engine.name` from `project.yaml` (falling back to
 `technical-preferences.md`) and stops with a `/setup-engine` redirect when
 neither names an engine. It checks for existing infrastructure, presents a plan,
@@ -11,10 +11,8 @@ already exist at these paths." before writing.
 
 It creates `tests/README.md`, `tests/smoke/critical-paths.md`,
 `production/qa/evidence/`, `.github/workflows/tests.yml`, and the engine's test
-root: for Godot `tests/unit/` and `tests/integration/` (placeholder files, and
-no runner script — gdUnit4's `addons/gdUnit4/bin/GdUnitCmdTool.gd` is the
-runner); for Unity `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/` with
-their `.asmdef` files; for Unreal `Source/<Module>/Private/Tests/`. When the
+root: `Assets/Tests/EditMode/` and `Assets/Tests/PlayMode/` with
+their `.asmdef` files. When the
 infrastructure already exists it exits early unless `force` is passed, and
 `force` only creates missing files — it never overwrites. No director gates
 apply. The verdict is COMPLETE when the scaffold is in place.
@@ -50,42 +48,7 @@ Fixture defaults.
 
 ## Test Cases
 
-### Case 1: Happy Path — Godot project, scaffolds GdUnit4 test structure
-
-**Fixture:**
-- `project.yaml` has `engine.name: Godot`
-- `tests/` does not exist; `addons/gdUnit4/` is not installed; no CI workflow
-- The user approves the plan
-
-**Input:** `/test-setup`
-
-**Expected behavior:**
-1. Phase 1 reports "Engine: Godot. Test directory: not found. CI workflow: not found."
-2. Phase 2 presents the plan: `tests/unit/`, `tests/integration/`, `tests/smoke/`,
-   `tests/README.md`, `production/qa/evidence/`, `.github/workflows/tests.yml` —
-   and no runner script
-3. Skill asks "May I create these files? I will not overwrite any test files that
-   already exist at these paths."
-4. On approval: `tests/unit/.gdignore_placeholder`,
-   `tests/integration/.gdignore_placeholder`, `tests/README.md` (with the
-   Installing GdUnit4 steps and the capital-U `addons/gdUnit4/` path),
-   `tests/smoke/critical-paths.md`, and a file under `production/qa/evidence/`
-5. `.github/workflows/tests.yml` uses `godot-gdunit-labs/gdUnit4-action@v1`
-   with `version: 'installed'` and `checks: write`
-6. The documented test command matches `coding-standards.md`'s CI command:
-   `godot --headless -s -d --remote-debug tcp://127.0.0.1:0 res://addons/gdUnit4/bin/GdUnitCmdTool.gd -a res://tests --ignoreHeadlessMode`
-7. Phase 6 summary; verdict COMPLETE
-
-**Assertions:**
-- [ ] `tests/unit/`, `tests/integration/`, `tests/smoke/` and `production/qa/evidence/` all exist afterwards (each holds a written file)
-- [ ] No custom runner script is written (the old hand-written runner loaded a file gdUnit4 never shipped and failed every run)
-- [ ] The test command matches the coding-standards.md CI command
-- [ ] Approval is asked before any file is created
-- [ ] Verdict is COMPLETE
-
----
-
-### Case 2: Unity Project — Scaffolds Unity Test Runner with asmdef
+### Case 1: Happy Path — Unity project, scaffolds Unity Test Runner with asmdef
 
 **Fixture:**
 - `project.yaml` has `engine.name: Unity`
@@ -98,7 +61,8 @@ Fixture defaults.
 1. Skill reads engine → Unity; the Test Framework package check passes
 2. The plan places unit and integration tests under `Assets/Tests/` — Unity
    compiles only `Assets/` and `Packages/` — not under `tests/unit/`
-3. Skill generates `Assets/Tests/EditMode/EditModeTests.asmdef` (Editor-only)
+3. Skill asks "May I create these files? I will not overwrite any test files that
+   already exist at these paths." and generates `Assets/Tests/EditMode/EditModeTests.asmdef` (Editor-only)
    and `Assets/Tests/PlayMode/PlayModeTests.asmdef`
 4. `.github/workflows/tests.yml` runs `game-ci/unity-test-runner@v4` for
    `editmode` and `playmode`, and the `UNITY_LICENSE` secret is noted
@@ -117,17 +81,17 @@ Fixture defaults.
 
 ---
 
-### Case 3: Infrastructure Already Exists — Early exit, nothing re-initialized
+### Case 2: Infrastructure Already Exists — Early exit, nothing re-initialized
 
 **Fixture:**
-- Godot project; `tests/unit/`, `tests/integration/`, `.github/workflows/tests.yml`
-  and `addons/gdUnit4/bin/GdUnitCmdTool.gd` all exist
+- Unity project; `Assets/Tests/EditMode/`, `Assets/Tests/PlayMode/`, `.github/workflows/tests.yml`
+  and the `.asmdef` files all exist
 - No `force` argument
 
 **Input:** `/test-setup`
 
 **Expected behavior:**
-1. Phase 1 reports "Engine: Godot. Test directory: found. CI workflow: found."
+1. Phase 1 reports "Engine: Unity. Test directory: found. CI workflow: found."
 2. Skill says: "Test infrastructure appears to be in place. Re-run with
    `/test-setup force` to regenerate. Proceeding will not overwrite existing test files."
 3. No plan approval is requested and no file is written
@@ -139,7 +103,7 @@ Fixture defaults.
 
 ---
 
-### Case 4: No Engine Configured — Redirects to /setup-engine
+### Case 3: No Engine Configured — Redirects to /setup-engine
 
 **Fixture:**
 - `project.yaml` has no `engine.name`; `technical-preferences.md` shows
@@ -160,10 +124,10 @@ Fixture defaults.
 
 ---
 
-### Case 5: Director Gate Check — No gate; test-setup is a scaffolding utility
+### Case 4: Director Gate Check — No gate; test-setup is a scaffolding utility
 
 **Fixture:**
-- Engine configured, tests/ does not exist
+- Engine configured, `Assets/Tests/` does not exist
 
 **Input:** `/test-setup`
 
@@ -183,7 +147,7 @@ Fixture defaults.
 
 - [ ] Reads the engine (`project.yaml`, then `technical-preferences.md`) before generating any scaffold
 - [ ] Generates engine-appropriate test runner config and CI workflow (not generic)
-- [ ] Puts unit and integration tests in the engine's test root (`tests/` for Godot, `Assets/Tests/` for Unity, `Source/<Module>/Private/Tests/` for Unreal)
+- [ ] Puts unit and integration tests in the Unity test root (`Assets/Tests/`)
 - [ ] Creates `production/qa/evidence/` — the path the Phase 6 summary reports
 - [ ] Asks approval before creating files
 - [ ] Exits early when infrastructure exists; `force` creates only missing files and never overwrites
@@ -193,11 +157,7 @@ Fixture defaults.
 
 ## Coverage Notes
 
-- Unreal Engine test scaffolding (`Source/<Module>/Private/Tests/README.md`, a
-  self-hosted Windows CI runner) is not separately fixture-tested.
 - The `force` path on a partial scaffold (create only the missing files) is
   covered by protocol compliance, not by its own case.
-- The case where tests/ exists but is from a different engine (e.g., Unity tests
-  in a now-Godot project) is not tested.
 - A Unity project without `com.unity.test-framework` (the skill asks to add the
   version the installed editor bundles, never a copied number) is not tested.

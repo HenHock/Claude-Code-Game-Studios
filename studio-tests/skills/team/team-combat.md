@@ -33,7 +33,7 @@ verdict COMPLETE / NEEDS WORK / BLOCKED and handoffs to `/code-review`,
 - [ ] Phase 0 resolves `team.size`, and the skill requires a one-line active-set announcement before Phase 1
 - [ ] Phase 0 resolves `workflow`, and Phase 1 sizes the GDD by it: `## Summary` plus all 8 sections at `full`, the 5 standard sections plus Formulas for numeric rules at `standard`, optional at `minimal` (the game brief is the record)
 - [ ] Phase 3 is explicitly marked as parallel (gameplay-programmer, ai-programmer, technical-artist, sound-designer)
-- [ ] Phase 2 includes spawning the primary engine specialist, derived from `engine.name` in `project.yaml` (Godot → `godot-specialist`), falling back to the Primary line in `.claude/docs/technical-preferences.md`
+- [ ] Phase 2 includes spawning the primary engine specialist, derived from `engine.name` in `project.yaml` (Unity → `unity-specialist`), falling back to the Primary line in `.claude/docs/technical-preferences.md`
 - [ ] Team Composition lists all seven roles (game-designer, gameplay-programmer, ai-programmer, technical-artist, sound-designer, engine specialist, qa-tester)
 
 ---
@@ -54,7 +54,7 @@ Fixture defaults.
 **Fixture:**
 - Resolved config block: `team.size: small`, `automation: collaborative`, `workflow: full`
 - `design/gdd/game-concept.md` exists and is populated
-- `engine.name` in `project.yaml` is Godot
+- `engine.name` in `project.yaml` is Unity
 - No existing GDD for the requested combat feature
 - The feature involves NPC reactions (enemies parry and riposte), so AI work is flagged
 
@@ -63,7 +63,7 @@ Fixture defaults.
 **Expected behavior:**
 1. Before any spawn, one line announces the active set for `team.size: small` (the full Team Composition pipeline)
 2. Phase 1 — game-designer spawned; drafts the design to `production/combat/parry-riposte-gdd-draft.md` covering all 8 required sections (overview, player fantasy, rules, formulas, edge cases, dependencies, tuning knobs, acceptance criteria); `AskUserQuestion` presents the draft and asks "May I write the design document to `design/gdd/parry-riposte.md`?"; the orchestrator writes it on approval
-3. Phase 2 — gameplay-programmer + ai-programmer spawned; produce architecture sketch with class structure, interfaces, and file list (`docs/architecture/parry-riposte-sketch.md`); then `godot-specialist` is spawned to validate idioms (`docs/architecture/parry-riposte-engine-notes.md`); engine specialist output incorporated
+3. Phase 2 — gameplay-programmer + ai-programmer spawned; produce architecture sketch with class structure, interfaces, and file list (`docs/architecture/parry-riposte-sketch.md`); then `unity-specialist` is spawned to validate idioms (`docs/architecture/parry-riposte-engine-notes.md`); engine specialist output incorporated
 4. `AskUserQuestion` "Architecture sketch complete. Approve to proceed with parallel implementation." with options [A] Proceed / [B] Revise the architecture first / [C] Stop here — implementation agents spawn only on [A]
 5. Phase 3 — gameplay-programmer, ai-programmer, technical-artist, sound-designer spawned in parallel; the three implementing agents return the files they will create or change, one `AskUserQuestion` asks for the whole set, and they write only after a yes; sound-designer drafts its event list to `production/combat/parry-riposte-audio-events.md`; all four return before Phase 4 begins
 6. Phase 4 — integration wires together all Phase 3 outputs; tuning knobs verified as data-driven; `AskUserQuestion` confirms integration before Phase 5
@@ -163,7 +163,7 @@ Fixture defaults.
 
 **Fixture (variant A — engine configured):**
 - Resolved config block: `team.size: small`, `automation: collaborative`
-- `engine.name` in `project.yaml` is Godot; engine version pinned in `docs/engine-reference/godot/VERSION.md`
+- `engine.name` in `project.yaml` is Unity; engine version pinned in `docs/engine-reference/unity/VERSION.md`
 - Architecture sketch produced by gameplay-programmer is available, and the orchestrator has read it
 
 **Fixture (variant B — no engine configured):**
@@ -173,7 +173,7 @@ Fixture defaults.
 
 **Expected behavior (variant A):**
 1. Phase 2 — gameplay-programmer produces architecture sketch
-2. Skill derives the primary engine specialist from `engine.name` (Godot → `godot-specialist`); `technical-preferences.md` is consulted only if `engine.name` is absent
+2. Skill derives the primary engine specialist from `engine.name` (Unity → `unity-specialist`); `technical-preferences.md` is consulted only if `engine.name` is absent
 3. Engine specialist is spawned with a distilled brief of the architecture sketch (not a path to a document the orchestrator has already read) and asked the three Phase 2 questions: idiomatic class/node structure, engine-native systems to prefer, APIs deprecated or changed in the pinned engine version
 4. Engine specialist writes its notes to `docs/architecture/parry-riposte-engine-notes.md`; the orchestrator checks the file exists before treating the step as done
 5. Orchestrator incorporates engine notes into the architecture before presenting Phase 2 results to user

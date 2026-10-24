@@ -22,7 +22,7 @@ No gate IDs assigned.
 **Input:** "Create a dissolve effect shader for enemy death sequences."
 **Expected behavior:**
 - Proposes the approach (shader structure, exposed parameters) before implementing, and asks "May I write this to [filepath]?" before writing
-- Produces shader code or a Shader Graph node spec appropriate to the configured engine (Godot shading language / Unity Shader Graph / Unreal Material Blueprint)
+- Produces shader code or a Shader Graph node spec appropriate to Unity (Shader Graph or HLSL)
 - Exposes the dissolve driver as a documented shader parameter (e.g., a `dissolve_amount` uniform, 0.0–1.0, thresholding a noise texture) and documents each parameter's visual effect
 - States the effect's performance budget (e.g., texture samples, shader instruction count)
 - Leaves the look of the effect (edge color, glow) to art-director rather than deciding it
@@ -48,8 +48,8 @@ No gate IDs assigned.
 ### Case 4: Engine version compatibility
 **Input:** "Use the new texture sampler API for the water shader."
 **Expected behavior:**
-- Checks the engine version reference (e.g., `docs/engine-reference/godot/VERSION.md`) before suggesting any API
-- Flags if the requested API is post-cutoff (e.g., Godot 4.4+ texture type changes)
+- Checks the engine version reference (e.g., `docs/engine-reference/unity/VERSION.md`) before suggesting any API
+- Flags if the requested API is post-cutoff (e.g., changes introduced in a recent Unity release)
 - Provides the correct syntax for the project's pinned engine version
 - If uncertain about post-cutoff behavior, explicitly states the uncertainty and directs to verified docs
 

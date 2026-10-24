@@ -28,15 +28,13 @@ No gate IDs assigned.
 - Notes that MonoBehaviour can reference the ScriptableObject for runtime use
 - Provides a concrete example of what the ScriptableObject class definition looks like (does not produce full code — refers to engine-programmer or gameplay-programmer for implementation)
 
-### Case 2: Wrong-engine redirect
+### Case 2: Foreign-engine concepts
 **Input:** "Set up a Node scene tree with signals for this enemy system."
 **Expected behavior:**
-- Does NOT produce Godot Node/signal code
-- Identifies node trees and signals as Godot concepts
-- Confirms the project's engine from `engine.name` in `project.yaml` rather than guessing; if it is not Unity, says it is the wrong specialist for this project instead of translating
-- If `engine.name` is unset, says no engine is configured and asks which engine the project uses — it does not assume Unity
-- In a Unity project, maps the concepts: node tree → GameObject hierarchy with composed MonoBehaviours; signal → C# event or UnityEvent (consistent with its own rule to use events instead of `SendMessage()` / `Find()`)
-- Does not hand the request to a Godot specialist — its Agent grant covers only the four Unity sub-specialists
+- Does NOT produce node-tree or signal code from another engine
+- Identifies node trees and signals as another engine's concepts
+- Maps the concepts to Unity: node tree → GameObject hierarchy with composed MonoBehaviours; signal → C# event or UnityEvent (consistent with its own rule to use events instead of `SendMessage()` / `Find()`)
+- Does not hand the request to a non-Unity specialist — its Agent grant covers only the four Unity sub-specialists
 
 ### Case 3: Unity version API flag
 **Input:** "Use the new Unity 6 GPU resident drawer for batch rendering."
@@ -71,7 +69,7 @@ No gate IDs assigned.
 ## Protocol Compliance
 
 - [ ] Stays within declared domain (Unity architecture decisions, pattern selection, subsystem routing)
-- [ ] Treats Godot patterns as wrong-engine: checks `engine.name`, answers with the Unity equivalent, never emits Godot code
+- [ ] Treats another engine's patterns as foreign: answers with the Unity equivalent, never emits non-Unity code
 - [ ] Redirects DOTS implementation to unity-dots-specialist
 - [ ] Redirects UI implementation to unity-ui-specialist
 - [ ] Checks `docs/engine-reference/unity/` (pinned version and `Installed at pin time`) before suggesting a version-gated API, and confirms the installed version when it is not recorded

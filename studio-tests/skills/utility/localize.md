@@ -59,8 +59,8 @@ Fixture defaults.
 ### Case 1: Extract — New Strings Keyed and Appended After Approval
 
 **Fixture:**
-- `project.yaml` has `engine.name: Godot`, so the code root is `src/`
-- `src/ui/hud.gd` wraps three strings in `tr()` that have no entry in
+- `project.yaml` has `engine.name: Unity`, so the code root is `Assets/`
+- `Assets/ui/hud.cs` wraps three strings in `tr()` that have no entry in
   `assets/data/strings/strings-en.json`
 - No `production/localization/freeze-status.md` exists
 
@@ -183,7 +183,7 @@ Fixture defaults.
 **Fixture:**
 - `project.yaml` has no `engine.name`; `.claude/docs/technical-preferences.md`
   reads `[TO BE CONFIGURED]`
-- Both `src/` and `Assets/` exist and hold UI code with hardcoded strings
+- Both `Assets/` and `Assets/` exist and hold UI code with hardcoded strings
   (ambiguous tree)
 
 **Input:** `/localize scan`
@@ -192,14 +192,14 @@ Fixture defaults.
 1. Skill tries to resolve the code root and cannot (no engine, two candidate roots)
 2. It reports `NOT ASSESSED — code root unresolved` for the hardcoded-string
    search and says which checks did not run
-3. It does not guess `src/`, and does not report zero hits or "no hardcoded
+3. It does not guess `Assets/`, and does not report zero hits or "no hardcoded
    strings found" — that would read as "nothing to localize"
 4. Nothing is written — scan is read-only
 
 **Assertions:**
 - [ ] Output reads `NOT ASSESSED — code root unresolved` for the code search
 - [ ] No "no hardcoded strings" or zero-hit result is reported
-- [ ] The code root is not assumed to be `src/`
+- [ ] The code root is not assumed to be `Assets/`
 - [ ] No file is written and no "May I write" ask appears
 
 ---

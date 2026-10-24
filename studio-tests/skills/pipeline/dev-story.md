@@ -67,13 +67,13 @@ Fixture defaults.
 ### Case 1: Happy Path — Logic story implemented at full workflow
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `specialists.code: godot-gdscript-specialist`,
+- `project.yaml`: `engine.name: Unity`, `specialists.code: unity-specialist`,
   `modes.workflow: full`, `qa.level: standard`
 - `production/epics/combat/story-001-damage-calc.md`: `Status: Ready`, Layer Core,
   Type Logic, `Requirement: TR-combat-001`, `ADR Governing Implementation: ADR-0003`,
   an `ADR Version` equal to ADR-0003's `## Last Verified` date, a `Manifest Version`
   equal to the manifest header date, Dependencies None, Test Evidence
-  `tests/unit/combat/combat_damage_calc_test.gd`
+  `Assets/Tests/EditMode/Combat/CombatDamageCalcTests.cs`
 - `docs/architecture/tr-registry.yaml` has `TR-combat-001`; ADR-0003 exists and is
   Accepted; `docs/architecture/control-manifest.md` exists
 - `production/sprint-status.yaml` does not exist
@@ -89,11 +89,11 @@ Fixture defaults.
    absent `sprint-status.yaml`); on yes sets the story's `Status:` to `In Progress`
    and its `Last Updated:`; prints "Sprint status not updated:
    production/sprint-status.yaml absent"
-5. Spawns `gameplay-programmer` with `godot-gdscript-specialist` as secondary,
+5. Spawns `gameplay-programmer` with `unity-specialist` as secondary,
    briefing the story path, TR-ID lookup, the story's ADR Decision Summary and
    Implementation Notes inline, the Core layer rules, and the test file path
    with the test requirement
-6. Confirms the agent finished, runs the Godot parse check and reports its exit code
+6. Confirms the agent finished, runs the Unity compile check (`commands.smoke`) and reports its exit code
 7. Prints "Implementation Complete: [title]" with files, test function count,
    Verification and a `Run result:` line; next step `/code-review` then `/story-done`
 8. Overwrites the `<!-- CHECKPOINT -->` block in `active.md`
@@ -103,8 +103,8 @@ Fixture defaults.
 - [ ] The In Progress ask names the story file; `Status:` becomes `In Progress` only after it and before any agent is spawned, and the sprint-status-absent line is printed
 - [ ] Primary is `gameplay-programmer`; secondary comes from `specialists.code`, not the roster table
 - [ ] The ADR guidance is passed inline, not as the ADR path
-- [ ] The brief names `tests/unit/combat/combat_damage_calc_test.gd` (`[system]_[feature]_test.gd`) and requires one test per acceptance criterion
-- [ ] The parse check's command and exit code are reported, and exactly one `Run result:` line appears
+- [ ] The brief names `Assets/Tests/EditMode/Combat/CombatDamageCalcTests.cs` (`[System]Tests`) and requires one test per acceptance criterion
+- [ ] The compile check's command and exit code are reported, and exactly one `Run result:` line appears
 - [ ] Story is NOT marked Complete; the handoff is `/code-review` then `/story-done`
 - [ ] The CHECKPOINT block in `active.md` is overwritten, not appended to
 
@@ -165,7 +165,7 @@ The `full` column of the file-check table has its own STOP rule, so the
 ### Case 3: ADR changed since the story was written
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: full`
+- `project.yaml`: `engine.name: Unity`, `modes.workflow: full`
 - Story file with `Status: Ready`, Type Logic, `Requirement: TR-combat-002`,
   `ADR Governing Implementation: ADR-0004`, an `ADR Version` older than ADR-0004's
   `## Last Verified` date, a `Manifest Version` equal to the manifest header date,
@@ -251,11 +251,11 @@ The `full` column of the file-check table has its own STOP rule, so the
 ### Case 5: Minimal tier, Logic story — tests waived
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: minimal`, `qa.level: minimal`
+- `project.yaml`: `engine.name: Unity`, `modes.workflow: minimal`, `qa.level: minimal`
 - Story Type Logic with `Requirement: Brief MVP feature 1` and ADR fields
   `N/A (minimal — no ADRs)`
 - No TR registry, no ADRs, no control manifest
-- `docs/engine-reference/godot/VERSION.md` rates the pinned version HIGH risk
+- `docs/engine-reference/unity/VERSION.md` rates the pinned version HIGH risk
 
 **Input:** `/dev-story production/epics/[slug]/story-001-[slug].md`
 
@@ -284,7 +284,7 @@ The `full` column of the file-check table has its own STOP rule, so the
 ### Case 5b: Minimal tier, UI story — the screenshot is still required
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: minimal`, `qa.level: minimal`
+- `project.yaml`: `engine.name: Unity`, `modes.workflow: minimal`, `qa.level: minimal`
 - Story Type UI with `Requirement: Brief MVP feature 2` and ADR fields
   `N/A (minimal — no ADRs)`
 - No TR registry, no ADRs, no control manifest
@@ -333,7 +333,7 @@ The `full` column of the file-check table has its own STOP rule, so the
    `Run result: OBSERVED — …` with the retained path
 
 **Assertions:**
-- [ ] No file is written under `src/` — the Godot row is not a default
+- [ ] No file is written under `src/` — the Unity code root is `Assets/`
 - [ ] Both specialists come from the `specialists` block, not the roster table
 - [ ] `ScreenshotOnArg.cs` is written only after its ask, at `Assets/Scripts/`, exactly as run-and-observe.md gives it
 - [ ] If the user declines that ask, the result is `Run result: NOT VERIFIED — ScreenshotOnArg.cs not written`, not an observation
@@ -366,7 +366,7 @@ The `full` column of the file-check table has its own STOP rule, so the
 ### Case 8: Dependency marked Complete through option [C]
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: minimal`, `qa.level: minimal`
+- `project.yaml`: `engine.name: Unity`, `modes.workflow: minimal`, `qa.level: minimal`
 - `story-003` lists `story-002` under Dependencies; `story-002` has
   `Status: In Progress`
 - At the dependency prompt the user picks `[C]`, then approves the update
@@ -391,10 +391,10 @@ The `full` column of the file-check table has its own STOP rule, so the
 ### Case 9: The agent stops early — INCOMPLETE, and the checkpoint says resume
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: minimal`, `qa.level: minimal`
+- `project.yaml`: `engine.name: Unity`, `modes.workflow: minimal`, `qa.level: minimal`
 - Story Type Logic, `Status: Ready`, ADR fields `N/A (minimal — no ADRs)`
 - The programmer agent reports that it hit its turn limit after adding
-  `src/combat/damage.gd`, which calls a helper it never defined
+  `Assets/Scripts/Combat/Damage.cs`, which calls a helper it never defined
 
 **Input:** `/dev-story production/epics/[slug]/story-001-[slug].md`
 
@@ -414,7 +414,7 @@ The `full` column of the file-check table has its own STOP rule, so the
 ### Case 10: `full` tier, a story with no governing ADR (`ADR: N/A`)
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: full`
+- `project.yaml`: `engine.name: Unity`, `modes.workflow: full`
 - Story `Status: Ready`, Type Logic, `ADR Governing Implementation: N/A — no
   architectural pattern required` (what `/create-stories` writes for a
   requirement `/create-epics` flagged as untraced)
@@ -438,7 +438,7 @@ The `full` column of the file-check table has its own STOP rule, so the
 ### Case 11: Two TR-IDs share a prefix — the registry lookup matches the exact id
 
 **Fixture:**
-- `project.yaml`: `engine.name: Godot`, `modes.workflow: full` (pinned: the TR registry
+- `project.yaml`: `engine.name: Unity`, `modes.workflow: full` (pinned: the TR registry
   is required at `full`, so the lookup always runs)
 - `docs/architecture/tr-registry.yaml` lists `TR-combat-0010` first, then
   `TR-combat-001`, each as `- id: TR-combat-NNN` followed by its own `requirement:`
@@ -482,10 +482,9 @@ The `full` column of the file-check table has its own STOP rule, so the
 
 ## Coverage Notes
 
-- The code root is covered for Godot (`src/`) and Unity (`Assets/`, Case 6) and for
-  an unresolved engine (Case 7). Unreal (`Source/<Module>/<System>/`, with the
-  editor-target build as the parse check) is not given a fixture.
-- The INCOMPLETE path is Case 9; `parse NOT VERIFIED` when the engine binary is
+- The code root is covered for Unity (`Assets/`, Case 6) and for
+  an unresolved engine (Case 7).
+- The INCOMPLETE path is Case 9; `compile NOT VERIFIED` when the engine binary is
   unavailable is not given a fixture.
 - The Manifest Version mismatch prompt (`[A]` update / `[B]` keep old rules, which
   records a `Manifest-Note` / `[C]` stop) follows Case 3's ask-before-spawn pattern

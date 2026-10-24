@@ -256,7 +256,7 @@ Fixture defaults.
 
 **Fixture:**
 - `modes.workflow` resolves to `full`
-- `project.yaml` has no `engine.name`; `.claude/docs/technical-preferences.md` reads `[TO BE CONFIGURED]`; both `src/` and `Source/` exist, so the tree does not decide the root
+- `project.yaml` has no `engine.name`; `.claude/docs/technical-preferences.md` reads `[TO BE CONFIGURED]`; both `Assets/` and `Source/` exist, so the tree does not decide the root
 - `design/gdd/systems-index.md` lists Levels (MVP) and Enemies (MVP)
 - `design/gdd/levels.md` specifies "6 levels"; `design/gdd/enemies.md` specifies "3 enemy types: Grunt, Sniper, Boss"
 - `assets/data/enemies/` contains 3 enemy files; no scene files exist under `assets/`
@@ -296,8 +296,7 @@ Fixture defaults.
   `/content-audit` without `--summary` to write the full report.") is not given
   its own case.
 - Unity levels are found under the code root (`Assets/`, `*.unity`) and the
-  other content types under `Assets/` (asserted in Protocol Compliance); Unreal
-  levels under `Content/` (`*.umap`, with data assets as `*.uasset`); neither
-  engine has its own case.
+  other content types under `Assets/` (asserted in Protocol Compliance); this
+  has no case of its own.
 - Asset naming, size and format compliance is `/asset-audit`'s job, not this
   skill's.
