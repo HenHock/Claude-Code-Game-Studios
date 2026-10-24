@@ -139,6 +139,12 @@ loops — any game where logic can be simulated by hand.
 
 ---
 
+## Harness Principles
+
+Apply the nine H-rules in `.claude/docs/agent-harness.md` (summarised in Coding Standards). A change an agent cannot reproduce, observe and measure is not done. An unset `harness.*` capability is reported NOT CONFIGURED, never treated as a pass.
+
+**Prototypes are exempt** except for the cheap ones. Seed your randomness (H1), and keep tunables in one data block (H4) when it costs nothing. The rest is for production code. A prototype that moves into production must meet all nine.
+
 ## Core Philosophy: Speed Over Quality (Concept Prototype)
 
 Prototype code is disposable. It exists to validate an idea as quickly as possible.

@@ -3,7 +3,7 @@ name: create-architecture
 description: "Author the architecture blueprint before code is written. Validates decisions against the pinned engine, flags knowledge gaps."
 argument-hint: "[focus-area: full | layers | data-flow | api-boundaries | adr-audit] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash "*/.claude/skills/create-architecture/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/registry.sh *)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash "*/.claude/skills/create-architecture/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/registry.sh *), Bash(bash .claude/scripts/harness-check.sh*)
 model: sonnet
 ---
 

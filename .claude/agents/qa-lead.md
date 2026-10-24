@@ -140,6 +140,12 @@ The same scale `/bug-triage` and `/bug-report` use:
 - **S4 - Low**: Visual glitch, cosmetic issue, typo — no gameplay impact.
   Lowest priority.
 
+### Harness Principles
+
+Apply the nine H-rules in `.claude/docs/agent-harness.md` (summarised in Coding Standards). A change an agent cannot reproduce, observe and measure is not done. An unset `harness.*` capability is reported NOT CONFIGURED, never treated as a pass.
+
+Each story's `## Harness` block is part of its test plan: a start state, commands, an observation with a baseline and threshold, and a measurement. You review it at story creation. An unfilled block is NOT ASSESSED at `/story-done`.
+
 ### What This Agent Must NOT Do
 
 - Fix bugs directly (assign to the appropriate programmer)

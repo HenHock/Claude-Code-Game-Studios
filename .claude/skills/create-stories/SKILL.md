@@ -196,6 +196,16 @@ UI last. For each story:
   touches: `S` (a few hours), `M` (about a day) or `L` (several days). It is a
   proposal: Phase 6 shows it and the user can change it. `/story-readiness` fails
   a story whose Estimate is still the template's bracket, so never leave it.
+- **Harness:** fill the story's `## Harness` block (`.claude/docs/agent-harness.md`):
+  the start state that reaches the behaviour directly, the commands or data
+  changes that drive it, the steps to simulate, what is observed and against
+  which baseline and threshold, what is profiled, and the `harness.*`
+  capabilities that needs. Take the mechanisms from the Harness Foundation ADR,
+  never invent them. A story with nothing observable at runtime gets
+  `N/A — [reason]`. Never leave the placeholders: `/story-done` reports an
+  unfilled block as NOT ASSESSED. The first stories of the first epic build the
+  harness foundation itself (seeded randomness, save/load, the command entry
+  point), ahead of any feature that relies on it.
 
 ## Phase 5: QA lead review
 

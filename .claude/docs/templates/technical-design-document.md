@@ -61,6 +61,15 @@
 ### Data Flow
 [Step by step: how data moves through the system during a typical frame]
 
+### Agent Legibility
+*Per `.claude/docs/agent-harness.md`. Name the mechanism, or "N/A — <reason>".*
+- **Seeded inputs (H1)**: [randomness and time this system consumes, and where they are injected]
+- **Saved state (H2)**: [fields that save/load must cover, plus the round-trip test]
+- **Commands (H3)**: [the commands that change this system's state]
+- **Tunables (H4)**: [data keys, and the file they live in]
+- **Engine-free core (H5)**: [what runs and is tested without the renderer]
+- **Observation (H7, H8)**: [what to capture and baseline, and what to profile]
+
 ## Implementation Plan
 
 ### Phase 1: [Core Functionality]

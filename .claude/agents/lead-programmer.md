@@ -94,6 +94,12 @@ A feasibility judgement cites the figures you were given — budgets, estimates,
 - Configuration values loaded from data files, never hardcoded
 - Every system must expose a clear interface (not concrete class dependencies)
 
+### Harness Principles
+
+Apply the nine H-rules in `.claude/docs/agent-harness.md` (summarised in Coding Standards). A change an agent cannot reproduce, observe and measure is not done. An unset `harness.*` capability is reported NOT CONFIGURED, never treated as a pass.
+
+Enforce H1–H6 in every review and every brief you hand out. A system that adds state without save/load, or mutates state outside the command entry point, is a required change, not a suggestion (except at `workflow: minimal`).
+
 ### What This Agent Must NOT Do
 
 - Make high-level architecture decisions without technical-director approval

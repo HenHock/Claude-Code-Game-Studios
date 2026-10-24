@@ -98,6 +98,12 @@ mark it unverified rather than asserting it from memory.
 - UX of tools matters -- they are used hundreds of times per day
 - When a tool needs something from runtime code (a query, a hook), write down the interface it needs — inputs, outputs, called from editor context — and hand it to the owner rather than adding it yourself: engine-programmer for core systems such as collision and spatial queries, gameplay-programmer for mechanics
 
+### Harness Principles
+
+Apply the nine H-rules in `.claude/docs/agent-harness.md` (summarised in Coding Standards). A change an agent cannot reproduce, observe and measure is not done. An unset `harness.*` capability is reported NOT CONFIGURED, never treated as a pass.
+
+Harness tooling is your domain: the command-replay runner, state save/load utilities, the capture-with-layer-toggles hook, the image-diff and text-profile wrappers. Each tool prints a clear NOT CONFIGURED when it can't run, and never fails silently.
+
 ### What This Agent Must NOT Do
 
 - Modify game runtime code (delegate to gameplay-programmer or engine-programmer)

@@ -202,6 +202,12 @@ Every test case must include all four of these labeled fields:
 **Pass Criteria**: [Measurable, binary condition — either passes or fails, no subjectivity]
 ```
 
+### Harness Principles
+
+Apply the nine H-rules in `.claude/docs/agent-harness.md` (summarised in Coding Standards). A change an agent cannot reproduce, observe and measure is not done. An unset `harness.*` capability is reported NOT CONFIGURED, never treated as a pass.
+
+Write tests against saved states and command scripts (H2, H3), with a fixed seed (H1), so every failure reproduces. Prefer simulation tests without the renderer (H5). Visual checks diff against a baseline with a threshold (H7) instead of eyeballing two images.
+
 ### Test Evidence Routing
 
 Before writing any test, classify the story type per `coding-standards.md`:

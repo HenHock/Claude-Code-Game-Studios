@@ -96,6 +96,12 @@ When evaluating technical decisions, apply these criteria:
 5. **Testability**: Can this be meaningfully tested?
 6. **Reversibility**: How costly is it to change this decision later?
 
+### Harness Principles
+
+Apply the nine H-rules in `.claude/docs/agent-harness.md` (summarised in Coding Standards). A change an agent cannot reproduce, observe and measure is not done. An unset `harness.*` capability is reported NOT CONFIGURED, never treated as a pass.
+
+You own the **Harness Foundation ADR** (H1–H5: seeded randomness, save/load format, command entry point, data reload, simulation/presentation split). A technology choice that breaks one of them needs an ADR naming the principle and what replaces it.
+
 ### What This Agent Must NOT Do
 
 - Make creative or design decisions (escalate to creative-director)

@@ -4,7 +4,7 @@ description: "Implements one story in code with tests, following its ADRs. Use w
 argument-hint: "[story-path]"
 user-invocable: true
 disable-model-invocation: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/dev-story/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/story-facts.sh *), Bash(bash .claude/scripts/adr-status.sh *), Bash(bash .claude/scripts/md-section.sh *), Bash(bash .claude/scripts/session-state.sh *), Bash(bash .claude/scripts/review-receipts.sh hash *), Bash(godot *), Bash(mkdir -p production/qa/evidence/*)
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/dev-story/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/story-facts.sh *), Bash(bash .claude/scripts/adr-status.sh *), Bash(bash .claude/scripts/md-section.sh *), Bash(bash .claude/scripts/session-state.sh *), Bash(bash .claude/scripts/review-receipts.sh hash *), Bash(bash .claude/scripts/harness-check.sh *), Bash(godot *), Bash(mkdir -p production/qa/evidence/*)
 model: sonnet
 ---
 
@@ -166,6 +166,10 @@ paste whole documents into it.
   4. The control manifest's [Layer] Layer Rules, by section.
   5. `naming.*` in `project.yaml` and the `perf_budgets` line above.
   6. The test file path from the story's Test Evidence section.
+  7. The story's `## Harness` block, and "Apply the H-rules in
+     `.claude/docs/agent-harness.md`: seeded randomness, state changes as
+     commands, tunables in data, simulation free of engine types. New state is
+     added to save/load in this story, with a round-trip test."
 - **Tests,** by `qa.level`, for Logic and Integration stories:
   - `minimal`: "Do not write a test file for this story — test evidence is waived at
     `qa.level: minimal`." Say it: an omitted line and a forgotten one look the same
@@ -250,6 +254,23 @@ minimal`. Report exactly one line, plain text starting `Run result:` (no bold:
 
 Only the feel half of a Visual/Feel criterion (timing, weight) is DEFERRED to
 `/team-qa`: a still cannot show it.
+
+**Run the harness loop** (`.claude/docs/agent-harness.md`). Run
+`bash .claude/scripts/harness-check.sh --story <story path>` and quote its `SLOT:`
+and `STORY:` lines. Then run the story's Harness block in loop order, using
+only the `harness.*` capabilities marked `SET`: load the start state, apply
+the commands or data, simulate, capture and diff against the baseline, profile.
+Run nothing from memory for an unset capability. Report exactly one line,
+plain text starting `Harness result:`:
+
+- `Harness result: RAN — <steps run, diff similarity, profile delta>`;
+- `Harness result: PARTIAL — ran <steps>; NOT CONFIGURED: <harness.* keys>`;
+- `Harness result: NOT ASSESSED — <reason>` (block empty or missing, or no
+  capability it needs is set);
+- `Harness result: N/A — <reason>`, only when the block itself says `N/A`.
+
+Advisory: this line never blocks the story on its own, and it never reads as a
+pass when steps did not run.
 
 This skill pre-approves `godot` on PATH. An engine run through `engine.path` or
 the executable `commands.test` names asks first: the user approves it once, or

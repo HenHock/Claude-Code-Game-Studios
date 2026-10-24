@@ -3,7 +3,7 @@ name: code-review
 description: "Architectural code review — coding standards, SOLID, testability, performance concerns."
 argument-hint: "[path-to-file-or-directory]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash(git log *), Agent, AskUserQuestion, Bash(bash "*/.claude/skills/code-review/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Bash(git log *), Agent, AskUserQuestion, Bash(bash "*/.claude/skills/code-review/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/harness-check.sh*)
 model: sonnet
 ---
 
@@ -142,6 +142,22 @@ Identify the system category (engine, gameplay, AI, networking, UI, tools) and e
 - [ ] Thread safety where required
 - [ ] Resource cleanup (no leaks)
 
+**Harness rules** (`.claude/docs/agent-harness.md`). Check each against the
+changed code. Cite file and line for each finding:
+
+- [ ] **H1** No global random calls or wall-clock reads in simulation logic. Randomness is the injected, seeded source
+- [ ] **H2** New simulation state is covered by save/load, with a round-trip test
+- [ ] **H3** State changes go through the command entry point, not direct mutation
+- [ ] **H4** New tunables are data keys, not constants
+- [ ] **H5** Simulation code holds no engine scene, render or UI types. Engine-side code holds no game rules
+- [ ] **H6** No new entity inheritance level without an ADR
+
+Run `bash .claude/scripts/harness-check.sh` and quote its `SLOTS_UNSET:` and
+`FOUNDATION_ADR:` lines. With no Harness Foundation ADR, H2, H3 and H5 have no
+agreed mechanism to judge against: report them **NOT ASSESSED**, never as
+passing. Violations are suggestions at `workflow: minimal` and required
+changes otherwise.
+
 ---
 
 ## Phase 7: Specialist Reviews (Parallel)
@@ -210,6 +226,9 @@ Collect all specialist findings before producing output.
 
 ### ADR Compliance: [NOT ASSESSED / NO ADRS FOUND / COMPLIANT / DRIFT / VIOLATION]
 [List each ADR checked, result, and any deviations with severity]
+
+### Harness: [NOT ASSESSED / COMPLIANT / ISSUES FOUND]
+[Each H-rule checked, with result: pass, finding with file:line, or NOT ASSESSED and why. Quote the harness-check.sh lines]
 
 ### Standards Compliance: [X/6 passing]
 [List failures with line references; a missing doc comment names the method or class]

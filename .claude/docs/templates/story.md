@@ -87,6 +87,23 @@ checks scope against it.*
 
 ---
 
+## Harness
+
+*How an agent reproduces, drives and observes this story without a human
+(`.claude/docs/agent-harness.md`). `/create-stories` fills it; `/dev-story` runs
+it; `/story-done` reports it. A block left as placeholders is reported as NOT
+ASSESSED, never passed. For a story with nothing to observe at runtime, write
+`N/A — <reason>`.*
+
+**Start state:** [state file to load (H2), or the seed + direct-start argument that reaches it (H1)]
+**Commands / data:** [command script to replay (H3) or data keys to change (H4)]
+**Simulate:** [fixed steps or ticks to run (H1, H5)]
+**Observe:** [what is captured, which layers are hidden, the baseline to diff against, and the similarity threshold (H7)]
+**Measure:** [text profile to compare and the budget it must stay within (H8), or "none"]
+**Capabilities needed:** [harness.* keys this block uses. Each unset one is reported NOT CONFIGURED]
+
+---
+
 ## Test Evidence
 
 *Governed by `qa.level`: at `qa.level: minimal` tests are **waived** (advisory, never "must exist and pass"), but a Visual/Feel or UI story's retained screenshot is not.*

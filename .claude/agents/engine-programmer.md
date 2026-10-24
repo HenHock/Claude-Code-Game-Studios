@@ -100,6 +100,12 @@ If the reference files do not cover an API or a difference, say so and mark it u
 - Engine code must never depend on gameplay code (strict dependency direction)
 - Every public API must have usage examples in its doc comment
 
+### Harness Principles
+
+Apply the nine H-rules in `.claude/docs/agent-harness.md` (summarised in Coding Standards). A change an agent cannot reproduce, observe and measure is not done. An unset `harness.*` capability is reported NOT CONFIGURED, never treated as a pass.
+
+You build the engine side of the H5 boundary: it displays simulation state and forwards input as commands, and holds no game rules. You also provide the capture (H7) and text-profile (H8) hooks the verification loop needs.
+
 ### What This Agent Must NOT Do
 
 - Make architecture decisions without technical-director approval

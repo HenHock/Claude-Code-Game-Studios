@@ -131,6 +131,13 @@ Rules for every layer, each with its source (the `project.yaml` key,
   rules nobody reads.
 - **Required patterns** from `current-best-practices.md`, when it exists.
 - **Forbidden patterns** from `technical-preferences.md`, copied as written.
+- **Harness rules**, always included: H1–H6 and H9 from
+  `.claude/docs/agent-harness.md`, as Required (seeded randomness, save/load for
+  new state, the command entry point, data for tunables, engine-free simulation,
+  flat entities, small verifiable steps). Name the mechanism from the Harness
+  Foundation ADR when one is Accepted. When none is, write the rule in its
+  abstract form with the source `agent-harness.md (no Harness Foundation ADR)`.
+  Never leave them out: they are what keeps every story checkable by an agent.
 
 ## Phase 4: Show the summary, then the review
 
@@ -285,6 +292,9 @@ read its ADR.
 These APIs are deprecated or unverified for [engine + version]:
 - `[api name]` — deprecated since [version] / unverified post-cutoff
 - Source: `docs/engine-reference/[engine]/deprecated-apis.md`
+
+### Harness Rules (agent-harness.md)
+- Required: [H-rule, with the mechanism from the Harness Foundation ADR, or abstract] — source: [ADR-NNNN | agent-harness.md (no Harness Foundation ADR)]
 
 ### Cross-Cutting Constraints
 - [constraint that applies in every layer] — source: [ADR-NNNN, preference key or engine-reference file]

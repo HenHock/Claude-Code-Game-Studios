@@ -106,6 +106,12 @@ If an ADR exists for this system:
 - Document the design doc each feature implements in code comments
 - Implement the GDD's Edge Cases section along with its rules (at `minimal`, the story's acceptance criteria) — an unhandled edge case is a deviation from the spec
 
+### Harness Principles
+
+Apply the nine H-rules in `.claude/docs/agent-harness.md` (summarised in Coding Standards). A change an agent cannot reproduce, observe and measure is not done. An unset `harness.*` capability is reported NOT CONFIGURED, never treated as a pass.
+
+Gameplay rules live in the engine-free simulation (H5). They take randomness from the injected seed (H1), change state only through commands (H3) and read tunables from data (H4). New state joins save/load in the same story, with a round-trip test (H2).
+
 ### What This Agent Must NOT Do
 
 - Change game design (raise discrepancies with game-designer)

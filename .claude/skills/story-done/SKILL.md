@@ -4,7 +4,7 @@ description: "Closes a finished story: verifies each acceptance criterion, check
 argument-hint: "[story-file-path] [--review full|lean|solo]"
 user-invocable: true
 disable-model-invocation: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash "*/.claude/skills/story-done/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/story-facts.sh *), Bash(bash .claude/scripts/story-status.sh*), Bash(bash .claude/scripts/adr-status.sh *), Bash(bash .claude/scripts/md-section.sh *), Bash(bash .claude/scripts/review-receipts.sh check *), Bash(bash .claude/scripts/session-state.sh *), Bash(git status --porcelain*)
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash "*/.claude/skills/story-done/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/story-facts.sh *), Bash(bash .claude/scripts/story-status.sh*), Bash(bash .claude/scripts/adr-status.sh *), Bash(bash .claude/scripts/md-section.sh *), Bash(bash .claude/scripts/review-receipts.sh check *), Bash(bash .claude/scripts/harness-check.sh *), Bash(bash .claude/scripts/session-state.sh *), Bash(git status --porcelain*)
 model: sonnet
 ---
 
@@ -182,6 +182,24 @@ advisory, "confirm the build was launched and looked at". A user's "Yes — pass
 to an on-screen criterion with no retained image is an assertion, not an
 observation: a gap at the gate level.
 
+**Harness result** (`.claude/docs/agent-harness.md`). Run
+`bash .claude/scripts/harness-check.sh --story <story path>`, then take the
+`Harness result:` line the same way as the run result. Report one line in the
+Phase 7 report, `Harness: <value> — <detail>`:
+
+- `STORY: … harness=EMPTY` or `NO_SECTION`: **NOT ASSESSED** — "the story's
+  Harness block is unfilled, so nobody can say whether an agent can reproduce
+  it". Never PASS.
+- `RAN`: note the diff similarity and profile delta.
+- `PARTIAL`: name each `NOT CONFIGURED` key. A capability left unset is a setup
+  gap, not a story defect.
+- No `Harness result:` line: **NOT ASSESSED** — "the loop was not run".
+- `N/A — <reason>` in a block that says `N/A`: accept it.
+
+Advisory in this release: the line is reported and never changes the verdict
+on its own. It must still appear, because a missing harness line and a passing
+one would otherwise look the same.
+
 ## Phase 5: Deviations and scope
 
 Run, by tier (`minimal` skips 1 and 3):
@@ -242,6 +260,9 @@ exists yet.
 **Required**: [what the type needs at this qa.level, or "waived at qa.level minimal"]
 **Found**: [YES — path | NO — BLOCKING | NO — ADVISORY]
 
+### Harness
+**Harness**: [RAN | PARTIAL | NOT ASSESSED | N/A] — [detail; each NOT CONFIGURED key]
+
 ### Deviations
 [NONE, or each: BLOCKING / ADVISORY / OUT OF SCOPE — description — reference]
 
@@ -262,7 +283,9 @@ exists yet.
 3. **COMPLETE WITH NOTES:** every criterion passes or is DEFERRED, with advisory
    items listed. Information lines are not advisory items: the evidence-stamp
    lines, an absent sprint file and the run result never turn COMPLETE into COMPLETE
-   WITH NOTES.
+   WITH NOTES. The Harness line is not one of them: anything but `RAN` or an
+   accepted `N/A` is an advisory item, so it turns COMPLETE into COMPLETE WITH
+   NOTES and is listed.
 4. **COMPLETE:** every criterion passes, nothing advisory.
 
 **Then ask, before writing anything:** "How do you want to proceed?" Options:

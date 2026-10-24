@@ -162,6 +162,18 @@ to implement it.]
 - **Load Time**: [Expected impact]
 - **Network**: [Expected impact, if applicable]
 
+## Harness Impact
+*How this decision keeps the game agent-legible (`.claude/docs/agent-harness.md`).
+Answer each line, or write "unaffected". A principle this ADR deviates from must
+be named here with what replaces it.*
+- **Determinism (H1)**: [new randomness or time sources, and how they are seeded or injected]
+- **State (H2)**: [new state, and how save/load covers it]
+- **Commands (H3)**: [new state changes, and the commands that express them]
+- **Data (H4)**: [new tunables, and the data they live in]
+- **Sim/presentation (H5)**: [which side of the boundary this lives on]
+- **Observability (H7, H8)**: [how the result is captured and measured]
+- **Deviations**: [principle → replacement, or "none"]
+
 ## Migration Plan
 [If this changes existing code, how do we get from here to there?]
 
