@@ -69,6 +69,15 @@ See `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md` for full protocol and examples.
 
 @.claude/docs/coding-standards.md
 
+## Agent-Legible Game
+
+**The game is the agent's harness.** A change an agent cannot reproduce, observe
+and measure is not done. Every architecture, story, implementation and review
+applies the nine H-rules in Coding Standards above. The full contract (the
+verification loop and the `harness.*` capability keys) is
+`.claude/docs/agent-harness.md`. An unset capability is NOT CONFIGURED, never a
+pass.
+
 ## Context Management
 
 Read `.claude/docs/context-management.md` on demand — it is a reference, not

@@ -18,6 +18,26 @@
   per engine: `.claude/docs/run-and-observe.md`. Not waived at
   `qa.level: minimal` — tests are, the look is not.
 
+# Agent-Legible Game (Harness Principles)
+
+**A change an agent cannot reproduce, observe and measure is not done.** These nine
+rules are engine-agnostic; the full form, the verification loop and the
+`harness.*` capability keys are in `.claude/docs/agent-harness.md`. Read it before
+architecture, story or implementation work.
+
+- **H1 Determinism**: all randomness comes from one injected, seeded source; sim logic never reads the wall clock directly
+- **H2 Portable state**: the full simulation state saves to and loads from a file, built in the first sprint
+- **H3 Changes are commands**: every state mutation is a serializable, replayable command through one entry point
+- **H4 Data, not code**: tuning lives in external data that reloads without a rebuild
+- **H5 Sim/presentation split**: the simulation runs and is tested without the renderer; the engine only displays it
+- **H6 Uniform entities**: flat composition over deep inheritance; deviations need an ADR
+- **H7 Observable**: capture any state on command with layer toggles; compare against a baseline with a numeric diff
+- **H8 Measurable as text**: profiling output an agent can read and compare
+- **H9 Small steps**: the smallest verifiable change, checked by the loop before the next one
+
+Unset `harness.*` capabilities are **NOT CONFIGURED**, never a pass. At
+`modes.workflow: minimal` and in `prototypes/`, H1–H4 are recommended and the rest optional.
+
 # Design Document Standards
 
 - All design docs use Markdown

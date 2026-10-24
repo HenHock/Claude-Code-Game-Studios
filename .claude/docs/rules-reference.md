@@ -39,6 +39,7 @@ each rule's own globs list the case variants (`{AI,Ai,ai}`).
 
 | Rule File | Path Pattern | Enforces |
 | ---- | ---- | ---- |
+| `harness.md` | `src/**` · `Assets/**/*.cs` · `Source/**/*.{h,cpp}` | The H-rules: seeded randomness, save/load, commands, data, sim/presentation split, capture, text profiles. Every code file, every system |
 | `gameplay-code.md` | `src/gameplay/**` · `Assets/**/Gameplay/**/*.cs` · `Source/**/Gameplay/**/*.{h,cpp}` | Data-driven values, delta time, no UI references |
 | `engine-code.md` | `src/core/**` · `Assets/**/Core/**/*.cs` · `Source/**/Core/**/*.{h,cpp}` | Zero allocs in hot paths, thread safety, API stability |
 | `ai-code.md` | `src/ai/**` · `Assets/**/AI/**/*.cs` · `Source/**/AI/**/*.{h,cpp}` | Performance budgets, debuggability, data-driven params |
