@@ -202,10 +202,12 @@ UI last. For each story:
   which baseline and threshold, what is profiled, and the `harness.*`
   capabilities that needs. Take the mechanisms from the Harness Foundation ADR,
   never invent them. A story with nothing observable at runtime gets
-  `N/A — [reason]`. Never leave the placeholders: `/story-done` reports an
-  unfilled block as NOT ASSESSED. The first stories of the first epic build the
-  harness foundation itself (seeded randomness, save/load, the command entry
-  point), ahead of any feature that relies on it.
+  `N/A — [reason]`; so does a story in a project whose Harness Foundation ADR
+  marks the relevant rule `N/A`. Never leave the placeholders: `/story-done`
+  reports an unfilled block as NOT ASSESSED. For the rules the ADR marks as
+  applying, the first stories of the first epic build the harness foundation
+  itself (seeded randomness, save/load, the command entry point), ahead of any
+  feature that relies on it. With no ADR, plan them all.
 
 ## Phase 5: QA lead review
 

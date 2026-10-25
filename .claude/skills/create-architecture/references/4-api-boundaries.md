@@ -24,7 +24,11 @@ boundaries before any other:
 - **The command surface.** The single entry point through which every state
   change arrives (input, AI, network, tests, replay), and the command's
   serializable text form.
-At `workflow: minimal` these are recommended. Say which you recorded.
+At `workflow: minimal` these are recommended. Say which you recorded. If the
+project has no simulation logic, record both as `N/A — <reason>` and say so; do
+not invent a simulation layer for it. Name the layer by the project's own naming (for example `Controllers`, taken
+from where its pure-language rules already live); never propose a folder,
+namespace or class called `Sim`.
 
 **Engine awareness check**: If any interface uses engine-specific types (e.g.
 `MonoBehaviour`, `ScriptableObject`, `UnityEvent`), flag the version and verify the type

@@ -85,7 +85,7 @@ Pass: architecture document path, technical requirements baseline summary, ADR l
 
 **Step 3 — Present both assessments to the user:**
 
-Show the TD-ARCHITECTURE verdict (APPROVE / CONCERNS / REJECT) and the LP-FEASIBILITY verdict (FEASIBLE / CONCERNS / INFEASIBLE) side by side.
+Show the TD-ARCHITECTURE verdict (APPROVE / CONCERNS / REJECT) and the LP-FEASIBILITY verdict (FEASIBLE / CONCERNS / INFEASIBLE) side by side, each with the concerns it raised quoted in full.
 
 Use `AskUserQuestion` — "Technical Director and Lead Programmer have reviewed the architecture. How would you like to proceed?"
 Options: `Accept — proceed to handoff` / `Revise flagged items first` / `Discuss specific concerns`.

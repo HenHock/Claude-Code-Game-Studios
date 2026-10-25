@@ -106,8 +106,8 @@ skills:
     spec: studio-tests/skills/pipeline/create-control-manifest.md
     last_static: ""
     last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
+    last_spec: "2026-10-25"
+    last_spec_result: "PASS"
     last_category: ""
     last_category_result: ""
     priority: high
@@ -184,8 +184,8 @@ skills:
     spec: studio-tests/skills/sprint/sprint-plan.md
     last_static: ""
     last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
+    last_spec: "2026-10-25"
+    last_spec_result: "PASS"
     last_category: ""
     last_category_result: ""
     priority: medium
@@ -427,8 +427,8 @@ skills:
     spec: studio-tests/skills/authoring/create-architecture.md
     last_static: ""
     last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
+    last_spec: "2026-10-25"
+    last_spec_result: "PASS"
     last_category: ""
     last_category_result: ""
     priority: low

@@ -15,7 +15,11 @@ but don't yet. Group by priority:
   seeded randomness source, the save/load format, the command entry point and
   text form, where tuning data lives and how it reloads, and the
   simulation/presentation split. Title it `ADR-NNNN: Harness Foundation` so the
-  check finds it.
+  check finds it. The ADR records a status per rule, H1–H5: `applies`, `partly`
+  or `N/A — <reason>` (for example a project with no simulation logic). An `N/A`
+  needs its reason written down; an unrecorded rule stays `applies`. It also
+  records which layer plays the simulation role, under the project's own name
+  (never a folder called `Sim` on the framework's say-so).
 - [e.g. "Scene management and scene loading strategy"]
 - [e.g. "Event bus vs direct signal architecture"]
 

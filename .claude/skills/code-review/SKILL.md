@@ -145,17 +145,22 @@ Identify the system category (engine, gameplay, AI, networking, UI, tools) and e
 **Harness rules** (`.claude/docs/agent-harness.md`). Check each against the
 changed code. Cite file and line for each finding:
 
-- [ ] **H1** No global random calls or wall-clock reads in simulation logic. Randomness is the injected, seeded source
-- [ ] **H2** New simulation state is covered by save/load, with a round-trip test
-- [ ] **H3** State changes go through the command entry point, not direct mutation
-- [ ] **H4** New tunables are data keys, not constants
-- [ ] **H5** Simulation code holds no engine scene, render or UI types. Engine-side code holds no game rules
-- [ ] **H6** No new entity inheritance level without an ADR
+- [ ] **H1** Applies only to randomness and time that affect simulation logic or behavior, in code the change adds or touches. Presentation-only randomness (particles, VFX, audio variation) is out of scope. Do not flag untouched pre-existing code, and do not ask for rewrites of it. Where the change does add simulation randomness, it is seeded from the run's one setup point and reads no wall clock. Advisory Unity patterns to grep in the changed files (details: `docs/engine-reference/unity/harness/determinism.md`):
+  - `Random.Range`, `Random.value`, `new System.Random(`, `Unity.Mathematics.Random` in simulation logic where no seeding from the setup point is visible
+  - `DateTime.Now`, `Time.realtimeSinceStartup`, `Stopwatch` in `Assets/Scripts/Core/**`
+  - Unordered `Dictionary`/`HashSet` iteration or `FindObjectsSortMode.None` results deciding a simulation outcome
+  - Only if the project is ECS/DOTS and gameplay depends on physics: `Physics.Simulate(Time.deltaTime)` or a non-fixed step. Non-ECS projects: do not raise physics determinism.
+- [ ] **H2** Simulation state the change adds or touches is covered by save/load, with a round-trip test. Presentation state and untouched pre-existing systems are out of scope (details: `docs/engine-reference/unity/harness/portable-state.md`)
+- [ ] **H3** Simulation state changes the change adds or touches go through the command entry point, not direct mutation. Presentation, editor tools, prototypes and untouched existing code are out of scope (details: `docs/engine-reference/unity/harness/commands.md`)
+- [ ] **H4** New gameplay tuning values the change adds or touches are data keys, not constants. Structural, presentation and one-off constants and untouched existing code are out of scope (details: `docs/engine-reference/unity/harness/data-tuning.md`)
+- [ ] **H5** Game rules the change adds or touches hold no engine scene, render or UI types, and engine-side code the change adds holds no game rules. Identify the pure C# rules layer by its properties (rules and state, no scene or wall clock, runs in a plain test) and the project's declared layer name, not by a path containing "Sim". If no layer is declared, judge by the properties. Views, animation, VFX, UI and untouched existing code are out of scope (details: `docs/engine-reference/unity/harness/sim-presentation-split.md`)
+- [ ] **H6** No new simulation-entity inheritance level without an ADR. Unity scene objects and untouched existing hierarchies are out of scope (details: `docs/engine-reference/unity/harness/entity-model.md`)
 
 Run `bash .claude/scripts/harness-check.sh` and quote its `SLOTS_UNSET:` and
 `FOUNDATION_ADR:` lines. With no Harness Foundation ADR, H2, H3 and H5 have no
 agreed mechanism to judge against: report them **NOT ASSESSED**, never as
-passing. Violations are suggestions at `workflow: minimal` and required
+passing. If the ADR exists and marks a rule `N/A — <reason>`, report that rule
+as N/A with the reason. Violations are suggestions at `workflow: minimal` and required
 changes otherwise.
 
 ---

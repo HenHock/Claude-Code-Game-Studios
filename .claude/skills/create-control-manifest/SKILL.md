@@ -131,13 +131,17 @@ Rules for every layer, each with its source (the `project.yaml` key,
   rules nobody reads.
 - **Required patterns** from `current-best-practices.md`, when it exists.
 - **Forbidden patterns** from `technical-preferences.md`, copied as written.
-- **Harness rules**, always included: H1–H6 and H9 from
-  `.claude/docs/agent-harness.md`, as Required (seeded randomness, save/load for
-  new state, the command entry point, data for tunables, engine-free simulation,
-  flat entities, small verifiable steps). Name the mechanism from the Harness
-  Foundation ADR when one is Accepted. When none is, write the rule in its
-  abstract form with the source `agent-harness.md (no Harness Foundation ADR)`.
-  Never leave them out: they are what keeps every story checkable by an agent.
+- **Harness rules**: H1–H6 and H9 from `.claude/docs/agent-harness.md`, as
+  Required (seeded randomness for logic and behavior, save/load for new
+  simulation state, the command entry point, data for gameplay tunables,
+  engine-free game rules, flat entities, small verifiable steps). Each binds the
+  code a story adds or touches, not existing code. Name the mechanism from the
+  Harness Foundation ADR when one is Accepted (it decides H1–H5; H6 and H9 are
+  sourced to `agent-harness.md`), and leave out only a rule that ADR marks
+  `N/A — <reason>`, printing that reason. When no ADR exists, include all
+  of them in abstract form with the source `agent-harness.md (no Harness
+  Foundation ADR)`. Never leave a rule out without a written `N/A`: they are what
+  keeps every story checkable by an agent.
 
 ## Phase 4: Show the summary, then the review
 
@@ -153,6 +157,7 @@ Rules extracted:
   - Presentation layer: …
   - Global: [N] naming conventions, [M] forbidden APIs, [P] approved libraries
 Unresolved: [engine entries left out because whether they apply is unclear, or "None"]
+Harness rules left out: [H-rule (N/A — reason from the Harness Foundation ADR), … or "None"]
 ```
 
 Ask: "Does this rule summary look complete?" Options: Yes — review and write it /
@@ -294,7 +299,9 @@ These APIs are deprecated or unverified for [engine + version]:
 - Source: `docs/engine-reference/[engine]/deprecated-apis.md`
 
 ### Harness Rules (agent-harness.md)
+Each rule binds the code a story adds or touches, not existing code.
 - Required: [H-rule, with the mechanism from the Harness Foundation ADR, or abstract] — source: [ADR-NNNN | agent-harness.md (no Harness Foundation ADR)]
+- Not applicable: [H-rule — N/A reason from the Harness Foundation ADR, or "None"]
 
 ### Cross-Cutting Constraints
 - [constraint that applies in every layer] — source: [ADR-NNNN, preference key or engine-reference file]

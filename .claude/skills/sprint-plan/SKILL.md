@@ -99,14 +99,20 @@ smaller than the range is planned whole — never padded with invented stories.
    absent GDDs as missing work. (Note: `/sprint-plan` is **optional** at
    `minimal` — the brief's Build order already is the plan.)
 
-5. **Check the harness foundation** (`.claude/docs/agent-harness.md`). In the
+5. **Check the harness foundation** (`.claude/docs/agent-harness.md`). Find the
+   Harness Foundation ADR by Grep for `^# ADR-[0-9]+:.*[Hh]arness [Ff]oundation`
+   in `docs/architecture/` and read its per-rule status (`applies`, `partly`,
+   `N/A — <reason>`). In the
    first implementation sprint (`[N]` is `001`, or no earlier sprint delivered
    code), the stories that build seeded randomness, save/load and the command
-   entry point (H1–H3) go in **Must Have**, ahead of features that need them. A
-   backlog with no such story: list it under Risks as "no harness foundation
-   story — later stories cannot be reproduced or replayed by an agent" and
-   suggest `/create-stories` for it. Never drop it silently. At `workflow:
-   minimal` it is a recommendation, and you say so.
+   entry point (H1–H3) go in **Must Have**, ahead of features that need them,
+   for each rule the Harness Foundation ADR does not mark `N/A`. A backlog with
+   no such story: list it under Risks as "no harness foundation story — later
+   stories cannot be reproduced or replayed by an agent" and suggest
+   `/create-stories` for it. Never drop it silently. If the ADR marks all of
+   H1–H3 `N/A — <reason>`, write "harness foundation: N/A per ADR" in place of
+   the Risk. With no ADR, nothing is N/A. At `workflow: minimal` it is a
+   recommendation, and you say so.
 
 6. **Check the risk register** at `production/risk-register/` **if it exists**.
    Like the milestone above, no skill writes it — entries are authored by hand

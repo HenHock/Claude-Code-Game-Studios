@@ -290,6 +290,55 @@ Fixture defaults.
 
 ---
 
+### Case 8: Harness boundaries — a project with no simulation logic
+
+**Fixture:**
+- Same project as Case 1, but `design/gdd/systems-index.md` lists only UI screens
+  and settings (no gameplay rules, no state to save or replay)
+- No `docs/architecture/` ADR titled Harness Foundation
+- `modes.review_mode: solo`
+
+**Input:** `/create-architecture`
+
+**Expected behavior:**
+1. Phase 4 records the simulation↔presentation boundary as
+   `N/A — <reason>` and the command surface as `N/A — <reason>`, and says so
+2. The skill proposes no simulation layer
+3. The missing ADRs list names the Harness Foundation ADR and says it records a
+   status per rule H1–H5 (`applies`, `partly` or `N/A — <reason>`)
+
+**Assertions:**
+- [ ] Both boundaries read `N/A` with a written reason, not left blank
+- [ ] No simulation layer or module is invented
+- [ ] The Foundation ADR is still listed under Required New ADRs, with the per-rule status
+- [ ] A rule with no recorded status is treated as `applies`, not `N/A`
+
+---
+
+### Case 9: Harness boundaries — the project's own name for the layer
+
+**Fixture:**
+- Same project as Case 1, with gameplay rules written as pure C# classes under
+  `Assets/Scripts/Core/<Feature>/Controllers/`
+- No Harness Foundation ADR yet
+- `modes.review_mode: solo`
+
+**Input:** `/create-architecture`
+
+**Expected behavior:**
+1. Phase 4 records the simulation↔presentation boundary with the rules layer
+   named by the project: `Core/<Feature>/Controllers`
+2. No folder, namespace or class called `Sim` is proposed
+3. The Foundation ADR entry says the ADR records which layer plays the
+   simulation role, under the project's own name
+
+**Assertions:**
+- [ ] The layer is named `Controllers` in the proposal, taken from the project
+- [ ] The word `Sim` is not used as a proposed folder, namespace or class name
+- [ ] A module holding game rules together with engine types is flagged, not accepted
+
+---
+
 ## Protocol Compliance
 
 - [ ] Stops before authoring when the engine is missing, or on a `standard`/`full` project when the systems index or game concept is missing; at `minimal` it proceeds from `design/game-brief.md` and stops only when that is absent too
@@ -312,3 +361,6 @@ Fixture defaults.
   not fixture-tested past Phase 0b; Case 4 exercises only its stop branches.
 - `docs.density` depth variations and `guided` / `autonomous` automation modes
   are not tested.
+- Harness boundaries are tested only by Cases 8 and 9. An existing Foundation
+  ADR with partial rule statuses, and `modes.workflow: minimal` (recommended
+  only), are not tested.

@@ -168,7 +168,9 @@ paste whole documents into it.
   7. The story's `## Harness` block, and "Apply the H-rules in
      `.claude/docs/agent-harness.md`: seeded randomness, state changes as
      commands, tunables in data, simulation free of engine types. New state is
-     added to save/load in this story, with a round-trip test."
+     added to save/load in this story, with a round-trip test. The rules bind
+     the code this story adds or touches, only where the project has that kind
+     of logic; do not rewrite existing code to satisfy them."
 - **Tests,** by `qa.level`, for Logic and Integration stories:
   - `minimal`: "Do not write a test file for this story — test evidence is waived at
     `qa.level: minimal`." Say it: an omitted line and a forgotten one look the same

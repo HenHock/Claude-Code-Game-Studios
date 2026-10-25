@@ -230,6 +230,58 @@ Fixture defaults.
 
 ---
 
+### Case 7: Harness rules — the Foundation ADR marks two rules N/A
+
+**Fixture:**
+- `docs/architecture/` contains `adr-0001-harness-foundation.md`, titled
+  `# ADR-0001: Harness Foundation`, `## Status` Accepted. Its per-rule status
+  reads: H1 applies, H2 applies, H3 `N/A — UI-only tool, no state to replay`,
+  H4 applies, H5 `N/A — no simulation logic`
+- One further Accepted ADR exists (`adr-0002-*.md`)
+- Review mode resolves to `solo`
+
+**Input:** `/create-control-manifest`
+
+**Expected behavior:**
+1. The Accepted set is resolved by Status Grep, as in Case 1
+2. The harness rules come from `.claude/docs/agent-harness.md`: H1, H2 and H4 as
+   Required, naming the mechanism from ADR-0001; H6 and H9 as Required in abstract
+   form (the ADR decides only H1–H5), sourced to `agent-harness.md`
+3. H3 and H5 are left out of the Required list, and the preview prints each with
+   its written reason (`N/A — UI-only tool, no state to replay`,
+   `N/A — no simulation logic`) so the user sees the omission
+4. "May I write the Control Manifest?" is asked after the preview
+
+**Assertions:**
+- [ ] H3 and H5 do not appear as Required rules in the manifest
+- [ ] Each omitted rule's `N/A` reason is printed in the preview, not dropped silently
+- [ ] H1, H2 and H4 are present, each with a source naming ADR-0001; H6 and H9 are present with the source `agent-harness.md`, not ADR-0001
+- [ ] A rule is omitted only because an Accepted ADR marks it `N/A` with a reason
+
+---
+
+### Case 8: Harness rules — no Foundation ADR, nothing is dropped
+
+**Fixture:**
+- `docs/architecture/` contains 2 Accepted ADRs, neither titled Harness Foundation
+- Review mode resolves to `solo`
+
+**Input:** `/create-control-manifest`
+
+**Expected behavior:**
+1. The Accepted set is resolved by Status Grep
+2. All of H1–H6 and H9 are included as Required, in abstract form
+3. Each carries the source `agent-harness.md (no Harness Foundation ADR)`
+4. "May I write the Control Manifest?" is asked after the preview
+
+**Assertions:**
+- [ ] H1, H2, H3, H4, H5, H6 and H9 are all present
+- [ ] Every harness rule's source reads `agent-harness.md (no Harness Foundation ADR)`
+- [ ] No harness rule is marked `N/A`: without an ADR nothing may be omitted
+- [ ] The rules are stated as binding code a story adds or touches, not existing code
+
+---
+
 ## Protocol Compliance
 
 - [ ] Counts ADRs and resolves `## Status` before reading ADR sections
@@ -251,3 +303,6 @@ Fixture defaults.
   are not separately fixture-tested.
 - Relevance filtering of `deprecated-apis.md` entries (2D vs 3D scoping) is not
   covered.
+- Harness rules are tested only by Cases 7 and 8 (ADR marks rules N/A; no ADR).
+  An ADR that is Proposed, or that marks a rule N/A without a reason, is not
+  tested.

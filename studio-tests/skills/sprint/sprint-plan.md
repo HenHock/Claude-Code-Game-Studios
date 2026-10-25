@@ -271,6 +271,59 @@ Fixture defaults.
 
 ---
 
+### Case 8: Harness foundation — first sprint, the ADR marks H1–H3 N/A
+
+**Fixture:**
+- `modes.workflow: standard` (pinned: at `minimal` the harness check is only a recommendation)
+- The injected Existing Sprints listing is empty (this is sprint 001)
+- 4 stories under `production/epics/` have `Status: Ready`, none of them a harness foundation story
+- `docs/architecture/adr-0001-harness-foundation.md` is titled
+  `# ADR-0001: Harness Foundation`, Accepted, and marks H1, H2 and H3 each
+  `N/A — no simulation logic`
+- `modes.review_mode: solo`
+
+**Input:** `/sprint-plan new`
+
+**Expected behavior:**
+1. The harness check reads the ADR and finds H1–H3 all `N/A`
+2. No foundation stories are added to Must Have
+3. No Risk "no harness foundation story" is listed
+4. The plan states "harness foundation: N/A per ADR"
+5. "May I write the sprint plan…" is asked as in Case 1
+
+**Assertions:**
+- [ ] The plan contains "harness foundation: N/A per ADR"
+- [ ] No "no harness foundation story" Risk appears
+- [ ] The 4 `Ready` stories are planned unchanged
+- [ ] The N/A comes from the ADR, not from the skill's own judgement
+
+---
+
+### Case 9: Harness foundation — first sprint, no ADR, no foundation story
+
+**Fixture:**
+- `modes.workflow: standard` (pinned, as in Case 8)
+- The injected Existing Sprints listing is empty (sprint 001)
+- 4 `Ready` stories, none a harness foundation story
+- No ADR titled Harness Foundation
+- `modes.review_mode: solo`
+
+**Input:** `/sprint-plan new`
+
+**Expected behavior:**
+1. The harness check finds no foundation story and no ADR
+2. The plan lists under Risks: "no harness foundation story — later stories
+   cannot be reproduced or replayed by an agent"
+3. The skill suggests `/create-stories` for it
+4. Nothing is marked N/A
+
+**Assertions:**
+- [ ] The Risk line is present, with the `/create-stories` suggestion
+- [ ] "N/A per ADR" does not appear
+- [ ] The gap is not dropped silently
+
+---
+
 ## Protocol Compliance
 
 - [ ] Shows the draft sprint before invoking PR-SPRINT or asking to write
@@ -293,3 +346,6 @@ Fixture defaults.
   required) and is not separately tested.
 - The cases pin `story_granularity` to `balanced` (6–10 stories per sprint);
   the `coarse` (2–4) and `fine` (15–25) allocations are not tested.
+- Harness foundation handling is tested only by Cases 8 and 9. A project where
+  the ADR marks only some of H1–H3 `N/A`, a later sprint, and `modes.workflow:
+  minimal` (recommendation only) are not tested.
