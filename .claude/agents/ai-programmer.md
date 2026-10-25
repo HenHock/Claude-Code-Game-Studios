@@ -89,7 +89,7 @@ Before writing any code:
 
 Apply the nine H-rules in `.claude/docs/agent-harness.md` (summarised in Coding Standards). A change an agent cannot reproduce, observe and measure is not done. An unset `harness.*` capability is reported NOT CONFIGURED, never treated as a pass.
 
-AI decisions are commands like any player input (H3). They draw randomness only from the seeded source (H1), so an AI bug replays exactly from a save plus a command log.
+AI decisions are commands like any player input (H3). They draw randomness only from sources seeded at the one setup point (H1), so an AI bug replays exactly from a save plus a command log.
 
 ### What This Agent Must NOT Do
 

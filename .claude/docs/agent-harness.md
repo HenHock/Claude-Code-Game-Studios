@@ -15,7 +15,7 @@ Source: Kyle Kukshtel, *Your Game Is A Harness* —
 https://kylekukshtel.com/ai-harness-engineering-game-development-claude-code.
 Everything here is **engine-agnostic**. How a given engine meets a capability is
 recorded per engine in `docs/engine-reference/<engine>/` and in the `harness.*`
-keys of `project.yaml` — never assumed from training data.
+keys of `project.yaml` — never assumed from training data. Unity mechanisms: `docs/engine-reference/unity/harness/`.
 
 ## The rule
 
@@ -25,11 +25,11 @@ keys of `project.yaml` — never assumed from training data.
 
 | # | Principle | Requirement | Why an agent needs it |
 |---|---|---|---|
-| H1 | **Determinism** | All randomness flows from one seeded source, injected into the simulation. Simulation logic never reads ambient randomness or wall-clock time directly; time arrives as a parameter (fixed or recorded step). | The same inputs give the same state, so a bug reproduces and a fix can be proved. |
-| H2 | **Portable state** | The full simulation state can be saved to and loaded from a file **from the first sprint**, with no "add it later". Loading a save gives an exactly equal state. | Any bug, test fixture or start point becomes a file the agent can jump straight to. |
-| H3 | **Changes are commands** | Every mutation of simulation state is a serializable command object with a stable text form. Input, AI, network and tests all go through the same command entry point. | Sessions can be logged and replayed. An agent can write a command script and run it against a live build with **no recompile**. |
-| H4 | **Data, not code** | Tuning values (speeds, costs, damage, curves) live in external data loaded at runtime and reloadable without a rebuild. | The agent iterates on balance without compiling. Non-programmers can too. |
-| H5 | **Simulation / presentation split** | The simulation is a module that runs and is tested **without the engine's renderer or scene graph**. It takes commands and reports state or state diffs. The engine layer displays and forwards input, and owns no game rules. | Logic tests run with plain tooling, fast and headless. Anything can drive the game: tests, replays, network, an agent. |
+| H1 | **Determinism** | Randomness is set up in one place and reproducible on demand. Every random source that affects game logic or behavior is seeded from a single configuration point (whatever generator it uses). Presentation-only randomness (particles, VFX) is out of scope. Each run records its seed; giving the same seed again reproduces the run. Game-rules logic does not read the wall clock directly; time arrives as a step. | The same seed gives the same run, so a bug reproduces and a fix can be proved. |
+| H2 | **Portable state** | The simulation state can be saved to and loaded from a file. In a project that has simulation state, the save routine exists **from the first sprint** that creates such state, and each new system joins it in the same story, with no "add it later". Loading a save gives an exactly equal state. | Any bug, test fixture or start point becomes a file the agent can jump straight to. |
+| H3 | **Changes are commands** | Every mutation of simulation state (not UI, VFX or camera) is a serializable command object with a stable text form. Input, AI, network and tests all go through the same command entry point. | Sessions can be logged and replayed. An agent can write a command script and run it against a live build with **no recompile**. |
+| H4 | **Data, not code** | Gameplay tuning values (speeds, costs, damage, curves; not structural or presentation constants) live in external data loaded at runtime and reloadable without a rebuild. | The agent iterates on balance without compiling. Non-programmers can too. |
+| H5 | **Simulation / presentation split** | The simulation is a layer (a role; the project's own name for it) that runs and is tested **without the engine's renderer or scene graph**. It takes commands and reports state or state diffs. The engine layer displays and forwards input, and owns no game rules. | Logic tests run with plain tooling, fast and headless. Anything can drive the game: tests, replays, network, an agent. |
 | H6 | **Uniform entity model** | Prefer one flat entity shape (data + type tag + composition) over deep inheritance trees. Deviations need an ADR. | One source of truth that serializes trivially and leaves nothing ambiguous for the agent to infer. |
 | H7 | **Observable on demand** | The game can produce a capture of a given state on command, with toggles to hide presentation layers (UI, effects, debug). Visual checks compare against a stored **baseline** and yield a **numeric similarity** for the region of change, not two raw images. | The agent checks a visual change with one number instead of scanning full screenshots, which also keeps its context clean. |
 | H8 | **Measurable as text** | Performance and memory data can be exported in a text form an agent can read and compare between runs. | The agent can check the cost of its own change against the budget. |
@@ -56,7 +56,7 @@ later step and are filled from `docs/engine-reference/`, never guessed.
 
 | Key | Capability | Serves |
 |---|---|---|
-| `harness.rng_seed` | How a seed is supplied to a run (flag, config key, command) | H1 |
+| `harness.rng_seed` | Where the one seed is set: launch argument, config value or test setup | H1 |
 | `harness.state_save` | Command that writes the current simulation state to a file | H2 |
 | `harness.state_load` | Command that starts a run from a state file | H2 |
 | `harness.command_replay` | Command that runs a command script/log against a running or headless build | H3 |
@@ -74,11 +74,32 @@ artifacts exist. It emits observations, never a verdict.
 | Stage | What carries the principles |
 |---|---|
 | Architecture | `/create-architecture` maps the simulation/presentation boundary and command surface, and requires a **Harness Foundation ADR** (H1–H5 decisions). Every ADR has a **Harness Impact** section. |
-| Planning | `/sprint-plan` puts the harness foundation (seeded randomness, save/load, command entry point) in the **first** implementation sprint. |
+| Planning | `/sprint-plan` puts the harness foundation (seeded randomness, save/load, command entry point) in the **first** implementation sprint, for a project that has simulation logic. A project without it has no foundation to schedule. |
 | Stories | `/create-stories` fills each story's **Harness** block: start state, commands to apply, what is observed and with which metric. |
 | Implementation | `/dev-story` passes the Harness block to the implementer and runs the loop with the capabilities that exist. |
 | Review | `/code-review` checks the H-rules. `/story-done` reports the loop result. A story whose Harness block is empty is **NOT ASSESSED**, not passed. |
 | Every subagent | `inject-harness.sh` (SubagentStart) adds the short form to each spawned agent's context. |
+
+## What binds, and what does not
+
+The principles are rules for how new work is built, not a demand to rebuild a
+project that already exists.
+
+- **Code the change adds or touches.** Existing code is not a finding and is not
+  rewritten to satisfy a principle. A review judges the change, not the project.
+- **Where the project has that kind of logic.** A principle about simulation
+  state does not apply to a project, or a part of one, that has none (a UI tool,
+  a mostly physics- or animation-driven game, a prototype).
+- **Logic and behavior, not presentation.** H1 does not cover particles, VFX
+  jitter or audio variation. H3 does not cover UI or camera changes. H4 does not
+  cover structural or presentation constants. H5 lets views use any engine type.
+- **Roles, not names.** "Simulation layer" is a role: a pure-language layer that
+  holds game rules and state, takes commands and time, and runs in a plain test.
+  A project's own names (`Controllers`, `Logic`, `Model`) play it. No folder or
+  class is named `Sim` on the framework's say-so. The project records which layer
+  plays the role in the Harness Foundation ADR.
+- **Engine-specific costs are opt-in.** Deterministic physics matters only to a
+  project whose gameplay depends on physics, and in Unity only for ECS/DOTS.
 
 ## Scale
 
@@ -91,7 +112,7 @@ The author's own caveat applies: a small project may not need all of this.
 
 ## Anti-patterns
 
-- Simulation code that reads a global random source or the system clock.
+- Random sources seeded anywhere other than the one setup point, or not seeded at all; wall clock read in simulation logic.
 - State that exists only in live engine objects, so a save can't capture it.
 - Gameplay changes made by calling scattered setters instead of issuing a command.
 - Tuning numbers compiled into code, or reachable only through the editor UI.

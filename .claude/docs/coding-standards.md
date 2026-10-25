@@ -25,15 +25,19 @@ rules are engine-agnostic; the full form, the verification loop and the
 `harness.*` capability keys are in `.claude/docs/agent-harness.md`. Read it before
 architecture, story or implementation work.
 
-- **H1 Determinism**: all randomness comes from one injected, seeded source; sim logic never reads the wall clock directly
-- **H2 Portable state**: the full simulation state saves to and loads from a file, built in the first sprint
-- **H3 Changes are commands**: every state mutation is a serializable, replayable command through one entry point
-- **H4 Data, not code**: tuning lives in external data that reloads without a rebuild
-- **H5 Sim/presentation split**: the simulation runs and is tested without the renderer; the engine only displays it
-- **H6 Uniform entities**: flat composition over deep inheritance; deviations need an ADR
-- **H7 Observable**: capture any state on command with layer toggles; compare against a baseline with a numeric diff
-- **H8 Measurable as text**: profiling output an agent can read and compare
+- **H1 Determinism**: random sources that affect game logic or behavior are seeded from one setup point and the run records its seed, so the same seed reproduces the run; game-rules logic never reads the wall clock directly (particles and VFX are out of scope)
+- **H2 Portable state**: simulation state saves to and loads from a file; each new system joins the save routine in the story that creates it
+- **H3 Changes are commands**: every simulation state mutation is a serializable, replayable command through one entry point
+- **H4 Data, not code**: gameplay tuning lives in external data that reloads without a rebuild
+- **H5 Simulation/presentation split**: game rules live in a pure-language layer (the project's own name for it) that runs and is tested without the renderer; the engine only displays it
+- **H6 Uniform entities**: flat composition over deep inheritance for simulation entities; deviations need an ADR
+- **H7 Observable**: a visual change is capturable on command with layer toggles; compare against a baseline with a numeric diff
+- **H8 Measurable as text**: a performance claim cites profiling output an agent can read and compare
 - **H9 Small steps**: the smallest verifiable change, checked by the loop before the next one
+
+**Scope:** these bind the code a change adds or touches, and only where the project
+has that kind of logic. Never rewrite existing code to satisfy them, and untouched
+code is not a review finding. See "What binds" in `agent-harness.md`.
 
 Unset `harness.*` capabilities are **NOT CONFIGURED**, never a pass. At
 `modes.workflow: minimal` and in `prototypes/`, H1–H4 are recommended and the rest optional.

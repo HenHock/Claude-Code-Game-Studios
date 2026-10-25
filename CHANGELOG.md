@@ -32,6 +32,7 @@ layout.
   `.gitignore`.
 
 ### Changed
+- H1 reworded: one seeding point, reproducible on demand; Unity determinism reference added.
 - `CLAUDE.md` imports `docs/engine-reference/unity/VERSION.md`; engine is Unity,
   language is C# (Unity Test Framework with NUnit for tests).
 - `README.md`, `docs/WORKFLOW-GUIDE.md` and `.claude/docs/` describe the Unity

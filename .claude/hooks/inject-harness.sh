@@ -27,9 +27,10 @@ if printf '%s' "$INPUT" | grep -qE '"agent_type"[[:space:]]*:[[:space:]]*""'; th
 fi
 
 MSG='CCGS harness rules (full contract: .claude/docs/agent-harness.md). A change an agent cannot reproduce, observe and measure is not done.'
-MSG="$MSG H1 one seeded randomness source, no direct wall-clock reads in sim logic. H2 full state saves/loads to a file. H3 every state change is a serializable, replayable command."
-MSG="$MSG H4 tuning in external reloadable data. H5 simulation runs and is tested without the renderer. H6 flat entities over deep inheritance."
-MSG="$MSG H7 capture on command and compare to a baseline with a numeric diff. H8 profiling output as text. H9 smallest verifiable step, checked by the loop: load state, apply commands, simulate, capture, diff, profile."
+MSG="$MSG H1 randomness that affects game logic or behavior is seeded from one setup point, the run records its seed so the same seed reproduces it, no wall-clock reads in game-rules logic (presentation randomness such as particles is out of scope). H2 simulation state saves/loads to a file. H3 simulation state changes are serializable, replayable commands."
+MSG="$MSG H4 gameplay tuning values in external reloadable data. H5 game rules live in a pure C# layer (use the project's own layer name, never create a Sim folder) that runs and is tested without the renderer. H6 flat simulation entities over deep inheritance."
+MSG="$MSG H7 a visual change is capturable on command and compared to a baseline with a numeric diff. H8 a performance claim cites a text profile, before and after. H9 smallest verifiable step, checked by the loop: load state, apply commands, simulate, capture, diff, profile."
+MSG="$MSG Scope: the rules bind the code you add or touch, only where the project has that kind of logic. Do not rewrite or retrofit existing code to satisfy them, and do not turn untouched code into a finding. Physics determinism matters only for ECS/DOTS projects whose gameplay depends on physics."
 MSG="$MSG An unset harness.* capability in project.yaml is NOT CONFIGURED: say so in your report, never treat it as a pass. Prototypes and modes.workflow minimal: H1-H4 recommended, the rest optional."
 
 printf '{"hookSpecificOutput":{"hookEventName":"SubagentStart","additionalContext":"%s"}}\n' "$MSG"
