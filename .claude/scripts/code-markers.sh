@@ -84,7 +84,7 @@ if [ -z "$PATHS" ]; then
   CR=$(bash "$HERE/project-state.sh" --root . | awk -F'\t' '$1 == "code_root" { print $2 }')
   if [ -z "$CR" ] || [ "$CR" = "-" ]; then
     printf 'scanned_files\t0\tcode_root unset\n'
-    echo "code-markers: the code root is unset (no engine set and no single Assets/); pass a PATH" >&2
+    echo "code-markers: the code root is unset (no engine set and no single Assets/, under unity.project_root if set); pass a PATH" >&2
     exit 3
   fi
   PATHS="$CR$NL"

@@ -74,14 +74,24 @@ if [ -f "design/gdd/game-concept.md" ] || [ -f "design/game-brief.md" ]; then
   FRESH_PROJECT=false
 fi
 
+# The Unity project may sit below the repo root: `unity.project_root` in
+# project.yaml (.claude/scripts/unity-root.sh). UPRE is "<folder>/" or empty;
+# UPRE_RE is the same, escaped for a grep -E pattern.
+UPRE=""
+if [ -f .claude/scripts/unity-root.sh ]; then
+    . .claude/scripts/unity-root.sh 2>/dev/null && UPRE=$(unity_root_prefix 2>/dev/null)
+fi
+UPRE_RE=$(printf '%s' "$UPRE" | sed 's/[][\.*^$(){}?+|]/\\&/g')
+
 # Check if source code exists.
 #
-# Unity builds from `Assets/` (.claude/docs/directory-structure.md).
+# Unity builds from `Assets/` (.claude/docs/directory-structure.md), under
+# `unity.project_root` when the Unity project is nested.
 #
 # Tested directly rather than through resolve_code_root: this check runs before
 # the config helper is guaranteed to be sourced, and "is there any code at all"
 # does not need the engine to be known.
-for _root in Assets; do
+for _root in "${UPRE}Assets"; do
   [ -d "$_root" ] || continue
   SRC_CHECK=$(find "$_root" -type f -name "*.cs" 2>/dev/null | head -1)
   if [ -n "$SRC_CHECK" ]; then
@@ -180,7 +190,7 @@ fi
 # .claude/rules/skill-authoring.md). Announce it, once, and only when the checks
 # would otherwise have had somewhere to look.
 if [ "$DOC_CHECKS" = true ] && [ -z "$CODE_ROOT" ]; then
-  if [ -d Assets ]; then
+  if [ -d "${UPRE}Assets" ]; then
     echo "ℹ️  NOT CHECKED: code exists but the code root is ambiguous (engine.name unset, and the tree does not name one unambiguously)."
     echo "    Checks 1, 3 and 4 (design and architecture docs for existing code) did NOT run."
     echo "    Suggested action: /setup-engine, or set engine.name in project.yaml"

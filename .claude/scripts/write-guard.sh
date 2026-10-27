@@ -168,7 +168,14 @@ engine_name() {
   YG_PATH=engine.name awk -f "$HERE/yaml-get.awk" project.yaml
 }
 ENGINE=$(engine_name | tr 'A-Z' 'a-z')
-ROOTS="Assets"
+# The Unity project may sit below the repo root (unity.project_root); UPRE is
+# "<folder>/" or empty. An unusable value is reported by `check`, not guessed.
+UPRE=""; UPRE_BAD=""
+if [ -f "$HERE/unity-root.sh" ]; then
+  . "$HERE/unity-root.sh"
+  UPRE=$(unity_root_prefix .) || UPRE_BAD=1
+fi
+ROOTS="${UPRE}Assets"
 
 APPLIED=""
 applied() { APPLIED="${APPLIED:+$APPLIED,}$1"; }
@@ -190,7 +197,7 @@ rule_overwrite() {
   _w=$(overwrite_why "$1")
   # Where /test-setup writes: the test roots, CI and the
   # QA evidence folder. Other paths never ask test-scaffold.sh.
-  case "$1" in tests/*|.github/*|production/qa/*|Assets/Scripts/Testing/*) ;; *) _w="${_w:--}" ;; esac
+  case "$1" in tests/*|.github/*|production/qa/*|"${UPRE}Assets/Scripts/Testing"/*) ;; *) _w="${_w:--}" ;; esac
   [ "$_w" = "-" ] && return 0
   if [ -z "$_w" ]; then
     # The files /test-setup creates, as test-scaffold.sh lists them.
@@ -384,9 +391,14 @@ rule_agent() {
 LAYOUT_DOC=.claude/docs/unity-folder-structure.md
 layout_row() { printf 'LAYOUT\t%s\t%s\t%s\n' "$_lp" "$1" "$LAYOUT_DOC"; }
 rule_layout() {
-  case "$1" in Assets/*) ;; *) return 0 ;; esac
+  # Judge the path from the Unity project folder down; the row keeps the full path.
+  _rel=$1
+  if [ -n "$UPRE" ]; then
+    case "$1" in "$UPRE"*) _rel=${1#"$UPRE"} ;; *) return 0 ;; esac
+  fi
+  case "$_rel" in Assets/*) ;; *) return 0 ;; esac
   applied layout
-  _lp=$(tsv "$1"); _in=${1#Assets/}
+  _lp=$(tsv "$1"); _in=${_rel#Assets/}
   # A new top-level folder: Content, Scripts, Plugins, Settings, Configs,
   # Resources, or one Unity and its packages create themselves.
   case "$_in" in
@@ -397,15 +409,15 @@ rule_layout() {
         *) layout_row "top-level folder Assets/${_in%%/*}/ is not Content, Scripts, Plugins, Settings, Configs or Resources" ;;
       esac ;;
   esac
-  case "$1" in
+  case "$_rel" in
     Assets/Scripts/*|Assets/Plugins/*) ;;
     *.cs) layout_row "C# belongs under Assets/Scripts/ (or Assets/Plugins/ for 3rd-party code)" ;;
   esac
-  case "$1" in
+  case "$_rel" in
     Assets/Scripts/Testing/*|Assets/Plugins/*) ;;
     */Tests/*|*/Test/*|*Tests.cs) layout_row "test files belong under Assets/Scripts/Testing/EditMode|PlayMode/<Feature>/" ;;
   esac
-  case "$1" in
+  case "$_rel" in
     Assets/Scripts/Editor/*|Assets/Plugins/*) ;;
     */Editor/*) layout_row "editor files belong under Assets/Scripts/Editor/<Feature>/" ;;
   esac

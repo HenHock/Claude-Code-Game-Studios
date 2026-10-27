@@ -233,6 +233,15 @@ done
 # named paths' WORKING copies, staged or not -- both read from the working tree
 # (WT_FILES). core.quotePath=false: without it a non-ASCII path comes back
 # quoted ("assets/data/caf\303\251.json") and no pattern below matched it.
+# The Unity project may sit below the repo root: `unity.project_root` in
+# project.yaml (.claude/scripts/unity-root.sh). UPRE is "<folder>/" or empty;
+# UPRE_RE is the same, escaped for a grep -E pattern.
+UPRE=""
+if [ -f .claude/scripts/unity-root.sh ]; then
+    . .claude/scripts/unity-root.sh 2>/dev/null && UPRE=$(unity_root_prefix 2>/dev/null)
+fi
+UPRE_RE=$(printf '%s' "$UPRE" | sed 's/[][\.*^$(){}?+|]/\\&/g')
+
 _GIT="git -c core.quotePath=false"
 COMMIT_ARGS=" ${COMMIT_SEG#*[[:space:]]commit}"
 INDEX_FILES=$($_GIT diff --cached --name-only 2>/dev/null)
@@ -418,7 +427,7 @@ else
     _AFTER=$(printf '%s' "$COMMAND" | LC_ALL=C awk '
         !f && match($0, /(^|[^A-Za-z0-9_.-])commit([ \t]|$)/) { f = 1; print substr($0, RSTART + RLENGTH); next }
         f { print }')
-    for _p in $(printf '%s' "$_AFTER" | LC_ALL=C grep -oE 'Assets/[^[:space:]"'"'"';|&)]*'); do
+    for _p in $(printf '%s' "$_AFTER" | LC_ALL=C grep -oE "${UPRE_RE}Assets/[^[:space:]\"';|&)]*"); do
         WT_FILES=$(printf '%s\n%s' "$WT_FILES" "$($_GIT diff --name-only -- "$_p" 2>/dev/null)")
     done
     # No tokeniser to read a `git add`'s paths: take every change and new file.
@@ -492,7 +501,7 @@ trap '[ -n "$TMP_DESIGN" ] && rm -f "$TMP_DESIGN"' EXIT
 #
 # WHERE DATA LIVES: Unity keeps it under Assets/ (Assets/Configs/<Feature>/). It stays inside the asset root so an editor's JSON-with-comments (.vscode/settings.json) never blocks.
 # ---------------------------------------------------------------------------
-DATA_FILES=$(echo "$STAGED" | grep -E '^Assets/((.*/)?[Dd]ata/|Configs/).*\.[Jj][Ss][Oo][Nn]$')
+DATA_FILES=$(echo "$STAGED" | grep -E "^${UPRE_RE}Assets/((.*/)?[Dd]ata/|Configs/).*\.[Jj][Ss][Oo][Nn]$")
 if [ -n "$DATA_FILES" ]; then
     PYTHON_CMD="$_VC_PY"
     if [ -n "$PYTHON_CMD" ]; then

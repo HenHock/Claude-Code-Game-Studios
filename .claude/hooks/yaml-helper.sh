@@ -1422,7 +1422,8 @@ resolve_setting() {
 #
 # WHY THIS EXISTS. `.claude/docs/directory-structure.md` is explicit that the
 # code root is not a style preference but a hard toolchain constraint: Unity
-# compiles only `Assets/` and `Packages/`.
+# compiles only `Assets/` and `Packages/`. With `unity.project_root` set (a Unity
+# project nested below the repo root) the root is `<folder>/Assets`.
 #
 # Every hook that filtered staged or on-disk files with a literal `^src/`
 # therefore matched NOTHING on a Unity project — and matching nothing
@@ -1440,7 +1441,7 @@ resolve_setting() {
 # scan half of it and report a pass.
 resolve_code_root() {
   _yaml_helper_set_root
-  local ename="" src="" root="" legacy="" found="" d n=0
+  local ename="" src="" root="" legacy="" found="" d n=0 upre="" bad_upr=""
 
   # 1. The configured engine, through the normal chain.
   if [ -f "$_YH_ROOT/project.local.yaml" ]; then
@@ -1467,21 +1468,32 @@ resolve_code_root() {
     [ -n "$ename" ] && src=".claude/docs/technical-preferences.md"
   fi
 
+  # The Unity project may sit below the repo root (`unity.project_root`,
+  # effects-map.md); every Unity path is then prefixed with it. An unusable
+  # value (absolute, `..`) leaves the root unresolved, never defaulted.
+  upre=""
+  if [ -f "$_YH_ROOT/.claude/scripts/unity-root.sh" ]; then
+    # shellcheck source=/dev/null
+    . "$_YH_ROOT/.claude/scripts/unity-root.sh"
+    upre=$(unity_root_prefix "$_YH_ROOT" 2>/dev/null) || bad_upr=1
+  fi
+
   case "$(printf '%s' "$ename" | tr '[:upper:]' '[:lower:]')" in
-    unity)   root="Assets" ;;
+    unity)   root="${upre}Assets" ;;
     *)       root="" ;;
   esac
+  [ -n "${bad_upr:-}" ] && root=""
 
   # 3. No usable engine value — believe the tree, but only if it is unambiguous.
   #    Names are compared exactly, against the directory listing: `[ -d Assets ]`
   #    is also true for a lowercase `assets/` on a case-insensitive filesystem
   #    (Windows, default macOS).
   if [ -z "$root" ]; then
-    for d in "$_YH_ROOT"/*/; do
+    for d in "$_YH_ROOT/${upre}"*/; do
       d="${d%/}"; d="${d##*/}"
-      case "$d" in Assets) found="$d"; n=$((n + 1)) ;; esac
+      case "$d" in Assets) found="${upre}$d"; n=$((n + 1)) ;; esac
     done
-    if [ "$n" = 1 ]; then root="$found"; src="detected"; else root=""; src=""; fi
+    if [ -z "${bad_upr:-}" ] && [ "$n" = 1 ]; then root="$found"; src="detected"; else root=""; src=""; fi
   fi
 
   [ -z "$src" ] && src="unset"

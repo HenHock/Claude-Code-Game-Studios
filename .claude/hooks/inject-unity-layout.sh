@@ -31,5 +31,14 @@ MSG="$MSG Never put tests, editor or debug code inside a Core feature folder: ea
 MSG="$MSG 3rd-party code goes in Assets/Plugins/Code/<Vendor>/ and each plugin needs its own asmdef (plus an Editor asmdef for its Editor/ folder); imported packs in Assets/Plugins/Content/<Vendor>/. Engine and game configuration goes in Assets/Settings/."
 MSG="$MSG No type-first root folders such as Assets/Prefabs/. Assets/Resources/ exists only when unity.asset_loading is resources; an unset unity.asset_loading is NOT CONFIGURED, ask rather than assume."
 
+# A nested Unity project (unity.project_root): the paths above are relative to it.
+if [ -f .claude/scripts/unity-root.sh ]; then
+    . .claude/scripts/unity-root.sh 2>/dev/null
+    _UDIR=$(unity_root . 2>/dev/null)
+    if [ -n "$_UDIR" ]; then
+        MSG="$MSG The Unity project is nested: every Assets/ and Packages/ path above lives under ${_UDIR}/ (unity.project_root), so write ${_UDIR}/Assets/..., never a top-level Assets/."
+    fi
+fi
+
 printf '{"hookSpecificOutput":{"hookEventName":"SubagentStart","additionalContext":"%s"}}\n' "$MSG"
 exit 0

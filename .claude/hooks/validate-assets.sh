@@ -83,9 +83,18 @@ case "$FILE_PATH" in
 esac
 shopt -u nocasematch
 
+# The Unity project may sit below the repo root: `unity.project_root` in
+# project.yaml (.claude/scripts/unity-root.sh). UPRE is "<folder>/" or empty;
+# UPRE_RE is the same, escaped for a grep -E pattern.
+UPRE=""
+if [ -f .claude/scripts/unity-root.sh ]; then
+    . .claude/scripts/unity-root.sh 2>/dev/null && UPRE=$(unity_root_prefix 2>/dev/null)
+fi
+UPRE_RE=$(printf '%s' "$UPRE" | sed 's/[][\.*^$(){}?+|]/\\&/g')
+
 # Only check files under an asset root.
 case "$REL_PATH" in
-    Assets/*) ;;
+    "${UPRE}Assets"/*) ;;
     *) exit 0 ;;
 esac
 
@@ -99,7 +108,7 @@ ERRORS=""     # Build-breaking issues -- exit 2 so Claude hears about it
 # BLOCKING: Check JSON validity for data files in the Unity data folder --
 # the same set validate-commit.sh blocks on.
 # Invalid JSON will break runtime loading -- this is a build-breaking error
-if echo "$REL_PATH" | grep -qE '^Assets/((.*/)?[Dd]ata/|Configs/).*\.[Jj][Ss][Oo][Nn]$'; then
+if echo "$REL_PATH" | grep -qE "^${UPRE_RE}Assets/((.*/)?[Dd]ata/|Configs/).*\.[Jj][Ss][Oo][Nn]$"; then
     FILE_PATH="$REL_PATH"
     if [ -f "$FILE_PATH" ]; then
         # Find a working Python command

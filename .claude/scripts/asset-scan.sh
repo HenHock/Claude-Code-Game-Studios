@@ -218,6 +218,21 @@ case "$LOW" in
 esac
 
 printf 'engine\t%s\t%s\n' "$ENG" "$ESRC"
+# The Unity project may sit below the repo root (unity.project_root). Scan from
+# inside it so the classifier sees paths from Assets/ down; every path in the
+# rows below is then relative to that folder, which the base row names.
+if [ -f "$HERE/unity-root.sh" ]; then
+  . "$HERE/unity-root.sh"
+  UDIR=$(unity_root .) || { echo "asset-scan: unity.project_root is unusable; nothing was scanned" >&2; exit 4; }
+  if [ -n "$UDIR" ]; then
+    if ! cd "$UDIR" 2>/dev/null; then
+      printf 'root\t%s\tabsent\n' "$UDIR/$ROOTDIR"
+      echo "asset-scan: $UDIR/ does not exist; nothing was scanned" >&2
+      exit 4
+    fi
+    printf 'base\t%s\tpaths below are relative to this folder\n' "$UDIR"
+  fi
+fi
 # The exact name from the listing: -d would say yes to Assets for a directory
 # called assets on a case-insensitive disk.
 if [ -z "$(find . -maxdepth 1 -type d -name "$ROOTDIR" 2>/dev/null)" ]; then

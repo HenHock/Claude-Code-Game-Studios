@@ -159,17 +159,25 @@ if [ -z "$ENGINE" ] && [ -f "$LEGACY" ]; then
 fi
 # The code root each engine's own toolchain builds from
 # (.claude/docs/directory-structure.md): Unity Assets/.
+# The Unity project may sit below the repo root (unity.project_root, read by
+# unity-root.sh); the code root then carries that prefix, and so does every path
+# this script reports. An unusable value leaves the root unresolved.
+UPRE=""; UPRE_BAD=""
+if [ -f "$HERE/unity-root.sh" ]; then
+  . "$HERE/unity-root.sh"
+  UPRE=$(unity_root_prefix .) || UPRE_BAD=1
+fi
 case "$(printf '%s' "$ENGINE" | tr '[:upper:]' '[:lower:]')" in
-  unity) CODE_ROOT="Assets" ;;
+  unity) [ -n "$UPRE_BAD" ] || CODE_ROOT="${UPRE}Assets" ;;
 esac
-if [ -z "$CODE_ROOT" ]; then
+if [ -z "$CODE_ROOT" ] && [ -z "$UPRE_BAD" ]; then
   # No usable engine: believe the tree only when exactly one root is present.
   # Names are compared exactly against the listing, never with `[ -d Assets ]`,
   # which is also true for a lowercase assets/ on a case-insensitive filesystem.
   n=0; found=""
-  for d in */; do
-    d="${d%/}"
-    case "$d" in Assets) found="$d"; n=$((n + 1)) ;; esac
+  for d in "${UPRE}"*/; do
+    d="${d%/}"; d="${d##*/}"
+    case "$d" in Assets) found="${UPRE}$d"; n=$((n + 1)) ;; esac
   done
   if [ "$n" = 1 ]; then CODE_ROOT="$found"; CSRC="detected"; else CSRC=""; fi
 fi

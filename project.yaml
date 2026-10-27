@@ -47,3 +47,5 @@ framework:
 #
 # unity:
 #   asset_loading:   # addressables | resources | direct
+#   project_root:    # folder of the Unity project below the repo root, e.g. MyGame when
+#                    # the layout is <repo>/MyGame/Assets. Unset: Assets/ is at the repo root

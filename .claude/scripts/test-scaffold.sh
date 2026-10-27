@@ -119,9 +119,15 @@ if [ -f "$HERE/yaml-get.awk" ]; then
 fi
 PROJ_SET=1
 case "$PROJ" in ''|[0-9]*) PROJ_SET=""; PROJ=Game ;; esac
-ASM_SHARED="Assets/Scripts/Testing/Shared/$PROJ.Tests.Shared.asmdef"
-ASM_EDIT="Assets/Scripts/Testing/EditMode/$PROJ.Tests.EditMode.asmdef"
-ASM_PLAY="Assets/Scripts/Testing/PlayMode/$PROJ.Tests.PlayMode.asmdef"
+# The Unity project may sit below the repo root (unity.project_root).
+UPRE=""
+if [ -f "$HERE/unity-root.sh" ]; then
+  . "$HERE/unity-root.sh"
+  UPRE=$(unity_root_prefix .) || { echo "test-scaffold: unity.project_root is unusable (absolute or holds ..)" >&2; exit 2; }
+fi
+ASM_SHARED="${UPRE}Assets/Scripts/Testing/Shared/$PROJ.Tests.Shared.asmdef"
+ASM_EDIT="${UPRE}Assets/Scripts/Testing/EditMode/$PROJ.Tests.EditMode.asmdef"
+ASM_PLAY="${UPRE}Assets/Scripts/Testing/PlayMode/$PROJ.Tests.PlayMode.asmdef"
 
 ENGNAME=Unity
 if [ -n "$VER" ]; then ENGTXT="$ENGNAME $VER"; else ENGTXT="$ENGNAME [version]"; fi
@@ -406,8 +412,8 @@ if made "$README" && [ -z "$VER" ]; then
 fi
 case "$ENG" in
   unity)
-    if [ ! -f Packages/manifest.json ] || ! grep -q 'com.unity.test-framework' Packages/manifest.json; then
-      need unity_test_framework Packages/manifest.json 'add "com.unity.test-framework" to dependencies at the version your editor bundles'
+    if [ ! -f "${UPRE}Packages/manifest.json" ] || ! grep -q 'com.unity.test-framework' "${UPRE}Packages/manifest.json"; then
+      need unity_test_framework "${UPRE}Packages/manifest.json" 'add "com.unity.test-framework" to dependencies at the version your editor bundles'
     fi
     if made "$CI"; then
       need unity_license "$CI" "add the UNITY_LICENSE secret to the repository (manual)"
@@ -417,8 +423,8 @@ case "$ENG" in
         need project_name project.yaml "set project.name: the assemblies are named Game.Tests.* and reference Game.Core; rename them to <Project>.* once it is known"
       fi
       # The test assemblies reference <Project>.Core, an asmdef /setup-engine creates.
-      if [ ! -f "Assets/Scripts/Core/$PROJ.Core.asmdef" ]; then
-        need core_asmdef "Assets/Scripts/Core/$PROJ.Core.asmdef" "the test assemblies reference $PROJ.Core: create it (/setup-engine, .claude/docs/unity-folder-structure.md) or they will not compile"
+      if [ ! -f "${UPRE}Assets/Scripts/Core/$PROJ.Core.asmdef" ]; then
+        need core_asmdef "${UPRE}Assets/Scripts/Core/$PROJ.Core.asmdef" "the test assemblies reference $PROJ.Core: create it (/setup-engine, .claude/docs/unity-folder-structure.md) or they will not compile"
       fi
     fi ;;
 esac

@@ -15,13 +15,23 @@ code. This file is the procedure for applying it.
 
 `src/` is **not** a code root in this Unity-only fork; read it as `Assets/`.
 
+## Nested Unity project: `unity.project_root`
+
+When the Unity project is not the repo root (`<repo>/<ProjectName>/Assets`),
+`unity.project_root: <ProjectName>` in `project.yaml` makes the code root
+`<ProjectName>/Assets`, and `Packages/` is `<ProjectName>/Packages/`. Read every
+`Assets/` and `Packages/` in a skill as under that folder. An absolute value or
+one holding `..` is unusable: the root is **unresolved**, not defaulted. The
+single reader is `.claude/scripts/unity-root.sh`; do not parse the key anywhere
+else.
+
 ## Resolution order
 
 1. `engine.name` from `project.local.yaml`, then `project.yaml`.
 2. The legacy mirror: an `Engine:` line in
    `.claude/docs/technical-preferences.md`. A value of `[TO BE CONFIGURED]`
    does not count.
-3. Derivation from the tree: `Assets/` present means that is the root. Compare
+3. Derivation from the tree: `Assets/` present (under `unity.project_root` when set) means that is the root. Compare
    the name exactly as the directory listing spells it: on Windows and default
    macOS an existence test for `Assets/` also succeeds on the template's own
    lowercase `assets/` folder, which is not the Unity root.

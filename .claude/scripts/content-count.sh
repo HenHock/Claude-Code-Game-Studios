@@ -298,6 +298,21 @@ case "$LOW" in
 esac
 printf 'engine\t%s\t%s\n' "$ENG" "$ESRC"
 
+# The Unity project may sit below the repo root (unity.project_root). Count from
+# inside it so the roots are still Assets/ and assets/; every path below is then
+# relative to that folder, which the base row names.
+if [ -f "$HERE/unity-root.sh" ]; then
+  . "$HERE/unity-root.sh"
+  UDIR=$(unity_root .) || { echo "content-count: unity.project_root is unusable; nothing was counted" >&2; exit 3; }
+  if [ -n "$UDIR" ]; then
+    if cd "$UDIR" 2>/dev/null; then
+      printf 'base\t%s\tpaths below are relative to this folder\n' "$UDIR"
+    else
+      echo "content-count: $UDIR/ does not exist; counting from the repo root" >&2
+    fi
+  fi
+fi
+
 PRESENT=""; NPRES=0
 for r in $ROOTS; do
   # The exact name, from the listing: -d would say yes to Assets for a

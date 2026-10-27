@@ -1918,6 +1918,34 @@ the unset branch is the normal behaviour on every project until they are filled
 
 ---
 
+## unity.project_root
+
+**Controls:** Where the Unity project sits below the repo root. The framework
+runs from the repo root; when `Assets/` and `Packages/` are not directly under
+it (`<repo>/<ProjectName>/Assets`), every path the hooks and scripts build for
+them is prefixed with this folder
+**Values:** a relative folder name (`MyGame`, `Unity/MyGame`). `.` or unset: the
+Unity project is the repo root. Absolute paths and any `..` are refused
+**Default:** unset (the repo root)
+**Set by:** edited by hand in `project.yaml`; `/setup-engine` does not ask
+**Read by:** `.claude/scripts/unity-root.sh`, which `resolve_code_root`
+(`yaml-helper.sh`), `project-state.sh`, `asset-scan.sh`, `content-count.sh`,
+`code-markers.sh`, `test-run.sh`, `test-scaffold.sh`, `write-guard.sh`,
+`detect-gaps.sh`, `validate-assets.sh`, `validate-commit.sh` and
+`inject-unity-layout.sh` source
+
+**Priority chain:** `project.yaml` -> the repo root. `project.local.yaml`
+cannot override it: the folder is a fact about the repo. An unusable value is not defaulted: the code root is unresolved and the checks
+that need it report that they did not run.
+
+Where a skill or doc says `Assets/` or `Packages/`, read it as
+`<unity.project_root>/Assets/` and `<unity.project_root>/Packages/`. Every
+other path (`design/`, `docs/`, `production/`, `tests/`) stays at the repo root.
+`asset-scan.sh` and `content-count.sh` scan from inside the Unity folder and
+print a `base` row; the paths in their rows are relative to it.
+
+---
+
 ## naming
 
 **Controls:** Code naming conventions for the project
@@ -2565,6 +2593,7 @@ updates:
 
 unity:
   asset_loading: null       # addressables | resources | direct; unset = NOT CONFIGURED, asked at /setup-engine
+  project_root: null        # folder of the Unity project below the repo root; unset = Assets/ is at the repo root
 ```
 
 And a minimal sparse `project.local.yaml` example — a single developer who wants autonomous mode locally:

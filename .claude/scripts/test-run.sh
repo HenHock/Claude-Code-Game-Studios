@@ -192,7 +192,14 @@ is_timeout() {
 # --- the commands -------------------------------------------------------------
 RESULTS=""; CMD=""; CMD_SRC="default"
 if [ "$PLATFORM" = playmode ]; then P=PlayMode; RESULTS=test-results/playmode.xml; else P=EditMode; RESULTS=test-results/editmode.xml; fi
-CMD="\"${EXE:-Unity}\" -batchmode -runTests -projectPath . -testPlatform $P -testResults $RESULTS"
+# The Unity project may sit below the repo root (unity.project_root).
+UDIR=""
+if [ -f "$HERE/unity-root.sh" ]; then
+  . "$HERE/unity-root.sh"
+  UDIR=$(unity_root .) || { echo "test-run: unity.project_root is unusable (absolute or holds ..)" >&2; exit 2; }
+fi
+UPRE=""; [ -n "$UDIR" ] && UPRE="$UDIR/"
+CMD="\"${EXE:-Unity}\" -batchmode -runTests -projectPath ${UDIR:-.} -testPlatform $P -testResults $RESULTS"
 # commands.test and --cmd win over the default.
 if [ -n "$CMD_ARG" ]; then CMD="$CMD_ARG"; CMD_SRC="--cmd"
 elif [ -n "$CFG_TEST" ]; then CMD="$CFG_TEST"; CMD_SRC="commands.test"; fi
@@ -208,10 +215,10 @@ printf 'timeout\t%s\t%s\n' "$TIMEOUT" "$TOOL"
 
 # --- prechecks ----------------------------------------------------------------
 ran_no() { printf 'ran\tno\t%s\n' "$2"; printf 'rule\t%s\t%s\n' "$1" "$3"; exit 0; }
-if [ -f Packages/manifest.json ] && grep -q 'com.unity.test-framework' Packages/manifest.json; then printf 'precheck\tcom.unity.test-framework\tpresent\n'
+if [ -f "${UPRE}Packages/manifest.json" ] && grep -q 'com.unity.test-framework' "${UPRE}Packages/manifest.json"; then printf 'precheck\tcom.unity.test-framework\tpresent\n'
 else
   printf 'precheck\tcom.unity.test-framework\tabsent\n'
-  ran_no unity:no-test-framework "Unity Test Framework is not in Packages/manifest.json" "the Unity Test Framework is not installed; the editor would hang, so it was not started"
+  ran_no unity:no-test-framework "Unity Test Framework is not in ${UPRE}Packages/manifest.json" "the Unity Test Framework is not installed; the editor would hang, so it was not started"
 fi
 if [ -z "$EXE" ] && [ "$CMD_SRC" = default ]; then
   ran_no runner-unavailable "no editor executable (commands.test, engine.path, PATH)" "the engine executable was not found, so the tests could not be run here"

@@ -41,6 +41,14 @@ substitute `Assets/Scripts/Core/`.
 Read `tests/unit/[system]/` (or `integration/`) anywhere as the test root plus `[System]/`
 (for Unity, `Assets/Scripts/Testing/EditMode/<Feature>/`).
 
+### Unity project below the repo root
+
+If the Unity project is `<repo>/<ProjectName>/` (the repo root holds Claude,
+git and non-Unity tooling), set `unity.project_root: <ProjectName>` in
+`project.yaml`. `Assets/` and `Packages/` below then live under that folder;
+`design/`, `docs/`, `production/` and the rest stay at the repo root. See
+`.claude/docs/effects-map.md`, section `unity.project_root`.
+
 ## Unity Assets layout: by feature, not by asset type
 
 One feature uses the same feature path under every root (the path after the

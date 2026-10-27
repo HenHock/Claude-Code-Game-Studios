@@ -204,6 +204,11 @@ if command -v resolve_code_root >/dev/null 2>&1; then
 else
     CODE_ROOT=""
 fi
+# An unusable unity.project_root leaves the code root unresolved: say why.
+if [ -z "$CODE_ROOT" ] && [ -f .claude/scripts/unity-root.sh ]; then
+    _UR_ERR=$(bash .claude/scripts/unity-root.sh 2>&1 >/dev/null)
+    [ -n "$_UR_ERR" ] && echo "WARNING: $_UR_ERR -- code checks did not run. Fix unity.project_root in project.yaml."
+fi
 # Source files only, binaries skipped. Unity's code root is Assets/, which also
 # holds every texture, model and audio file: an unfiltered grep read all of
 # them, twice, inside this hook's 10s budget -- ahead of the session-state
