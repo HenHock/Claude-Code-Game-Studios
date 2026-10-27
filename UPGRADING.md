@@ -170,6 +170,32 @@ opposite actions:
 
 ---
 
+### Strategy A3 — Scripted sync (Unity project below the repo root)
+
+Best when: the repo root holds Claude and git, and the Unity project is a
+folder below it (`<repo>/<ProjectName>/Assets`), or you want updates without
+resolving merges by hand. The repo need not share history with the template.
+
+```bash
+# Once: tell the framework where Unity lives (project.yaml)
+#   unity:
+#     project_root: <ProjectName>
+
+# Report what changed upstream, then stage the framework-owned files
+bash .claude/scripts/framework-sync.sh --url <template repo URL>   # adds the remote the first time
+bash .claude/scripts/framework-sync.sh --no-fetch --apply
+git diff --cached --stat
+```
+
+`.claude/framework-manifest.txt` says which paths are the framework's
+(`owned`), which hold your settings too (`merge`: CLAUDE.md, project.yaml,
+settings.json, .gitignore; only listed, merge them by hand), and which inside an
+owned folder are yours (`skip`). Files you edited since the last sync are left
+alone and reported as `local-edit`. The script never commits and never deletes.
+The first run has no baseline and reports `unknown`; review the staged diff.
+For a first install into an existing Unity repo, an agent follows
+`.claude/docs/install-into-unity-project.md`.
+
 ### Strategy B — Cherry-pick specific commits
 
 Best when: you only want one specific feature (e.g., just the new skill, not

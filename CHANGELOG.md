@@ -17,6 +17,16 @@ pinned: the version is chosen at first init with `/setup-engine`
 DETERMINED` until then). See "Unity folder layout" below for the `Assets/`
 layout.
 
+### Added
+- `unity.project_root` in `project.yaml`: the Unity project may sit below the
+  repo root (`<repo>/<ProjectName>/Assets`). Hooks and helper scripts prefix
+  their `Assets/` and `Packages/` paths with it; unset keeps today's layout.
+  Resolved in one place, `.claude/scripts/unity-root.sh`.
+- `.claude/scripts/framework-sync.sh` and `.claude/framework-manifest.txt`:
+  pull framework updates from the template remote into a game project. It
+  stages only framework-owned files, skips ones you edited, lists the files you
+  merge by hand, and never commits or deletes.
+
 ### Removed
 - Ten agents (49 to 39): `godot-specialist`, `godot-gdscript-specialist`,
   `godot-csharp-specialist`, `godot-shader-specialist`,
