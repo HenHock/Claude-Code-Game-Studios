@@ -1,0 +1,35 @@
+# framework-manifest.txt — which paths belong to the framework, for framework-sync.sh.
+#
+# One rule per line: `<kind> <path>`. A path ending in / is a folder (everything
+# below it); otherwise it is one file. A path that matches no rule is yours and
+# is never touched. `skip` beats `owned`.
+#
+#   owned   taken from the template as it is. If you edit one, framework-sync.sh
+#           leaves it alone and says so (see "local-edit"); restore it by hand.
+#   merge   holds your settings as well as the framework's. Never overwritten;
+#           the sync prints what changed upstream and you merge by hand
+#           (git diff HEAD template/<branch> -- <file>).
+#   skip    inside an owned folder but yours.
+#
+# Add your own rules at the bottom; this file is `merge`-class itself.
+
+owned .claude/agents/
+owned .claude/skills/
+owned .claude/hooks/
+owned .claude/scripts/
+owned .claude/rules/
+owned .claude/docs/
+owned .claude/statusline.sh
+owned .worktreeinclude
+owned docs/WORKFLOW-GUIDE.md
+owned docs/COLLABORATIVE-DESIGN-PRINCIPLE.md
+owned docs/engine-reference/unity/
+
+merge CLAUDE.md
+merge project.yaml
+merge .claude/settings.json
+merge .gitignore
+merge .gitattributes
+merge .claude/framework-manifest.txt
+
+skip .claude/docs/technical-preferences.md
